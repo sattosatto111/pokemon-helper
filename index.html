@@ -40,8 +40,11 @@ h1{font-family:var(--display);font-weight:400;font-size:24px;margin:0;letter-spa
 h1::before{content:"";width:22px;height:22px;border-radius:50%;flex:none;
   background:linear-gradient(#fff 0 0) center/100% 3px no-repeat,radial-gradient(circle,#fff 0 3px,var(--hdr2) 3.5px 5px,transparent 5.5px),linear-gradient(var(--hdr2) 0 50%,#fff 50%);
   box-shadow:0 0 0 2px rgba(255,255,255,.9)}
-.hd-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0;flex:1 1 auto;justify-content:flex-end}
-.modesw{display:flex;gap:4px;flex:1 1 0;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding:2px}
+.hd-r{display:contents}
+.brand h1{order:1}
+.brand .lv{order:2;margin-left:auto}
+.brand .modesw{order:3}
+.modesw{display:flex;gap:4px;flex:0 0 100%;min-width:0;max-width:100%;flex-wrap:wrap;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding:2px}
 .modesw::-webkit-scrollbar{display:none}
 .modesw button{flex:none;scroll-snap-align:center;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px 3px 7px;font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap}
 .modesw button i{width:12px;height:12px;border-radius:50%;background:var(--sw);box-shadow:0 0 0 1.5px rgba(255,255,255,.85)}
@@ -188,8 +191,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
   nav a.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);box-shadow:none}
   .top{box-shadow:0 2px 10px rgba(120,20,20,.2)}
   .brand{padding-block:10px}
-  .hd-r{flex-basis:100%;justify-content:space-between}
-  .modesw{flex-basis:100%;flex-wrap:wrap;overflow:visible}
+  .modesw{overflow:visible}
   .lv{margin-left:auto}
   nav a{font-size:10.5px;padding-inline:0}
 }
@@ -317,7 +319,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
 <section id="v-meta" hidden></section>
 
 <p class="note" id="ch-note" style="margin-bottom:6px">챔피언스: 개체값 없음(전부 최대), 노력치 대신 스탯 포인트(총 66, 한 능력치 최대 32), Lv.50, 테라스탈 없음.</p>
-<p class="note">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해. 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 철주먹, 단단한발톱, 옹골찬턱 같은 기술 종류별 특성은 기술 이름으로 구분해서 반영해. 접촉은 접촉하지 않는 물리기만 따로 빼고 나머지 물리기를 접촉으로 보니까 예외가 있을 수 있어.</p>
+<p class="note"><span id="gen-foot">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해.</span> 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 철주먹, 단단한발톱, 옹골찬턱 같은 기술 종류별 특성은 기술 이름으로 구분해서 반영해. 접촉은 접촉하지 않는 물리기만 따로 빼고 나머지 물리기를 접촉으로 보니까 예외가 있을 수 있어.</p>
 </main>
 
 <script>
@@ -436,7 +438,7 @@ const natOpts='<option value="1.1">↑ 1.1배</option><option value="1" selected
 const rankOpts=[6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6].map(r=>`<option value="${r}"${r===0?' selected':''}>${r>0?'+':''}${r}</option>`).join('');
 const typeOpts=TN.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
 const teraOpts='<option value="-1">없음</option>'+typeOpts;
-const sel={ty:-1,da:-1,dd:-1,sa:-1,sb:-1}, box={};
+const sel={ty:-1,da:-1,dd:-1,sa:-1,sb:-1}, box={}, demo={ty:true,da:true,dd:true,sa:true,sb:true};
 function info(p,i){const s=pS(i);return `<span class="pbg" style="${tbg(p,i)}">${spr(i)}</span>`+pT(i).map(chip).join('')+`<span>H${s[0]} A${s[1]} B${s[2]} C${s[3]} D${s[4]} S${s[5]}</span>`}
 function setPk(pre,i,quiet){
   sel[pre]=i; const p=PK[i];
@@ -672,16 +674,17 @@ function rCov(){
 }
 
 /* ---------- 대전 ---------- */
-const bt={mode:1,m:[-1,-1],o:[-1,-1]}, btBox={};
+const bt={mode:1,m:[-1,-1],o:[-1,-1]}, btBox={}, btDemo={m0:true,m1:true,o0:true,o1:true};
 function btSave(){try{localStorage.setItem('battle',JSON.stringify({mode:bt.mode,m:bt.m.map(i=>i>=0?NAMES[i]:''),o:bt.o.map(i=>i>=0?NAMES[i]:'')}))}catch(e){}}
 function btInit(){
   for(const s of ['m','o']) $('bt-'+s).innerHTML=[0,1].map(k=>`<div class="brow" id="bt-${s}${k}-w"><div class="combo"><input type="text" id="bt-${s}${k}" placeholder="${s==='m'?'내':'상대'} ${k+1}번" autocomplete="off"></div><select id="bt-${s}${k}-t" class="gen9 tera" aria-label="테라스탈">${teraOpts}</select></div>`).join('');
   let sv=null; try{sv=JSON.parse(localStorage.getItem('battle'))}catch(e){}
   const def={m:['한카리아스','핫삼'],o:['어흥염','드래펄트']};
   if(sv&&(sv.mode===1||sv.mode===2))bt.mode=sv.mode;
+  if(sv&&Array.isArray(sv.m))for(const x in btDemo)btDemo[x]=false;
   for(const s of ['m','o'])for(const k of [0,1]){
     const nm=sv&&Array.isArray(sv[s])?sv[s][k]:def[s][k]; bt[s][k]=find(nm||'');
-    btBox[s+k]=combo($(`bt-${s}${k}`),NAMES,i=>{bt[s][k]=i;btSave();update()},true); btBox[s+k].set(bt[s][k]);
+    btBox[s+k]=combo($(`bt-${s}${k}`),NAMES,i=>{btDemo[s+k]=false;bt[s][k]=i;btSave();update()},true); btBox[s+k].set(bt[s][k]);
   }
   $('bt-1').addEventListener('click',()=>{bt.mode=1;btSave();update()});
   $('bt-2').addEventListener('click',()=>{bt.mode=2;btSave();update()});
@@ -716,6 +719,23 @@ function rBattle(){
   $('bt-out').innerHTML=cards.length?cards.join(''):'<div class="card"><div class="sub">내 포켓몬과 상대 포켓몬을 골라줘.</div></div>';
 }
 
+/* ---------- 세대별 데모 선택 ---------- */
+const DEMO={
+  def:{ty:'한카리아스',da:'한카리아스',dd:'어흥염',sa:'한카리아스',sb:'드래펄트',bm:['한카리아스','핫삼'],bo:['어흥염','드래펄트'],pt:['한카리아스','어흥염','로토무 (워시로토무)','망나뇽','핫삼','님피아']},
+  g1:{ty:'후딘',da:'후딘',dd:'잠만보',sa:'후딘',sb:'팬텀',bm:['후딘','잠만보'],bo:['팬텀','갸라도스'],pt:['후딘','팬텀','잠만보','갸라도스','썬더','라프라스']},
+  g2:{ty:'마기라스',da:'마기라스',dd:'블래키',sa:'마기라스',sb:'핫삼',bm:['마기라스','핫삼'],bo:['블래키','스이쿤'],pt:['마기라스','핫삼','블래키','스이쿤','헤라크로스','잠만보']},
+  g3:{ty:'보만다',da:'보만다',dd:'메타그로스',sa:'보만다',sb:'메타그로스',bm:['보만다','메타그로스'],bo:['라티오스','대짱이'],pt:['보만다','메타그로스','라티오스','대짱이','헬가','블래키']},
+  g4:{ty:'한카리아스',da:'한카리아스',dd:'루카리오',sa:'한카리아스',sb:'루카리오',bm:['한카리아스','핫삼'],bo:['루카리오','토게키스'],pt:['한카리아스','루카리오','로토무 (워시로토무)','망나뇽','핫삼','토게키스']}
+};
+function applyDemo(){
+  const g=GEN(), S=DEMO[CH()||g>=5?'def':'g'+g], F=DEMO.g4;
+  const pk=(a,b)=>{let i=find(a);if(i<0||!avail(i))i=find(b);return i>=0&&avail(i)?i:-1};
+  for(const k in sel)if(demo[k]){const i=pk(S[k],F[k]); if(i>=0&&i!==sel[k])setPk(k,i,true)}
+  for(const s of ['m','o'])for(const k of [0,1])if(btDemo[s+k]&&btBox[s+k]){
+    const i=pk(S['b'+s][k],F['b'+s][k]); if(i>=0){bt[s][k]=i;btBox[s+k].set(i)}}
+  if(partyDemo){party=party.map((c,k)=>{const i=pk(S.pt[k],F.pt[k]);return i>=0?i:c}); party.forEach((i,k)=>ptBox[k]&&ptBox[k].set(i))}
+}
+
 /* ---------- 화면 전환 ---------- */
 const TABS={battle:rBattle,types:rTypes,damage:rDamage,speed:rSpeed,party:rParty,coverage:rCov};
 let tab='battle';
@@ -737,12 +757,16 @@ async function setMode(m,noSave){
   if(to!==was)document.querySelectorAll('input[id$="-ev"],#dd-hpev').forEach(el=>{
     const v=parseInt(el.value); if(isNaN(v))return;
     el.value=to?ev2sp(Math.max(0,Math.min(252,v))):Math.min(252,sp2ev(Math.max(0,Math.min(32,v))))});
-  MODE=m; document.documentElement.dataset.mode=m; buildAv();
+  MODE=m; document.documentElement.dataset.mode=m; buildAv(); applyDemo();
   document.querySelectorAll('input[id$="-ev"],#dd-hpev').forEach(el=>{
     el.max=to?32:252; el.step=to?1:4;
     const lb=el.parentNode.firstChild; if(lb&&lb.nodeType===3)lb.nodeValue=lb.nodeValue.replace(/노력치|스탯 포인트/,to?'스탯 포인트':'노력치')});
+  const gf=$('gen-foot'); if(gf)gf.textContent=to?'상성표와 데미지 공식은 챔피언스 기준이야. 개체값은 전부 최대, 노력치 대신 스탯 포인트로 계산해.'
+    :'상성표와 데미지 공식은 '+GEN()+'세대 기준이야. '+(GEN()===1?'개체값(DV) 15에 노력치는 최대, 특수 능력치 하나로 특공·특방을 같이 써. 타입별로 물리/특수가 갈려.'
+    :GEN()===2?'개체값(DV) 15에 노력치는 최대로 계산해. 타입별로 물리/특수가 갈려.':GEN()<=3?'개체값은 31로 계산해. 타입별로 물리/특수가 갈려.':'개체값은 31로 계산해.');
   const lt=$('lv-t'); if(lt)lt.textContent=to?'챔피언스 기준 · Lv.50':GEN()+'세대 기준 · 레벨';
   document.querySelectorAll('#modesw button').forEach(b=>b.classList.toggle('on',normMode(b.dataset.m)===MODE));
+  const ob=document.querySelector('#modesw button.on'); if(ob&&ob.scrollIntoView)try{ob.scrollIntoView({block:'nearest',inline:'center'})}catch(e){}
   tyT=tyT.filter(typeOK); for(const t of [...cov])if(!typeOK(t))cov.delete(t);
   for(const k in sel)if(sel[k]>=0)setPk(k,sel[k],true);
   COMBOS.forEach(c=>c.refresh());
@@ -764,7 +788,7 @@ function start(){
   ['da-rk','dd-rk'].forEach(i=>$(i).innerHTML=rankOpts);
   ['ty-tera','da-tera','dd-tera'].forEach(i=>$(i).innerHTML=teraOpts);
   $('mv-t').innerHTML=typeOpts;
-  for(const k in sel) box[k]=combo($(k+'-pk'),NAMES,i=>{ if(i<0){ if(sel[k]>=0&&k!=='ty'){sel[k]=-1;setPk(k,-1)} return } setPk(k,i) },true);
+  for(const k in sel) box[k]=combo($(k+'-pk'),NAMES,i=>{ demo[k]=false; if(i<0){ if(sel[k]>=0&&k!=='ty'){sel[k]=-1;setPk(k,-1)} return } setPk(k,i) },true);
   mvBox=combo($('mv'),MNAMES,i=>{ if(i>=0)setMove(i) },false,i=>{const m=MV[i]; return `${chip(m[1])}<span class="mvn">${esc(m[0])}</span><span class="mvm">${m[2]?(m[3]?'특수':'물리')+' '+m[2]:'변화'}</span>`});
   $('dm-rank').addEventListener('click',e=>{const r=e.target.closest('tr[data-m]');if(r)setMove(+r.dataset.m)});
   $('pt-slots').innerHTML=party.map((_,k)=>`<div class="combo"><input type="text" id="pt-${k}" placeholder="${k+1}번 포켓몬" autocomplete="off"></div>`).join('');
@@ -779,7 +803,7 @@ function start(){
   const eq=MNAMES.indexOf('지진'); if(eq>=0)setMove(eq,true);
   $('ty-chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const t=+b.dataset.t;
     if(tyT.includes(t))tyT=tyT.filter(x=>x!==t);else tyT=tyT.length<2?tyT.concat(t):[tyT[1],t];
-    sel.ty=-1;box.ty.set(-1);$('ty-ab').innerHTML='<option value="">없음</option>';$('ty-info').innerHTML='<span>타입을 직접 고른 상태</span>';update()});
+    demo.ty=false;sel.ty=-1;box.ty.set(-1);$('ty-ab').innerHTML='<option value="">없음</option>';$('ty-info').innerHTML='<span>타입을 직접 고른 상태</span>';update()});
   $('cv-chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const t=+b.dataset.t;
     if(cov.has(t))cov.delete(t);else if(cov.size<4)cov.add(t);update()});
   $('pt-clear').addEventListener('click',()=>{party=party.map(()=>-1);ptBox.forEach(b=>b.set(-1));partyDemo=false;saveParty();update()});

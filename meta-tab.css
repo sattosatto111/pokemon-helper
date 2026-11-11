@@ -1,4 +1,7 @@
-#mt-q{width:100%;box-sizing:border-box;margin:8px 0}
+#mt-q{width:100%;box-sizing:border-box;margin:6px 0 10px;background-color:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font:inherit;font-size:15px;min-width:0;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}
+#mt-q:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent);outline:none}
+#v-meta .mfmt{margin-bottom:6px}
+#v-meta .card>p.sub{margin:0 0 2px;font-size:12.5px}
 .mt-types{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
 .mt-types button{padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font-size:12.5px;cursor:pointer}
 .mt-types button.on{background:var(--tc,var(--accent));border-color:var(--tc,var(--accent));color:#fff}

@@ -96,7 +96,7 @@ function paintMoves(){
     .sort((a,b)=>{const x=v[sortKey](a),y=v[sortKey](b);return (typeof x==='string'?x.localeCompare(y,'ko'):x-y)*sortDir||a[0].localeCompare(b[0],'ko')});
   back.querySelector('tbody').innerHTML=rows.map(m=>`<tr><td>${esc(m[0])}</td><td>${chip(m[1])}</td><td>${CAT[m[3]]||'변화'}</td><td>${m[2]||'-'}</td></tr>`).join('')||'<tr><td colspan="4">찾는 기술이 없어</td></tr>';
 }
-function go(i,pre,h){closeDex(true);setPk(pre,i,true);if(location.hash==='#'+h)update();else location.hash='#'+h}
+function go(i,pre,h){closeDex(true);try{demo[pre]=false}catch(e){}setPk(pre,i,true);if(location.hash==='#'+h)update();else location.hash='#'+h}
 function addParty(i){
   if(partyDemo){party=party.map(()=>-1);ptBox.forEach(b=>b.set(-1));partyDemo=false}
   const k=party.indexOf(-1); if(k<0)return false;
