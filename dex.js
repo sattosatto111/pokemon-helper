@@ -45,7 +45,7 @@ function render(i){
   const c1=TC[types[0]], c2=TC[types[types.length-1]];
   const art=SPR_URL+'other/official-artwork/'+SPR[i]+'.png';
   const px=SPR_URL+SPR[i]+'.png';
-  let st='<div class="dx-st"><span></span><span></span><span></span><span class="h">무보정</span><span class="h">252</span><span class="h">252↑</span></div>';
+  let st=`<div class="dx-st"><span></span><span></span><span></span><span class="h">${evCols()[0]}</span><span class="h">${evCols()[1]}</span><span class="h">${evCols()[2]}</span></div>`;
   base.forEach((b,k)=>{
     const a=k?stat(b,0,1,L):hpStat(b,0,L), e=k?stat(b,252,1,L):hpStat(b,252,L), u=k?stat(b,252,1.1,L):e;
     st+=`<div class="dx-st"><span>${STN[k]}</span><b>${b}</b><div class="dx-bar"><i style="width:${Math.min(100,b/200*100)}%;background:${barColor(b)}"></i></div><span class="n">${a}</span><span class="n">${e}</span><span class="n">${u}</span></div>`;

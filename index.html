@@ -40,6 +40,12 @@ h1{font-family:var(--display);font-weight:400;font-size:24px;margin:0;letter-spa
 h1::before{content:"";width:22px;height:22px;border-radius:50%;flex:none;
   background:linear-gradient(#fff 0 0) center/100% 3px no-repeat,radial-gradient(circle,#fff 0 3px,var(--hdr2) 3.5px 5px,transparent 5.5px),linear-gradient(var(--hdr2) 0 50%,#fff 50%);
   box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.hd-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.modesw{display:flex;border:1px solid rgba(255,255,255,.4);border-radius:999px;overflow:hidden}
+.modesw button{background:transparent;color:rgba(255,255,255,.85);border:0;padding:4px 12px;font:inherit;font-size:12.5px;cursor:pointer}
+.modesw button.on{background:#fff;color:var(--accent);font-weight:600}
+html[data-mode=champions] .gen9,html[data-mode=champions] #lv{display:none!important}
+html:not([data-mode=champions]) #ch-note{display:none}
 .lv{color:rgba(255,255,255,.85);font-size:13px;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .lv input{width:62px;background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.35)!important;color:#fff!important;padding:4px 8px!important}
 nav{display:flex;gap:6px;overflow-x:auto;padding-block:6px 12px;scrollbar-width:none}
@@ -146,7 +152,8 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
 
 <header class="top"><div class="wrap">
   <div class="brand"><h1>배틀 도감</h1>
-    <label class="lv">9세대 기준 · 레벨 <input type="number" id="lv" min="1" max="100" value="50"></label></div>
+    <div class="hd-r"><div class="modesw" id="modesw" role="group" aria-label="규칙"><button type="button" data-m="9세대">9세대</button><button type="button" data-m="챔피언스">챔피언스</button></div>
+    <label class="lv"><span id="lv-t">9세대 기준 · 레벨</span> <input type="number" id="lv" min="1" max="100" value="50"></label></div></div>
   <nav id="nav">
     <a href="#battle"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4 20 4 20 9.5 9 20.5 3.5 20.5 3.5 15zM4 20l4-4M14 10l-4 4"/></svg><span>대전</span></a><a href="#types"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg><span>상성</span></a><a href="#damage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13h6l-1 8 8-10h-6z"/></svg><span>데미지</span></a><a href="#speed"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4M10 3h4"/></svg><span>스피드</span></a><a href="#party"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5M15.5 12h5"/><circle cx="12" cy="12" r="3"/></svg><span>파티</span></a><a href="#coverage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>공격 범위</span></a>
   </nav>
@@ -161,7 +168,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
       <div><h2 style="margin-bottom:8px">내 포켓몬</h2><div id="bt-m"></div></div>
       <div><h2 style="margin-bottom:8px">상대 포켓몬</h2><div id="bt-o"></div></div>
     </div>
-    <p class="note">오른쪽 칸은 테라스탈 타입이야. 특성이 하나뿐인 포켓몬은 그 특성(부유 등)을 반영해.</p>
+    <p class="note gen9">오른쪽 칸은 테라스탈 타입이야. 특성이 하나뿐인 포켓몬은 그 특성(부유 등)을 반영해.</p>
   </div>
   <div class="cols" id="bt-out"></div>
 </section>
@@ -174,7 +181,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
     <div class="chips" id="ty-chips"></div>
     <div class="fields">
       <label class="f">특성<select id="ty-ab"></select></label>
-      <label class="f">테라스탈<select id="ty-tera"></select></label>
+      <label class="f gen9">테라스탈<select id="ty-tera"></select></label>
     </div>
   </div>
   <div class="card"><h2>받는 데미지 배율</h2><div class="grp" id="ty-out"></div></div>
@@ -192,7 +199,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
         <label class="f">성격<select id="da-nat"></select></label>
         <label class="f">랭크<select id="da-rk"></select></label>
         <label class="f">특성<select id="da-ab"></select></label>
-        <label class="f">테라스탈<select id="da-tera"></select></label>
+        <label class="f gen9">테라스탈<select id="da-tera"></select></label>
         <label class="f">도구<select id="da-item">
           <option value="">없음</option><option value="choiceP">구애머리띠</option><option value="choiceS">구애안경</option>
           <option value="orb">생명의구슬</option><option value="belt">달인의띠</option>
@@ -212,7 +219,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
         <label class="f">성격<select id="dd-nat"></select></label>
         <label class="f">랭크<select id="dd-rk"></select></label>
         <label class="f">특성<select id="dd-ab"></select></label>
-        <label class="f">테라스탈<select id="dd-tera"></select></label>
+        <label class="f gen9">테라스탈<select id="dd-tera"></select></label>
         <label class="f">도구<select id="dd-item">
           <option value="">없음</option><option value="vest">돌격조끼</option><option value="evio">진화의휘석</option><option value="berry">반감열매</option></select></label>
         <label class="f">남은 HP %<input type="number" id="dd-hp" min="1" max="100" value="100"></label>
@@ -263,6 +270,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
   <div class="card"><h2>전체 포켓몬 상대로</h2><div id="cv-out"></div></div>
 </section>
 
+<p class="note" id="ch-note" style="margin-bottom:6px">챔피언스: 개체값 없음(전부 최대), 노력치 대신 스탯 포인트(총 66, 한 능력치 최대 32), Lv.50, 테라스탈 없음.</p>
 <p class="note">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해. 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 철주먹, 단단한발톱, 옹골찬턱 같은 기술 종류별 특성은 기술 이름으로 구분해서 반영해. 접촉은 접촉하지 않는 물리기만 따로 빼고 나머지 물리기를 접촉으로 보니까 예외가 있을 수 있어.</p>
 </main>
 
@@ -297,8 +305,13 @@ const spr=(i,c='')=>{const s=sprSrc(i);return s?`<img class="spr ${c}" data-i="$
 const art=(i,c='')=>SPR[i]?`<img class="spr art ${c}" data-i="${i}" src="${SPR_URL}other/official-artwork/${SPR[i]}.png" alt="" loading="lazy" onerror="this.onerror=null;this.src=sprSrc(${i})">`:spr(i,c);
 const tbg=p=>{const t=p[2]>=0?[p[1],p[2]]:[p[1]];const a=TC[t[0]],b=TC[t[t.length-1]];return `--g:linear-gradient(135deg,color-mix(in srgb,${a} 38%,var(--panel)),color-mix(in srgb,${b} 18%,var(--panel)))`};
 const ptypes=p=>p[2]>=0?[p[1],p[2]]:[p[1]];
-const LV=()=>Math.min(100,Math.max(1,parseInt($('lv').value)||50));
+const CH=()=>document.documentElement.dataset.mode==='champions';
+const LV=()=>CH()?50:Math.min(100,Math.max(1,parseInt($('lv').value)||50));
 const num=(id,lo,hi,d)=>{const v=parseInt($(id).value);return isNaN(v)?d:Math.min(hi,Math.max(lo,v))};
+const sp2ev=n=>n<=0?0:8*n-4, ev2sp=e=>e<=0?0:Math.min(32,Math.round((e+4)/8));
+const evIn=(id,d)=>CH()?sp2ev(num(id,0,32,d||0)):num(id,0,252,d||0);
+const tIn=id=>CH()?-1:+$(id).value;
+const evCols=()=>CH()?['0','32','32↑']:['무보정','252','252↑'];
 function eff(t,types,ab){
   let m=1; for(const d of types) m*=E[t][d];
   if(ab){ const d=DAB[ab]; if(d&&t in d) m*=d[t];
@@ -361,7 +374,7 @@ function setPk(pre,i,quiet){
 let tyT=[];
 function rTypes(){
   $('ty-chips').innerHTML=TN.map((n,t)=>`<button type="button" class="chip" data-t="${t}" aria-pressed="${tyT.includes(t)}" style="background:${TC[t]}">${n}</button>`).join('');
-  const tera=+$('ty-tera').value, types=tera>=0?[tera]:tyT, ab=$('ty-ab').value;
+  const tera=tIn('ty-tera'), types=tera>=0?[tera]:tyT, ab=$('ty-ab').value;
   if(!types.length){$('ty-out').innerHTML='<div class="sub" style="grid-column:1/-1">포켓몬을 검색하거나 타입을 눌러서 골라줘.</div>';$('ty-statcard').hidden=true;return}
   const g=new Map();
   for(let t=0;t<18;t++){const m=eff(t,types,ab);(g.get(m)||g.set(m,[]).get(m)).push(t)}
@@ -369,7 +382,7 @@ function rTypes(){
     `<div class="mult ${m>1?'w':m===0?'z':m<1?'r':''}">${m===0?'무효':'×'+mtxt(m)}</div><div class="chips">${g.get(m).map(chip).join('')}</div>`).join('');
   const p=PK[sel.ty]; $('ty-statcard').hidden=!p; if(!p)return;
   const L=LV(), lab=['HP','공격','방어','특공','특방','스피드'];
-  $('ty-stats').innerHTML=`<table><tr><th class="l">능력</th><th>종족값</th><th class="l" style="width:40%"></th><th>무보정</th><th>252</th><th>252↑</th></tr>`+
+  $('ty-stats').innerHTML=`<table><tr><th class="l">능력</th><th>종족값</th><th class="l" style="width:40%"></th><th>${evCols()[0]}</th><th>${evCols()[1]}</th><th>${evCols()[2]}</th></tr>`+
     lab.map((n,k)=>{const b=p[3+k];const f=k===0?[hpStat(b,0,L),hpStat(b,252,L),'-']:[stat(b,0,1,L),stat(b,252,1,L),stat(b,252,1.1,L)];
       return `<tr><td class="l">${n}</td><td>${b}</td><td class="l"><div class="bar" style="width:${Math.min(100,b/2)}%"></div></td><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td></tr>`}).join('')+
     `<tr><td class="l">합계</td><td>${p.slice(3,9).reduce((a,b)=>a+b,0)}</td><td colspan="4"></td></tr></table>`;
@@ -406,11 +419,11 @@ function koText(rolls,hp){
 }
 function readCtx(){
   const a=PK[sel.da], d=PK[sel.dd]; if(!a||!d)return null;
-  const L=LV(), hp=hpStat(d[3],num('dd-hpev',0,252,0),L), pct=num('dd-hp',1,100,100);
+  const L=LV(), hp=hpStat(d[3],evIn('dd-hpev'),L), pct=num('dd-hp',1,100,100);
   return {a,d,L,hp,pct,hpNow:Math.max(1,Math.floor(hp*pct/100)),
     aab:$('da-ab').value,dab:$('dd-ab').value,ait:$('da-item').value,dit:$('dd-item').value,
-    atera:+$('da-tera').value,dtera:+$('dd-tera').value,ar:+$('da-rk').value,dr:+$('dd-rk').value,
-    aev:num('da-ev',0,252,0),anat:+$('da-nat').value,dev:num('dd-ev',0,252,0),dnat:+$('dd-nat').value,
+    atera:tIn('da-tera'),dtera:tIn('dd-tera'),ar:+$('da-rk').value,dr:+$('dd-rk').value,
+    aev:evIn('da-ev'),anat:+$('da-nat').value,dev:evIn('dd-ev'),dnat:+$('dd-nat').value,
     burn:$('da-burn').checked,pinch:$('da-pinch').checked,help:$('da-help').checked,wall:$('dd-wall').checked,
     crit:$('crit').checked,spread:$('spread').checked,wx:$('wx').value,tr:$('tr').value};
 }
@@ -518,7 +531,7 @@ function spSide(k,title){return `<div class="card"><h2>${title}</h2>
   <div class="info" id="${k}-info"></div>
   <div class="fields">
     <label class="f">스피드 노력치<input type="number" id="${k}-ev" min="0" max="252" step="4" value="252"></label>
-    <label class="f">개체값<input type="number" id="${k}-iv" min="0" max="31" value="31"></label>
+    <label class="f gen9">개체값<input type="number" id="${k}-iv" min="0" max="31" value="31"></label>
     <label class="f">성격<select id="${k}-nat">${natOpts}</select></label>
     <label class="f">랭크<select id="${k}-rk">${rankOpts}</select></label>
   </div>
@@ -526,7 +539,7 @@ function spSide(k,title){return `<div class="card"><h2>${title}</h2>
     <label class="ck"><input type="checkbox" id="${k}-tw">순풍</label>
     <label class="ck"><input type="checkbox" id="${k}-pz">마비</label></div></div>`}
 function spVal(k){const p=PK[sel[k]]; if(!p)return null;
-  let v=stat(p[8],num(k+'-ev',0,252,0),+$(k+'-nat').value,LV(),num(k+'-iv',0,31,31))*rk(+$(k+'-rk').value);
+  let v=stat(p[8],evIn(k+'-ev'),+$(k+'-nat').value,LV(),CH()?31:num(k+'-iv',0,31,31))*rk(+$(k+'-rk').value);
   if($(k+'-sc').checked)v*=1.5; if($(k+'-tw').checked)v*=2; if($(k+'-pz').checked)v*=.5; return Math.floor(v)}
 function rSpeed(){
   const a=spVal('sa'), b=spVal('sb'), tr=$('sp-tr').checked, L=LV();
@@ -538,8 +551,8 @@ function rSpeed(){
   const rows=['sa','sb'].map(k=>PK[sel[k]]).filter(Boolean);
   $('sp-table').innerHTML=rows.length?`<table><tr><th class="l">포켓몬</th><th>최속</th><th>준속</th><th>무보정</th><th>최저</th><th>최속 스카프</th><th>준속 스카프</th></tr>`+
     rows.map(p=>{const s=p[8],f=stat(s,252,1.1,L),n=stat(s,252,1,L);
-      return `<tr><td class="l">${esc(p[0])}</td><td>${f}</td><td>${n}</td><td>${stat(s,0,1,L)}</td><td>${stat(s,0,.9,L,0)}</td><td>${Math.floor(f*1.5)}</td><td>${Math.floor(n*1.5)}</td></tr>`}).join('')+
-    '</table><p class="note">최속은 노력치 252에 성격 보정, 준속은 노력치 252, 최저는 노력치 0에 개체값 0과 하락 성격이야.</p>':'<div class="sub">포켓몬을 고르면 표가 나와.</div>';
+      return `<tr><td class="l">${esc(p[0])}</td><td>${f}</td><td>${n}</td><td>${stat(s,0,1,L)}</td><td>${stat(s,0,.9,L,CH()?31:0)}</td><td>${Math.floor(f*1.5)}</td><td>${Math.floor(n*1.5)}</td></tr>`}).join('')+
+    '</table><p class="note">'+(CH()?'최속은 스탯 포인트 32에 성격 보정, 준속은 스탯 포인트 32, 최저는 스탯 포인트 0에 하락 성격이야.':'최속은 노력치 252에 성격 보정, 준속은 노력치 252, 최저는 노력치 0에 개체값 0과 하락 성격이야.')+'</p>':'<div class="sub">포켓몬을 고르면 표가 나와.</div>';
 }
 
 /* ---------- 파티 ---------- */
@@ -582,7 +595,7 @@ function rCov(){
 const bt={mode:1,m:[-1,-1],o:[-1,-1]}, btBox={};
 function btSave(){try{localStorage.setItem('battle',JSON.stringify({mode:bt.mode,m:bt.m.map(i=>i>=0?NAMES[i]:''),o:bt.o.map(i=>i>=0?NAMES[i]:'')}))}catch(e){}}
 function btInit(){
-  for(const s of ['m','o']) $('bt-'+s).innerHTML=[0,1].map(k=>`<div class="brow" id="bt-${s}${k}-w"><div class="combo"><input type="text" id="bt-${s}${k}" placeholder="${s==='m'?'내':'상대'} ${k+1}번" autocomplete="off"></div><select id="bt-${s}${k}-t" aria-label="테라스탈">${teraOpts}</select></div>`).join('');
+  for(const s of ['m','o']) $('bt-'+s).innerHTML=[0,1].map(k=>`<div class="brow" id="bt-${s}${k}-w"><div class="combo"><input type="text" id="bt-${s}${k}" placeholder="${s==='m'?'내':'상대'} ${k+1}번" autocomplete="off"></div><select id="bt-${s}${k}-t" class="gen9" aria-label="테라스탈">${teraOpts}</select></div>`).join('');
   let sv=null; try{sv=JSON.parse(localStorage.getItem('battle'))}catch(e){}
   const def={m:['한카리아스','핫삼'],o:['어흥염','드래펄트']};
   if(sv&&(sv.mode===1||sv.mode===2))bt.mode=sv.mode;
@@ -593,7 +606,7 @@ function btInit(){
   $('bt-1').addEventListener('click',()=>{bt.mode=1;btSave();update()});
   $('bt-2').addEventListener('click',()=>{bt.mode=2;btSave();update()});
 }
-function btMon(s,k){const p=PK[bt[s][k]]; if(!p)return null; const tera=+$(`bt-${s}${k}-t`).value;
+function btMon(s,k){const p=PK[bt[s][k]]; if(!p)return null; const tera=tIn(`bt-${s}${k}-t`);
   return {i:bt[s][k],p,def:tera>=0?[tera]:ptypes(p),atk:[...new Set(ptypes(p).concat(tera>=0?[tera]:[]))],ab:p[9].length===1?AB[p[9][0]]:''}}
 function btHit(a,d){
   const st=a.atk.map(t=>[t,eff(t,d.def,d.ab)]), cov=new Map();
@@ -627,6 +640,20 @@ function rBattle(){
 const TABS={battle:rBattle,types:rTypes,damage:rDamage,speed:rSpeed,party:rParty,coverage:rCov};
 let tab='battle';
 function update(){try{TABS[tab]()}catch(e){console.error(e)}}
+let curMode='9세대';
+function setMode(m,noSave){
+  const to=m==='챔피언스', was=curMode==='챔피언스';
+  if(to!==was)document.querySelectorAll('input[id$="-ev"],#dd-hpev').forEach(el=>{
+    const v=parseInt(el.value); if(isNaN(v))return;
+    el.value=to?ev2sp(Math.max(0,Math.min(252,v))):Math.min(252,sp2ev(Math.max(0,Math.min(32,v))))});
+  curMode=m; document.documentElement.dataset.mode=to?'champions':'';
+  document.querySelectorAll('input[id$="-ev"],#dd-hpev').forEach(el=>{
+    el.max=to?32:252; el.step=to?1:4;
+    const lb=el.parentNode.firstChild; if(lb&&lb.nodeType===3)lb.nodeValue=lb.nodeValue.replace(/노력치|스탯 포인트/,to?'스탯 포인트':'노력치')});
+  $('lv-t').textContent=to?'챔피언스 기준 · Lv.50':'9세대 기준 · 레벨';
+  document.querySelectorAll('#modesw button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  if(!noSave)try{localStorage.setItem('mode',m)}catch(e){}
+}
 function route(){
   const h=location.hash.slice(1); tab=TABS[h]?h:'battle';
   for(const k in TABS)$('v-'+k).hidden=k!==tab;
@@ -662,6 +689,11 @@ function start(){
   document.addEventListener('change',update);
   document.addEventListener('input',e=>{if(e.target.type==='number')update()});
   btInit();
+  let m0='9세대'; try{if(localStorage.getItem('mode')==='챔피언스')m0='챔피언스'}catch(e){}
+  const qm=new URLSearchParams(location.search).get('mode'); if(qm==='champions'||qm==='챔피언스')m0='챔피언스'; else if(qm==='gen9')m0='9세대';
+  setMode(m0,!qm);
+  if(qm)try{localStorage.setItem('mode',m0)}catch(e){}
+  $('modesw').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;setMode(b.dataset.m);update()});
   window.addEventListener('hashchange',route);
   route();
 }
