@@ -200,7 +200,8 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
 
 <header class="top"><div class="wrap">
   <div class="brand"><h1>배틀 도감</h1>
-    <div class="hd-r"><div class="modesw" id="modesw" role="group" aria-label="세대 선택"><button type="button" data-m="g1" title="레드·그린"><i aria-hidden="true"></i>1세대</button><button type="button" data-m="g2" title="골드·실버"><i aria-hidden="true"></i>2세대</button><button type="button" data-m="g3" title="루비·사파이어"><i aria-hidden="true"></i>3세대</button><button type="button" data-m="g4" title="디아루가·펄기아 세대(DP)"><i aria-hidden="true"></i>4세대</button><button type="button" data-m="g5" title="블랙·화이트"><i aria-hidden="true"></i>5세대</button><button type="button" data-m="g6" title="X·Y"><i aria-hidden="true"></i>6세대</button><button type="button" data-m="g7" title="썬·문"><i aria-hidden="true"></i>7세대</button><button type="button" data-m="g8" title="소드·실드"><i aria-hidden="true"></i>8세대</button><button type="button" data-m="g9" title="스칼렛·바이올렛"><i aria-hidden="true"></i>9세대</button><button type="button" data-m="ch" title="Pokémon Champions"><i aria-hidden="true"></i>챔피언스</button></div>
+    <div class="hd-r"><div class="modesw" id="modesw" role="group" aria-label="세대 선택"><button type="button" data-m="ch" title="Pokémon Champions"><i aria-hidden="true"></i>챔피언스</button>
+<button type="button" data-m="g1" title="레드·그린"><i aria-hidden="true"></i>1세대</button><button type="button" data-m="g2" title="골드·실버"><i aria-hidden="true"></i>2세대</button><button type="button" data-m="g3" title="루비·사파이어"><i aria-hidden="true"></i>3세대</button><button type="button" data-m="g4" title="디아루가·펄기아 세대(DP)"><i aria-hidden="true"></i>4세대</button><button type="button" data-m="g5" title="블랙·화이트"><i aria-hidden="true"></i>5세대</button><button type="button" data-m="g6" title="X·Y"><i aria-hidden="true"></i>6세대</button><button type="button" data-m="g7" title="썬·문"><i aria-hidden="true"></i>7세대</button><button type="button" data-m="g8" title="소드·실드"><i aria-hidden="true"></i>8세대</button><button type="button" data-m="g9" title="스칼렛·바이올렛"><i aria-hidden="true"></i>9세대</button></div>
     <label class="lv"><span id="lv-t">9세대 기준 · 레벨</span> <input type="number" id="lv" min="1" max="100" value="50"></label></div></div>
   <nav id="nav">
     <a href="#battle"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4 20 4 20 9.5 9 20.5 3.5 20.5 3.5 15zM4 20l4-4M14 10l-4 4"/></svg><span>대전</span></a><a href="#types"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg><span>상성</span></a><a href="#damage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13h6l-1 8 8-10h-6z"/></svg><span>데미지</span></a><a href="#speed"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4M10 3h4"/></svg><span>스피드</span></a><a href="#party"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5M15.5 12h5"/><circle cx="12" cy="12" r="3"/></svg><span>파티</span></a><a href="#coverage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>공격 범위</span></a><a href="#meta"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>메타</span></a>
@@ -355,7 +356,7 @@ const art=(i,c='')=>SPR[i]?`<img class="spr art ${c}" data-i="${i}" src="${SPR_U
 const tbg=(p,i)=>{const t=i>=0?pT(i):ptypes(p);const a=TC[t[0]],b=TC[t[t.length-1]];return `--g:linear-gradient(135deg,color-mix(in srgb,${a} 38%,var(--panel)),color-mix(in srgb,${b} 18%,var(--panel)))`};
 const ptypes=p=>p[2]>=0?[p[1],p[2]]:[p[1]];
 /* ---------- 세대 모드: 상태 / 접근자 ---------- */
-let MODE='g9'; const getMode=()=>MODE, GEN=()=>MODE==='ch'?9:+MODE[1], CH=()=>MODE==='ch';
+let MODE='ch'; const getMode=()=>MODE, GEN=()=>MODE==='ch'?9:+MODE[1], CH=()=>MODE==='ch';
 document.documentElement.dataset.mode=MODE;
 window.GD=window.GD||{};
 const GG=()=>{const n=GEN();return n<9?GD[n]||null:null};
@@ -979,7 +980,7 @@ function start(){
   document.addEventListener('change',update);
   document.addEventListener('input',e=>{if(e.target.type==='number')update()});
   btInit();
-  let m0='g9'; try{m0=localStorage.getItem('mode')||'g9'}catch(e){}
+  let m0='ch'; try{m0=localStorage.getItem('mode')||'ch'}catch(e){}
   const qm=new URLSearchParams(location.search).get('mode'); if(qm)m0=qm;
   setMode(m0,!qm);
   const msw=$('modesw'); if(msw)msw.addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(b)setMode(b.dataset.m)});
