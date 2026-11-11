@@ -4,6 +4,39 @@ let back=null,prevFocus=null,sortKey='p',sortDir=-1,moves=[];
 const CAT=['물리','특수','변화'];
 const STN=['HP','공격','방어','특공','특방','스피드'];
 function barColor(v){return v>=130?'#2aa876':v>=100?'#5bb552':v>=70?'#d9b200':v>=50?'#e8862a':'#d9544d'}
+const metaCbs=[];
+function mFmt(){try{return localStorage.getItem('metaFmt')==='vgc'?'vgc':'bss'}catch(e){return 'bss'}}
+function mData(f){return window.META&&window.META[f]||null}
+const mIdx={};
+function mFind(f,i){
+  const d=mData(f); if(!d||!PK[i])return null;
+  if(!mIdx[f]||mIdx[f].d!==d){const m=new Map();(d.mons||[]).forEach(e=>{if(PK[e.i]&&!m.has(PK[e.i][0]))m.set(PK[e.i][0],e)});mIdx[f]={d,m}}
+  return mIdx[f].m.get(PK[i][0])||null;
+}
+function mToggle(){const f=mFmt();return `<div class="mfmt" role="group" aria-label="포맷">${[['bss','싱글'],['vgc','더블']].map(([k,t])=>`<button type="button" data-fmt="${k}" class="${f===k?'on':''}" aria-pressed="${f===k}">${t}</button>`).join('')}</div>`}
+function mSource(f){const d=mData(f);return d?`Smogon 포켓몬 챔피언스 통계 · ${esc(d.month||'')} · 1630+ 기준`:''}
+window.metaUI={fmt:mFmt,data:mData,find:mFind,toggleHTML:mToggle,source:mSource,has:()=>!!(window.META&&(META.bss||META.vgc)),
+  setFmt(f){try{localStorage.setItem('metaFmt',f)}catch(e){} metaCbs.forEach(c=>c())},onChange(c){metaCbs.push(c)}};
+function mRows(a){const top=Math.max(...a.map(x=>x[1]),1);return a.slice(0,6).map(([n,v])=>`<div class="dx-mr"><span>${esc(n)}</span><div class="dx-bar"><i style="width:${Math.min(100,v/top*100)}%;background:var(--accent)"></i></div><b>${v}%</b></div>`).join('')}
+function metaHTML(i){
+  if(!metaUI.has())return '';
+  const f=mFmt(), d=mData(f), tog=mToggle();
+  let b;
+  if(!d)b='<div class="dx-mn">이 포맷의 실전 데이터가 아직 없어.</div>';
+  else{
+    const e=mFind(f,i);
+    if(!e)b='<div class="dx-mn">이 포맷에선 거의 안 쓰여.</div>';
+    else{
+      const sec=(t,a)=>a&&a.length?`<h4>${t}</h4>${mRows(a)}`:'';
+      const ms=(e.mates||[]).filter(m=>PK[m[0]]).slice(0,8);
+      b=`<div class="dx-mu"><b>${e.rank?e.rank+'위':''}</b> 사용률 ${e.u}%<span> · ${esc(d.month||'')}${d.battles?' · '+Number(d.battles).toLocaleString()+'경기':''}</span></div>
+${sec('자주 쓰는 기술',e.moves)}${sec('도구',e.items)}${sec('특성',e.abilities)}${sec('자주 쓰는 노력치 배분',e.spreads)}
+${ms.length?`<h4>같이 많이 쓰는 포켓몬</h4><div class="dx-mates">${ms.map(([j,v])=>`<button type="button" class="dx-mate" data-mate="${j}">${spr(j,'s').replace(' data-i=',' data-x=')}<span>${esc(PK[j][0])}</span><small>${v}%</small></button>`).join('')}</div>`:''}
+<p class="dx-src">${mSource(f)}</p>`;
+    }
+  }
+  return `<h3>실전 데이터</h3>${tog}${b}`;
+}
 function render(i){
   const p=PK[i], types=ptypes(p), L=LV();
   const ab=p[9].filter((a,k,x)=>x.indexOf(a)===k).map(a=>AB[a]);
@@ -29,6 +62,7 @@ function render(i){
 <div class="dx-body">
 <h3>종족값 · Lv.${L} 실수치</h3>${st}
 <h3>특성</h3><div class="dx-ab">${ab.map(a=>`<span>${esc(a)}</span>`).join('')||'<span>없음</span>'}</div>
+<div id="dx-meta">${metaHTML(i)}</div>
 <h3>받는 데미지${one?` (특성 ${esc(one)} 반영)`:''}</h3>${ef||'<div class="dx-ef">약점·저항 없음</div>'}
 <h3>배우는 기술 (${moves.length})</h3>
 <input class="dx-mv-in" type="search" placeholder="기술 이름이나 타입으로 찾기" autocomplete="off">
@@ -63,6 +97,9 @@ function openDex(i){
   back.addEventListener('click',e=>{
     if(e.target===back)return down&&closeDex();
     if(e.target.closest('.dx-x'))return closeDex();
+    const ft=e.target.closest('[data-fmt]');
+    if(ft){metaUI.setFmt(ft.dataset.fmt);return}
+    const mt=e.target.closest('[data-mate]'); if(mt)return openDex(+mt.dataset.mate);
     const th=e.target.closest('th[data-k]');
     if(th){const k=th.dataset.k; if(k===sortKey)sortDir=-sortDir; else{sortKey=k;sortDir=k==='p'?-1:1} return paintMoves()}
     const b=e.target.closest('[data-a]'); if(!b)return;
@@ -78,6 +115,8 @@ function openDex(i){
     if(e.shiftKey&&(a===fi||a===dlg)){la.focus();e.preventDefault()}
     else if(!e.shiftKey&&a===la){fi.focus();e.preventDefault()}
   });
+  const mc=()=>{if(!back||!back.contains(dlg))return;const m=dlg.querySelector('#dx-meta');if(m)m.innerHTML=metaHTML(i)};
+  metaCbs.push(mc);
   dlg.focus();
 }
 function closeDex(quiet){
