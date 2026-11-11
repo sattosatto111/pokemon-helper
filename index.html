@@ -34,16 +34,54 @@
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--hdr2)}
 .wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:linear-gradient(135deg,var(--hdr1),var(--hdr2));color:var(--hdr-ink);box-shadow:0 4px 18px rgba(120,20,20,.25)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:linear-gradient(135deg,var(--hdr1),var(--hdr2));color:var(--hdr-ink);box-shadow:0 4px 18px color-mix(in srgb,var(--hdr2) 40%,transparent)}
 .brand{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:12px 6px}
 h1{font-family:var(--display);font-weight:400;font-size:24px;margin:0;letter-spacing:.01em;display:flex;align-items:center;gap:10px}
 h1::before{content:"";width:22px;height:22px;border-radius:50%;flex:none;
   background:linear-gradient(#fff 0 0) center/100% 3px no-repeat,radial-gradient(circle,#fff 0 3px,var(--hdr2) 3.5px 5px,transparent 5.5px),linear-gradient(var(--hdr2) 0 50%,#fff 50%);
   box-shadow:0 0 0 2px rgba(255,255,255,.9)}
-.hd-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.modesw{display:flex;border:1px solid rgba(255,255,255,.4);border-radius:999px;overflow:hidden}
-.modesw button{background:transparent;color:rgba(255,255,255,.85);border:0;padding:4px 12px;font:inherit;font-size:12.5px;cursor:pointer}
-.modesw button.on{background:#fff;color:var(--accent);font-weight:600}
+.hd-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-width:0;flex:1 1 auto;justify-content:flex-end}
+.modesw{display:flex;gap:4px;flex:1 1 0;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;padding:2px}
+.modesw::-webkit-scrollbar{display:none}
+.modesw button{flex:none;scroll-snap-align:center;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 10px 3px 7px;font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.modesw button i{width:12px;height:12px;border-radius:50%;background:var(--sw);box-shadow:0 0 0 1.5px rgba(255,255,255,.85)}
+.modesw button:hover{background:rgba(255,255,255,.22)}
+.modesw button:focus-visible{outline:2px solid #fff;outline-offset:1px}
+/* Per-mode themes: --L* light, --D* dark; mapped onto the base tokens below */
+html[data-mode=g1]{--L1:#e53935;--L2:#1e4fb8;--LA:#d32f2f;--D1:#a52222;--D2:#1f3f91;--DA:#ff6b6b}
+#modesw [data-m=g1]{--sw:linear-gradient(135deg,#e53935 50%,#1e4fb8 50%)}
+html[data-mode=g1] #modesw [data-m=g1]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g2]{--L1:#a9770a;--L2:#5d6b7d;--LA:#94620a;--D1:#7a5a0a;--D2:#4a5568;--DA:#f2c14e}
+#modesw [data-m=g2]{--sw:linear-gradient(135deg,#a9770a 50%,#5d6b7d 50%)}
+html[data-mode=g2] #modesw [data-m=g2]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g3]{--L1:#c4163a;--L2:#1749a8;--LA:#c4163a;--D1:#8f1030;--D2:#14367a;--DA:#ff6f8a}
+#modesw [data-m=g3]{--sw:linear-gradient(135deg,#c4163a 50%,#1749a8 50%)}
+html[data-mode=g3] #modesw [data-m=g3]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g4]{--L1:#3f6fd6;--L2:#c2468f;--LA:#3f5fcf;--D1:#2a4aa0;--D2:#8f2f6a;--DA:#8fb0ff}
+#modesw [data-m=g4]{--sw:linear-gradient(135deg,#3f6fd6 50%,#c2468f 50%)}
+html[data-mode=g4] #modesw [data-m=g4]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g5]{--L1:#2b2f38;--L2:#6d7585;--LA:#3d4452;--D1:#15181f;--D2:#3c4351;--DA:#c9d1e0}
+#modesw [data-m=g5]{--sw:linear-gradient(135deg,#2b2f38 50%,#6d7585 50%)}
+html[data-mode=g5] #modesw [data-m=g5]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g6]{--L1:#1f6fd0;--L2:#d0293f;--LA:#2a62c4;--D1:#174a94;--D2:#962030;--DA:#6fa8ff}
+#modesw [data-m=g6]{--sw:linear-gradient(135deg,#1f6fd0 50%,#d0293f 50%)}
+html[data-mode=g6] #modesw [data-m=g6]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g7]{--L1:#d9650f;--L2:#6a3fb5;--LA:#c2570c;--D1:#a34a0a;--D2:#47277f;--DA:#ffa45c}
+#modesw [data-m=g7]{--sw:linear-gradient(135deg,#d9650f 50%,#6a3fb5 50%)}
+html[data-mode=g7] #modesw [data-m=g7]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g8]{--L1:#0b8fb3;--L2:#b0206f;--LA:#0b7f9e;--D1:#0a6682;--D2:#7e1650;--DA:#4fd3f2}
+#modesw [data-m=g8]{--sw:linear-gradient(135deg,#0b8fb3 50%,#b0206f 50%)}
+html[data-mode=g8] #modesw [data-m=g8]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=g9]{--L1:#d8322b;--L2:#6a35c9;--LA:#c42b3a;--D1:#a02020;--D2:#4b2596;--DA:#ff7a7a}
+#modesw [data-m=g9]{--sw:linear-gradient(135deg,#d8322b 50%,#6a35c9 50%)}
+html[data-mode=g9] #modesw [data-m=g9]{background:#fff;color:var(--hdr2);font-weight:700}
+html[data-mode=ch]{--L1:#14224a;--L2:#8a6a1c;--LA:#8a6a1c;--D1:#0b1230;--D2:#5f4a12;--DA:#f0c35a}
+#modesw [data-m=ch]{--sw:linear-gradient(135deg,#14224a 50%,#8a6a1c 50%)}
+html[data-mode=ch] #modesw [data-m=ch]{background:#fff;color:var(--hdr2);font-weight:700}
+html:is([data-mode^=g],[data-mode=ch]){--hdr1:var(--L1);--hdr2:var(--L2);--accent:var(--LA)}
+@media (prefers-color-scheme: dark){ html:is([data-mode^=g],[data-mode=ch]):not([data-theme="light"]){--hdr1:var(--D1);--hdr2:var(--D2);--accent:var(--DA)} }
+html:is([data-mode^=g],[data-mode=ch])[data-theme="dark"]{--hdr1:var(--D1);--hdr2:var(--D2);--accent:var(--DA)}
+@media (prefers-reduced-motion: no-preference){ .top,body::before,nav a,.card{transition:background-color .35s,color .35s,box-shadow .35s} }
 html[data-mode=ch] .gen9,html[data-mode=ch] #lv{display:none!important}
 html:not([data-mode=ch]) #ch-note{display:none}
 html:not([data-mode=g9]) :is(label.f:has(>select[id$="-tera"]),#v-battle p.note.gen9,select.tera){display:none!important}
@@ -150,16 +188,20 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
   nav a.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);box-shadow:none}
   .top{box-shadow:0 2px 10px rgba(120,20,20,.2)}
   .brand{padding-block:10px}
+  .hd-r{flex-basis:100%;justify-content:space-between}
+  .modesw{flex-basis:100%;flex-wrap:wrap;overflow:visible}
+  .lv{margin-left:auto}
+  nav a{font-size:10.5px;padding-inline:0}
 }
 @media (max-width:420px){ .big{font-size:28px} .grp{grid-template-columns:52px 1fr} .spr.l{width:64px;height:64px} }
 </style>
 
 <header class="top"><div class="wrap">
   <div class="brand"><h1>배틀 도감</h1>
-    <div class="hd-r"><div class="modesw" id="modesw" role="group" aria-label="규칙"><button type="button" data-m="9세대">9세대</button><button type="button" data-m="챔피언스">챔피언스</button></div>
+    <div class="hd-r"><div class="modesw" id="modesw" role="group" aria-label="세대 선택"><button type="button" data-m="g1" title="레드·그린"><i aria-hidden="true"></i>1세대</button><button type="button" data-m="g2" title="골드·실버"><i aria-hidden="true"></i>2세대</button><button type="button" data-m="g3" title="루비·사파이어"><i aria-hidden="true"></i>3세대</button><button type="button" data-m="g4" title="디아루가·펄기아 세대(DP)"><i aria-hidden="true"></i>4세대</button><button type="button" data-m="g5" title="블랙·화이트"><i aria-hidden="true"></i>5세대</button><button type="button" data-m="g6" title="X·Y"><i aria-hidden="true"></i>6세대</button><button type="button" data-m="g7" title="썬·문"><i aria-hidden="true"></i>7세대</button><button type="button" data-m="g8" title="소드·실드"><i aria-hidden="true"></i>8세대</button><button type="button" data-m="g9" title="스칼렛·바이올렛"><i aria-hidden="true"></i>9세대</button><button type="button" data-m="ch" title="Pokémon Champions"><i aria-hidden="true"></i>챔피언스</button></div>
     <label class="lv"><span id="lv-t">9세대 기준 · 레벨</span> <input type="number" id="lv" min="1" max="100" value="50"></label></div></div>
   <nav id="nav">
-    <a href="#battle"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4 20 4 20 9.5 9 20.5 3.5 20.5 3.5 15zM4 20l4-4M14 10l-4 4"/></svg><span>대전</span></a><a href="#types"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg><span>상성</span></a><a href="#damage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13h6l-1 8 8-10h-6z"/></svg><span>데미지</span></a><a href="#speed"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4M10 3h4"/></svg><span>스피드</span></a><a href="#party"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5M15.5 12h5"/><circle cx="12" cy="12" r="3"/></svg><span>파티</span></a><a href="#coverage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>공격 범위</span></a>
+    <a href="#battle"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4 20 4 20 9.5 9 20.5 3.5 20.5 3.5 15zM4 20l4-4M14 10l-4 4"/></svg><span>대전</span></a><a href="#types"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg><span>상성</span></a><a href="#damage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13h6l-1 8 8-10h-6z"/></svg><span>데미지</span></a><a href="#speed"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4M10 3h4"/></svg><span>스피드</span></a><a href="#party"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5M15.5 12h5"/><circle cx="12" cy="12" r="3"/></svg><span>파티</span></a><a href="#coverage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>공격 범위</span></a><a href="#meta"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>메타</span></a>
   </nav>
 </div></header>
 
