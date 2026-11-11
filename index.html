@@ -388,7 +388,8 @@ const sp2ev=n=>n<=0?0:8*n-4, ev2sp=e=>e<=0?0:Math.min(32,Math.round((e+4)/8));
 const evIn=(id,d)=>CH()?sp2ev(num(id,0,32,d||0)):GEN()<=2?num(id,0,65535,d||0):num(id,0,252,d||0);
 const ivIn=id=>CH()?31:GEN()<=2?num(id,0,15,15):num(id,0,31,31);
 const tIn=id=>MODE==='g9'?+$(id).value:-1;
-const evCols=()=>CH()?['0','32','32↑']:['무보정','252','252↑'];
+const evCols=()=>CH()?['0','32','32↑']:GEN()<=2?['DV15·노력0','DV15·노력 최대','']:['무보정','252','252↑'];
+const evMax=()=>GEN()<=2?65535:252;
 function eff(t,types,ab){
   const C=chart(); let m=1; for(const d of types) m*=C[t][d];
   if(ab&&GEN()>=3){ const d=DAB[ab]; if(d&&t in d) m*=d[t];
@@ -408,7 +409,7 @@ const rk=r=>r>=0?(2+r)/2:2/(2-r);
 const mtxt=m=>m===.5?'½':m===.25?'¼':m===.125?'⅛':String(+m.toFixed(2));
 
 /* ---------- 검색 입력 ---------- */
-function combo(input,names,onPick,icons,render){
+function combo(input,names,onPick,icons,render,ok){
   const list=document.createElement('ul'); list.className='list'; list.hidden=true; input.parentNode.appendChild(list);
   let hits=[],cur=-1,ci=-1;
   const na=document.createElement('small'); na.className='na'; na.hidden=true; na.textContent='이 세대엔 없어'; input.parentNode.appendChild(na);
@@ -419,7 +420,7 @@ function combo(input,names,onPick,icons,render){
     const q=input.value.trim().toLowerCase(); setIc(-1); na.hidden=true;
     if(!q){list.hidden=true;ci=-1;onPick(-1);return}
     const a=[],b=[];
-    for(let i=0;i<names.length;i++){if(icons&&!avail(i))continue;const k=names[i].toLowerCase().indexOf(q); if(k===0)a.push(i); else if(k>0&&b.length<40)b.push(i)}
+    for(let i=0;i<names.length;i++){if(icons&&!avail(i))continue;if(ok&&!ok(i))continue;const k=names[i].toLowerCase().indexOf(q); if(k===0)a.push(i); else if(k>0&&b.length<40)b.push(i)}
     hits=a.concat(b).slice(0,40); cur=hits.length?0:-1;
     list.innerHTML=hits.length?hits.map(i=>`<li data-i="${i}">${icons?spr(i):''}${render?render(i):esc(names[i])}</li>`).join(''):'<li class="none">검색 결과가 없어</li>';
     paint(); list.hidden=false;
@@ -468,7 +469,7 @@ function rTypes(){
   const p=PK[sel.ty]; $('ty-statcard').hidden=!p; if(!p)return;
   const L=LV(), lab=['HP','공격','방어','특공','특방','스피드'];
   $('ty-stats').innerHTML=`<table><tr><th class="l">능력</th><th>종족값</th><th class="l" style="width:40%"></th><th>${evCols()[0]}</th><th>${evCols()[1]}</th><th>${evCols()[2]}</th></tr>`+
-    lab.map((n,k)=>{const b=pS(sel.ty)[k];const f=k===0?[hpStat(b,0,L),hpStat(b,252,L),'-']:[stat(b,0,1,L),stat(b,252,1,L),stat(b,252,1.1,L)];
+    lab.map((n,k)=>{if(GEN()===1&&k===4)return '';if(GEN()===1&&k===3)n='특수';const b=pS(sel.ty)[k],M=evMax(),old=GEN()<=2;const f=k===0?[hpStat(b,0,L),hpStat(b,M,L),'-']:[stat(b,0,1,L),stat(b,M,1,L),old?'-':stat(b,M,1.1,L)];
       return `<tr><td class="l">${n}</td><td>${b}</td><td class="l"><div class="bar" style="width:${Math.min(100,b/2)}%"></div></td><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td></tr>`}).join('')+
     `<tr><td class="l">합계</td><td>${pS(sel.ty).reduce((a,b)=>a+b,0)}</td><td colspan="4"></td></tr></table>`;
 }
@@ -495,6 +496,13 @@ const SKIN={'프리즈스킨':14,'스카이스킨':2,'페어리스킨':17,'일�
 const PINCH={'맹화':9,'급류':10,'심록':11,'벌레의알림':6};
 const TERR={elec:12,grass:11,psy:13};
 let mvBox;
+/* 기술이 그 세대에 있는지: 1~8세대는 누군가 배우는 기술 + (7세대 Z기술 / 8세대 다이맥스기) */
+const ZMV=mset('1000만볼트 다이내믹풀플레임 라이징랜드오버 라이트닝서프라이드 러블리스타임팩트 레이디얼에지스톰 레이징지오프리즈 맥시멈사이브레이커 무한암야로의유인 문라이트블래스터 바다의심포니 블랙홀이클립스 블룸샤인엑스트라 섀도애로우즈스트라이크 선샤인스매셔 슈퍼아쿠아토네이도 스파킹기가볼트 알로라의수호자 애시드포이즌딜리트 얼티메이트드래곤번 오리진즈슈퍼노바 울트라대시어택 월즈엔드폴 전력무쌍격렬권 절대포식회전참 진심의공격 초월나선연격 칠성탈혼퇴 투닥투닥프렌드타임 파이널다이브클래시 피카피카썬더 필살피카슛 하늘을태우는멸망의빛 하이퍼다크크러셔 브레이징소울비트'),
+  MAXMV=/^다이(그래스|너클|드라군|록|번|사이코|스트림|스틸|썬더|아이스|아크|애시드|어스|어택|웜|제트|페어리|할로우)$/, MVLEARN={};
+function mvOK(j){const G=GEN(); if(G>=9)return true; const n=MV[j][0];
+  if(G===7&&ZMV.has(n))return true; if(G===8&&MAXMV.test(n))return true; if(n==='발버둥')return true;
+  let S=MVLEARN[G]; if(!S){S=MVLEARN[G]=new Set(); const l=GG()&&GG().learn; if(l)for(const k in l)l[k].forEach(x=>S.add(x))}
+  return S.has(j)}
 function setMove(i,quiet){const m=MV[i]; mvBox.set(i); $('mv-t').value=mvT(i); $('mv-c').value=mvC(i); $('mv-p').value=mvP(i)||60; $('mv-h').value=HITS[m[0]]||1; if(!quiet)update()}
 function koText(rolls,hp){
   const N=rolls.length, mn=rolls[0], mx=rolls[N-1]; if(mx<=0)return '데미지가 안 들어가';
@@ -950,7 +958,7 @@ function start(){
   ['ty-tera','da-tera','dd-tera'].forEach(i=>$(i).innerHTML=teraOpts);
   $('mv-t').innerHTML=typeOpts;
   for(const k in sel) box[k]=combo($(k+'-pk'),NAMES,i=>{ demo[k]=false; if(i<0){ if(sel[k]>=0&&k!=='ty'){sel[k]=-1;setPk(k,-1)} return } setPk(k,i) },true);
-  mvBox=combo($('mv'),MNAMES,i=>{ if(i>=0)setMove(i) },false,i=>{const m=MV[i]; return `${chip(m[1])}<span class="mvn">${esc(m[0])}</span><span class="mvm">${m[2]?(m[3]?'특수':'물리')+' '+m[2]:'변화'}</span>`});
+  mvBox=combo($('mv'),MNAMES,i=>{ if(i>=0)setMove(i) },false,i=>{const m=MV[i],p=mvP(i),c=mvC(i); return `${chip(mvT(i))}<span class="mvn">${esc(m[0])}</span><span class="mvm">${c===2?'변화':(c?'특수':'물리')+(p?' '+p:'')}</span>`},mvOK);
   $('dm-rank').addEventListener('click',e=>{const r=e.target.closest('tr[data-m]');if(r)setMove(+r.dataset.m)});
   $('pt-slots').innerHTML=party.map((_,k)=>`<div class="combo"><input type="text" id="pt-${k}" placeholder="${k+1}번 포켓몬" autocomplete="off"></div>`).join('');
   party.forEach((_,k)=>ptBox[k]=combo($('pt-'+k),NAMES,i=>{party[k]=i;partyDemo=false;saveParty();update()},true));
