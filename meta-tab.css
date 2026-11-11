@@ -28,7 +28,19 @@
 .mt-dexbtn,.mt-more{margin-top:12px;padding:8px 16px;border-radius:10px;border:1px solid var(--accent);background:var(--panel);color:var(--accent);font-weight:600;cursor:pointer}
 .mt-more{display:block;width:100%}
 .mt-dexbtn:hover,.mt-more:hover{background:var(--accent);color:#fff}
+#v-meta .mt-src{flex-wrap:wrap}
+.mt-ss{display:block;margin:4px 0 8px;font-size:13px;color:var(--muted)}
+.mt-ss select{background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font:inherit;font-size:13px;margin-left:4px}
+.mt-ho{grid-template-columns:28px 44px minmax(0,1fr)}
+.mt-nospr{display:block;width:40px;height:40px;border-radius:50%;background:var(--field)}
+.mt-sub{color:var(--muted);font-weight:400;font-size:11.5px}
+.mt-mr span small{margin-left:2px}
+.mt-warn{color:var(--accent);font-weight:600}
+.mt-attr{margin-top:12px;font-size:12px}
+.mt-attr a{color:var(--accent)}
+span.mt-mate{cursor:default}
 @media(max-width:560px){
+  .mt-ho{grid-template-columns:22px 40px minmax(0,1fr)}
   .mt-h{grid-template-columns:22px 40px minmax(0,1fr) 64px;gap:6px}
   .mt-pv{display:none}
   .mt-mr{grid-template-columns:minmax(0,1fr) 60px 44px}
