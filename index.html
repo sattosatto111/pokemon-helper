@@ -3,9 +3,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
-<title>포켓몬 배틀 도우미</title>
+<title>배틀 도감</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
 /* Layout: sticky tab bar on top, one working column (max 920px); each tab is input cards above, result card below. */
 :root{
@@ -14,8 +14,8 @@
   --hdr1:#ef4444; --hdr2:#c0262d; --hdr-ink:#ffffff;
   --weak:#c62828; --weak-bg:#fde4e1; --res:#13915a; --res-bg:#d9f4e6; --imm-bg:#e4e7ef;
   --chip-ink:#ffffff; --shadow:0 1px 2px rgba(16,24,40,.05),0 6px 20px rgba(16,24,40,.06);
-  --display:"Black Han Sans","IBM Plex Sans KR",system-ui,sans-serif;
-  --body:"IBM Plex Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  --display:"Jua","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  --body:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#0e1117; --panel:#171b24; --field:#1e2330; --ink:#e9ecf3; --muted:#9aa3b5; --line:#2a3040;
@@ -43,7 +43,8 @@ h1::before{content:"";width:22px;height:22px;border-radius:50%;flex:none;
 .lv input{width:62px;background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.35)!important;color:#fff!important;padding:4px 8px!important}
 nav{display:flex;gap:6px;overflow-x:auto;padding-block:6px 12px;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
-nav a{flex:none;padding:6px 14px;color:rgba(255,255,255,.85);text-decoration:none;font-weight:600;font-size:14px;border-radius:999px;transition:background .15s}
+nav a{flex:none;padding:6px 14px;color:rgba(255,255,255,.85);text-decoration:none;font-weight:700;font-size:14px;border-radius:999px;transition:background .15s}
+nav a svg{display:none}
 nav a:hover{background:rgba(255,255,255,.14)}
 nav a.on{color:var(--hdr2);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 main{padding-block:20px 48px;display:flex;flex-direction:column;gap:16px}
@@ -117,14 +118,36 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
 .vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;text-align:center}
 .vs .mon{display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:600;min-width:0}
 .vs .x{font-family:var(--display);color:var(--muted);font-size:18px}
+.pbg{display:inline-flex;border-radius:14px;padding:2px;background:var(--g);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.vs .mon{padding:10px 6px;border-radius:16px;background:var(--g)}
+.vs .mon>span{background:var(--panel);padding:0 10px;border-radius:999px;font-size:14px}
+.spr.art{width:112px;height:112px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25))}
+@media (prefers-reduced-motion: no-preference){
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  section:not([hidden])>.card,section:not([hidden])>.cols>.card,#bt-out>.card{animation:rise .35s ease both}
+  .spr{transition:transform .2s cubic-bezier(.3,1.8,.5,1)}
+  .pbg:hover .spr,.vs .mon:hover .spr,.list li:hover .spr{transform:translateY(-4px) scale(1.08)}
+  button,nav a{transition:transform .1s,background .15s,opacity .12s}
+  button:active,nav a:active{transform:scale(.94)}
+}
+@media (max-width:640px){
+  main{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:20;gap:0;overflow:visible;padding:6px max(6px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-right,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 18px rgba(0,0,0,.12)}
+  nav a{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;font-size:11px;border-radius:12px;color:var(--muted);white-space:nowrap}
+  nav a svg{display:block}
+  nav a:hover{background:none}
+  nav a.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);box-shadow:none}
+  .top{box-shadow:0 2px 10px rgba(120,20,20,.2)}
+  .brand{padding-block:10px}
+}
 @media (max-width:420px){ .big{font-size:28px} .grp{grid-template-columns:52px 1fr} .spr.l{width:64px;height:64px} }
 </style>
 
 <header class="top"><div class="wrap">
-  <div class="brand"><h1>배틀 도우미</h1>
+  <div class="brand"><h1>배틀 도감</h1>
     <label class="lv">9세대 기준 · 레벨 <input type="number" id="lv" min="1" max="100" value="50"></label></div>
   <nav id="nav">
-    <a href="#battle">대전</a><a href="#types">상성</a><a href="#damage">데미지</a><a href="#speed">스피드</a><a href="#party">파티</a><a href="#coverage">공격 범위</a>
+    <a href="#battle"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4 20 4 20 9.5 9 20.5 3.5 20.5 3.5 15zM4 20l4-4M14 10l-4 4"/></svg><span>대전</span></a><a href="#types"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg><span>상성</span></a><a href="#damage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13h6l-1 8 8-10h-6z"/></svg><span>데미지</span></a><a href="#speed"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4M10 3h4"/></svg><span>스피드</span></a><a href="#party"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5M15.5 12h5"/><circle cx="12" cy="12" r="3"/></svg><span>파티</span></a><a href="#coverage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>공격 범위</span></a>
   </nav>
 </div></header>
 
@@ -268,6 +291,8 @@ const chip=t=>`<span class="chip" style="background:${TC[t]}">${TN[t]}</span>`;
 const SPR_URL='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
 const sprSrc=i=>typeof SPR!=='undefined'&&SPR[i]>0?SPR_URL+SPR[i]+'.png':'';
 const spr=(i,c='')=>{const s=sprSrc(i);return s?`<img class="spr ${c}" src="${s}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${SPR_URL}other/official-artwork/${SPR[i]}.png'">`:''};
+const art=(i,c='')=>SPR[i]?`<img class="spr art ${c}" src="${SPR_URL}other/official-artwork/${SPR[i]}.png" alt="" loading="lazy" onerror="this.onerror=null;this.src=sprSrc(${i})">`:spr(i,c);
+const tbg=p=>{const t=p[2]>=0?[p[1],p[2]]:[p[1]];const a=TC[t[0]],b=TC[t[t.length-1]];return `--g:linear-gradient(135deg,color-mix(in srgb,${a} 38%,var(--panel)),color-mix(in srgb,${b} 18%,var(--panel)))`};
 const ptypes=p=>p[2]>=0?[p[1],p[2]]:[p[1]];
 const LV=()=>Math.min(100,Math.max(1,parseInt($('lv').value)||50));
 const num=(id,lo,hi,d)=>{const v=parseInt($(id).value);return isNaN(v)?d:Math.min(hi,Math.max(lo,v))};
@@ -319,7 +344,7 @@ const rankOpts=[6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6].map(r=>`<option value="${r}"${r
 const typeOpts=TN.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
 const teraOpts='<option value="-1">없음</option>'+typeOpts;
 const sel={ty:-1,da:-1,dd:-1,sa:-1,sb:-1}, box={};
-function info(p,i){return spr(i)+ptypes(p).map(chip).join('')+`<span>H${p[3]} A${p[4]} B${p[5]} C${p[6]} D${p[7]} S${p[8]}</span>`}
+function info(p,i){return `<span class="pbg" style="${tbg(p)}">${spr(i)}</span>`+ptypes(p).map(chip).join('')+`<span>H${p[3]} A${p[4]} B${p[5]} C${p[6]} D${p[7]} S${p[8]}</span>`}
 function setPk(pre,i,quiet){
   sel[pre]=i; const p=PK[i];
   const ab=$(pre+'-ab'); if(ab) ab.innerHTML=p?p[9].map(a=>`<option>${esc(AB[a])}</option>`).join('')+'<option value="">반영 안 함</option>':'<option value="">없음</option>';
@@ -556,7 +581,7 @@ function rBattle(){
     const v=mine.best>theirs.best?['g','상성 유리']:mine.best<theirs.best?['b','상성 불리']:['n','상성 비슷'];
     const sa=a.p[8], sb=b.p[8];
     cards.push(`<div class="card">
-      <div class="vs"><div class="mon">${spr(a.i,'l')}<span>${esc(a.p[0])}</span></div><div class="x">VS</div><div class="mon">${spr(b.i,'l')}<span>${esc(b.p[0])}</span></div></div>
+      <div class="vs"><div class="mon" style="${tbg(a.p)}">${art(a.i)}<span>${esc(a.p[0])}</span></div><div class="x">VS</div><div class="mon" style="${tbg(b.p)}">${art(b.i)}<span>${esc(b.p[0])}</span></div></div>
       <div style="text-align:center"><span class="vt ${v[0]}">${v[1]}</span></div>
       <div class="mrow"><b>내가 때리면</b><div class="chips">${btChips(mine.st,true)}</div>
         <b>그 외 약점기</b><div class="chips">${mine.cov.length?btChips(mine.cov,true):'<span class="sub">배우는 기술 중엔 없어</span>'}</div></div>
