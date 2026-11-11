@@ -2,6 +2,7 @@
 <html lang="ko">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="stylesheet" href="dex.css"><script src="dex.js" defer></script>
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <title>포켓몬 배틀 도우미</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -267,7 +268,7 @@ const chip=t=>`<span class="chip" style="background:${TC[t]}">${TN[t]}</span>`;
 /* 포켓몬 이미지: PokeAPI 스프라이트, 없으면 공식 일러스트로 대체 */
 const SPR_URL='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
 const sprSrc=i=>typeof SPR!=='undefined'&&SPR[i]>0?SPR_URL+SPR[i]+'.png':'';
-const spr=(i,c='')=>{const s=sprSrc(i);return s?`<img class="spr ${c}" src="${s}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${SPR_URL}other/official-artwork/${SPR[i]}.png'">`:''};
+const spr=(i,c='')=>{const s=sprSrc(i);return s?`<img class="spr ${c}" data-i="${i}" src="${s}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${SPR_URL}other/official-artwork/${SPR[i]}.png'">`:''};
 const ptypes=p=>p[2]>=0?[p[1],p[2]]:[p[1]];
 const LV=()=>Math.min(100,Math.max(1,parseInt($('lv').value)||50));
 const num=(id,lo,hi,d)=>{const v=parseInt($(id).value);return isNaN(v)?d:Math.min(hi,Math.max(lo,v))};
