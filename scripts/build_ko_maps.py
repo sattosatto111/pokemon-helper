@@ -3,7 +3,7 @@
 Run: python -I -X utf8 scripts/build_ko_maps.py   (stdlib only; reuses scripts/build_meta.py helpers)
 Optional: pass rankings JSON files (saved from /api/rankings) to report unmapped species; nothing from them is stored.
 """
-import json, os, re, sys
+import json, os, re, sys, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_meta as bm
 
@@ -16,6 +16,29 @@ EXTRA = {"Maushold-Four": "maushold-family-of-four", "Squawkabilly-Yellow": "squ
          "Lycanroc-Dusk": "lycanroc-dusk", "Lycanroc-Midnight": "lycanroc-midnight",
          "Toxtricity-Low-Key": "toxtricity-low-key", "Aegislash-Blade": "aegislash-blade",
          "Mimikyu-Busted": "mimikyu-busted", "Morpeko": "morpeko-full-belly"}
+
+RANK = "https://championsbattledata.com/api/rankings?format=%s&limit=400%s"
+
+def roster_ids():
+    """Union of showdownIds across Singles/Doubles x current + seasons M1..M7 (only the id set is kept)."""
+    ids = set()
+    for fmt in ("Singles", "Doubles"):
+        for se in ("", "&season=M1", "&season=M2", "&season=M3", "&season=M4", "&season=M5", "&season=M6", "&season=M7"):
+            req = urllib.request.Request(RANK % (fmt, se), headers=bm.UA)
+            d = json.loads(urllib.request.urlopen(req, timeout=120).read().decode("utf-8"))
+            ids |= {r["showdownId"] for r in d.get("rankings", [])}
+    return ids
+
+def build_roster(mon):
+    src = open(os.path.join(bm.ROOT, "index.html"), encoding="utf-8").read()
+    pk = json.loads(re.search(r"^const PK=(\[.*\]);?\s*$", src, re.M).group(1))
+    base = lambda i: pk[i][0].split(" (")[0]
+    ids = roster_ids()
+    ros = {mon[bm.norm(s)] for s in ids if bm.norm(s) in mon}
+    print("roster ids", len(ids), "unmapped", sorted(s for s in ids if bm.norm(s) not in mon))
+    names = {base(i) for i in ros}
+    ros |= {i for i, p in enumerate(pk) if p[0].startswith(base(i) + " (메가") and base(i) in names}
+    return sorted(ros)
 
 def main():
     id2idx = bm.load_app()
@@ -36,10 +59,11 @@ def main():
     mv = bm.names("moves.csv", "move_names.csv", "move_id")
     it = bm.names("items.csv", "item_names.csv", "item_id")
     ab = bm.names("abilities.csv", "ability_names.csv", "ability_id")
-    out = {"mon": mon, "move": mv, "item": it, "ability": ab, "nature": bm.NATURES}
+    roster = build_roster(mon)
+    out = {"mon": mon, "roster": roster, "move": mv, "item": it, "ability": ab, "nature": bm.NATURES}
     p = os.path.join(bm.ROOT, "meta", "ko.js")
     with open(p, "w", encoding="utf-8", newline="\n") as f:
-        f.write("window.KO=%s;" % json.dumps(out, ensure_ascii=False, separators=(",", ":")))
+        f.write("window.KO=%s;window.dispatchEvent(new Event('koloaded'));" % json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     print({k: len(v) for k, v in out.items()}, os.path.getsize(p), "bytes")
     # coverage check against saved API responses (not stored)
     miss = {"mon": set(), "move": set(), "item": set(), "ability": set()}
