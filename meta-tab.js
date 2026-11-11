@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 const M=()=>window.metaUI;
-const st={q:'',t:-1,n:50,open:-1,src:/[?&]mt=team/.test(location.search)?'team':'off',tseason:'',tn:20,season:'Current',seasons:['Current','M7','M6','M5','M4','M3','M2','M1'],notice:'',oo:''};
+const st={q:'',t:-1,n:50,open:-1,src:/[?&]mt=team/.test(location.search)?'team':'off',tseason:'',tn:20,season:'Current',seasons:['Current','M7','M6','M5','M4','M3','M2','M1'],notice:'',oo:'',tx:new Set(),txInit:/[?&]mtx=1/.test(location.search)};
 // ---- 공식 랭크 데이터 (Pokémon Champions Battle Data API) ----
 const CBD='https://championsbattledata.com', TTL=6*3600e3, TMO=8000;
 const nz=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
@@ -28,6 +28,18 @@ const seasonLabel=s=>{
 const KOm=(t,n)=>{const k=window.KO;return k&&k[t]&&(k[t][nz(n)]||k[t][n])||n};
 const monIdx=n=>{const k=window.KO;const v=k&&k.mon?k.mon[nz(n)]:undefined;return v!==undefined&&PK[v]?v:-1};
 const STAT_KO={'Attack':'공격','Defense':'방어','Sp. Atk':'특공','Sp. Def':'특방','Speed':'스피드','HP':'HP'};
+const pc=r=>r.percentage_value!=null?+r.percentage_value:parseFloat(r.percentage)||0;
+function parseBD(d){
+  const R=d.rows||[], g=c=>R.filter(r=>r.category===c);
+  const mv=g('move').map(r=>({n:KOm('move',r.name),v:pc(r)}));
+  const it=g('held_item').map(r=>({n:KOm('item',r.name),v:pc(r)}));
+  const ab=g('ability').map(r=>({n:KOm('ability',r.name),v:pc(r)}));
+  const na=g('stat_alignment').map(r=>({n:(window.KO&&KO.nature&&KO.nature[r.name])||r.name,v:pc(r),
+    s:r.stat_up&&r.stat_down?`↑${STAT_KO[r.stat_up]||r.stat_up} ↓${STAT_KO[r.stat_down]||r.stat_down}`:'(무보정)'}));
+  const sp=g('stat_points').map(r=>{const v=(a,b)=>r[a]!==undefined&&r[a]!==''?r[a]:(r[b]!==undefined&&r[b]!==''?r[b]:0);
+    return {n:`H${v('hp_points')} A${v('attack_points')} B${v('defense_points')} C${v('sp_atk_points','sp_attack_points')} D${v('sp_def_points','sp_defense_points')} S${v('speed_points')}`,v:pc(r)}});
+  return {g,mv,it,ab,na,sp};
+}
 function loadBattle(o){
   const key=apiFmt()+'/'+o.slug+'/'+st.season;
   if(bd[key])return bd[key];
@@ -63,16 +75,8 @@ function odetail(o){
   const e=loadBattle(o), dex=o.i>=0?`<button type="button" class="mt-dexbtn" data-dex="${o.i}">도감 열기</button>`:'';
   if(e.s==='load')return '<div class="mt-det"><div class="sub">불러오는 중…</div></div>';
   if(e.s==='err')return `<div class="mt-det"><div class="sub">이 포켓몬 배틀 데이터를 못 불러왔어.</div>${dex}</div>`;
-  const R=e.d.rows||[], g=c=>R.filter(r=>r.category===c);
-  const pc=r=>r.percentage_value!=null?+r.percentage_value:parseFloat(r.percentage)||0;
-  const sec=(t,a)=>a.length?`<h4>${t}</h4>${orows(a)}`:'';
-  const mv=g('move').slice(0,8).map(r=>({n:KOm('move',r.name),v:pc(r)}));
-  const it=g('held_item').slice(0,6).map(r=>({n:KOm('item',r.name),v:pc(r)}));
-  const ab=g('ability').slice(0,3).map(r=>({n:KOm('ability',r.name),v:pc(r)}));
-  const na=g('stat_alignment').slice(0,5).map(r=>({n:(window.KO&&KO.nature&&KO.nature[r.name])||r.name,v:pc(r),
-    s:r.stat_up&&r.stat_down?`↑${STAT_KO[r.stat_up]||r.stat_up} ↓${STAT_KO[r.stat_down]||r.stat_down}`:'(무보정)'}));
-  const sp=g('stat_points').slice(0,5).map(r=>{const v=(a,b)=>r[a]!==undefined&&r[a]!==''?r[a]:(r[b]!==undefined&&r[b]!==''?r[b]:0);
-    return {n:`H${v('hp_points')} A${v('attack_points')} B${v('defense_points')} C${v('sp_atk_points','sp_attack_points')} D${v('sp_def_points','sp_defense_points')} S${v('speed_points')}`,v:pc(r)}});
+  const P=parseBD(e.d), g=P.g, sec=(t,a)=>a.length?`<h4>${t}</h4>${orows(a)}`:'';
+  const mv=P.mv.slice(0,8), it=P.it.slice(0,6), ab=P.ab.slice(0,3), na=P.na.slice(0,5), sp=P.sp.slice(0,5);
   const tm=g('teammate').slice(0,10).map(r=>({n:r.name,j:monIdx(r.name)}));
   return `<div class="mt-det">${sec('자주 쓰는 기술',mv)}${sec('도구',it)}${sec('특성',ab)}${sec('성격',na)}${sec('스탯 포인트 배분 (H/A/B/C/D/S)',sp)}
 ${tm.length?`<h4>같이 많이 쓰는 포켓몬 <small class="mt-sub">(순위순)</small></h4><div class="mt-mates">${tm.map(t=>t.j>=0?`<button type="button" class="mt-mate" data-dex="${t.j}">${noDi(spr(t.j,'s'))}<span>${esc(PK[t.j][0])}</span></button>`:`<span class="mt-mate"><span>${esc(t.n)}</span></span>`).join('')}</div>`:''}
@@ -132,14 +136,44 @@ function teamEntry(){
 function coreHTML(a,n){
   return `<div class="tm-cores">${a.slice(0,10).map(([ids,c])=>`<div class="tm-core"><span class="tm-sp">${ids.map(i=>`<span class="tm-m">${spr(i,'s')}<small>${esc(PK[i][0])}</small></span>`).join('')}</span><b>${Math.round(c/n*100)}%</b><span class="sub">${c}팀</span></div>`).join('')}</div>`;
 }
+const tb={};
+function tmLoad(i){
+  const key=apiFmt()+'|'+st.season+'|'+i;
+  if(tb[key])return tb[key];
+  const e=tb[key]={s:'load'};
+  rankings().then(d=>{
+    const r=(d.rankings||[]).find(r=>monIdx(r.showdownId||r.name)===i); if(!r)throw new Error('nf');
+    return api(`/api/battle/${apiFmt()}/${encodeURIComponent(r.slug)}${sfx1()}`);
+  }).then(d=>{e.s='ok';e.d=parseBD(d)}).catch(()=>{e.s='err'})
+    .then(()=>{const b=document.getElementById('tm-body');if(b&&tab==='meta'&&st.src==='team')b.innerHTML=teamsHTML()});
+  return e;
+}
+function tmDetail(i,item){
+  const e=tmLoad(i), top=a=>a[0];
+  let h=`<div class="tm-x"><div class="tm-xh">${noDi(spr(i,'s'))}<b>${esc(PK[i][0])}</b><button type="button" class="tm-dex" data-dex="${i}">도감</button></div>
+<div class="tm-xi"><span class="sub">랭커 지닌 물건</span><b>${esc(item)}</b></div>`;
+  if(e.s==='load')return h+'<div class="sub">대표 세팅 불러오는 중…</div></div>';
+  if(e.s==='err'||!e.d)return h+'<div class="sub">대표 세팅을 못 불러왔어</div></div>';
+  const P=e.d, mv=P.mv.slice(0,4), na=top(P.na), sp=top(P.sp), ab=top(P.ab);
+  if(!mv.length&&!na&&!sp&&!ab)return h+'<div class="sub">대표 세팅을 못 불러왔어</div></div>';
+  h+=`<h4>대표 세팅 (공식 배틀 데이터)</h4>${mv.length?orows(mv):''}`;
+  if(na)h+=`<div class="tm-kv"><span class="sub">성격</span><b>${esc(na.n)} <small class="mt-sub">${esc(na.s)}</small></b><small class="mt-sub">${na.v}%</small></div>`;
+  if(sp)h+=`<div class="tm-kv"><span class="sub">스탯 배분</span><b>${esc(sp.n)}</b><small class="mt-sub">${sp.v}%</small></div>`;
+  if(ab)h+=`<div class="tm-kv"><span class="sub">특성</span><b>${esc(ab.n)}</b><small class="mt-sub">${ab.v}%</small></div>`;
+  return h+'<p class="note">기술·성격·배분은 이 포켓몬의 대표 세팅이야 (랭커 본인 세팅은 공개되지 않아)</p></div>';
+}
 function teamsHTML(){
   const x=teamEntry(); if(!x)return '<div class="sub">인기 파티 데이터를 못 불러왔어. 나중에 다시 와줘.</div>';
   const {T,ss,e}=x;
   const sel=`<label class="mt-ss">시즌 <select id="mt-tseason">${ss.map(s=>`<option value="${esc(s)}"${s===st.tseason?' selected':''}>${esc(s)}</option>`).join('')}</select></label>`;
   if(!e)return sel+'<div class="sub">이 시즌·룰 데이터가 없어.</div>';
   const show=e.teams.slice(0,st.tn);
-  const list=show.map((t,k)=>`<div class="tm-team"><div class="tm-hd"><b>${t.rank}위</b><span class="sub">${t.rating!=null?'레이팅 '+t.rating:''}</span><button type="button" class="mt-dexbtn tm-put" data-put="${k}">이 팀 파티에 넣기</button></div>
-<div class="tm-six">${t.mons.map(([i,it])=>`<span class="tm-m">${spr(i,'s')}<small>${esc(PK[i][0])}</small><small class="tm-it">${it>=0?esc(T.items[it]):'-'}</small></span>`).join('')}</div></div>`).join('');
+  if(st.txInit){st.txInit=false;if(show[0])show[0].mons.forEach((_,j)=>st.tx.add('0:'+j))}
+  const list=show.map((t,k)=>{
+    const keys=t.mons.map((_,j)=>k+':'+j), all=keys.every(x=>st.tx.has(x));
+    return `<div class="tm-team"><div class="tm-hd"><b>${t.rank}위</b><span class="sub">${t.rating!=null?'레이팅 '+t.rating:''}</span><button type="button" class="mt-dexbtn tm-all" data-txall="${k}">${all?'팀 전체 접기':'팀 전체 펼치기'}</button><button type="button" class="mt-dexbtn tm-put" data-put="${k}">이 팀 파티에 넣기</button></div>
+<div class="tm-six">${t.mons.map(([i,it],j)=>`<button type="button" class="tm-m${st.tx.has(keys[j])?' on':''}" data-tx="${keys[j]}" aria-expanded="${st.tx.has(keys[j])}">${noDi(spr(i,'s'))}<small>${esc(PK[i][0])}</small><small class="tm-it">${it>=0?esc(T.items[it]):'-'}</small></button>`).join('')}</div>
+${t.mons.map(([i,it],j)=>st.tx.has(keys[j])?tmDetail(i,it>=0?T.items[it]:'-'):'').join('')}</div>`}).join('');
   return `${sel}<p class="sub">${esc(st.tseason)} · 상위 ${e.n}팀 중 · 기준일 ${esc(e.updated)}</p>
 <h3 class="tm-h">자주 쓰는 2마리 조합</h3>${coreHTML(e.cores2,e.n)}
 <h3 class="tm-h">자주 쓰는 3마리 조합</h3>${coreHTML(e.cores3,e.n)}
@@ -192,14 +226,18 @@ ${filtersHTML()}</div>${recCard()}`;
 }
 function bind(el){
   el.addEventListener('input',e=>{if(e.target.id==='mt-q'){st.q=e.target.value;st.n=50;st.open=-1;drawList()}});
-  el.addEventListener('change',e=>{if(e.target.id==='mt-tseason'){st.tseason=e.target.value;st.tn=20;draw();return}
+  el.addEventListener('change',e=>{if(e.target.id==='mt-tseason'){st.tseason=e.target.value;st.tx.clear();st.tn=20;draw();return}
     if(e.target.id==='mt-season'){st.season=e.target.value;st.open=-1;st.n=50;oList=null;draw()}});
   el.addEventListener('click',e=>{
     const g=s=>e.target.closest(s); let b;
-    if(b=g('[data-fmt]')){st.open=-1;st.n=50;oList=null;M().setFmt(b.dataset.fmt);return}
+    if(b=g('[data-fmt]')){st.tx.clear();st.open=-1;st.n=50;oList=null;M().setFmt(b.dataset.fmt);return}
     if(b=g('[data-src]')){st.src=b.dataset.src;st.notice='';st.open=-1;st.n=50;draw();return}
     if(b=g('[data-orow]')){const k=b.dataset.orow;st.open=st.open===k?-1:k;drawList();return}
     if(b=g('[data-ty]')){st.t=+b.dataset.ty;st.n=50;st.open=-1;el.querySelectorAll('[data-ty]').forEach(x=>x.classList.toggle('on',x===b));drawList();return}
+    if(b=g('[data-tx]')){const k=b.dataset.tx;st.tx.has(k)?st.tx.delete(k):st.tx.add(k);document.getElementById('tm-body').innerHTML=teamsHTML();return}
+    if(b=g('[data-txall]')){const x=teamEntry(), t=x&&x.e&&x.e.teams[+b.dataset.txall]; if(!t)return;
+      const ks=t.mons.map((_,j)=>b.dataset.txall+':'+j), on=ks.every(q=>st.tx.has(q));
+      ks.forEach(q=>on?st.tx.delete(q):st.tx.add(q)); document.getElementById('tm-body').innerHTML=teamsHTML();return}
     if(b=g('#tm-more')){st.tn+=20;draw();return}
     if(b=g('[data-put]')){const x=teamEntry(), t=x&&x.e&&x.e.teams[+b.dataset.put]; if(!t)return;
       const ids=[...new Set(t.mons.map(a=>a[0]))].slice(0,6);
