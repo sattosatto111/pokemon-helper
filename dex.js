@@ -65,7 +65,7 @@ function render(i){
   const names=G===1&&!isCh()?['HP','공격','방어','특수','','스피드']:STN;
   base.forEach((b,k)=>{
     if(!names[k])return;
-    const a=k?stat(b,0,1,L):hpStat(b,0,L), e=k?stat(b,252,1,L):hpStat(b,252,L), u=k?stat(b,252,1.1,L):e;
+    const M=G<=2?65535:252, a=k?stat(b,0,1,L):hpStat(b,0,L), e=k?stat(b,M,1,L):hpStat(b,M,L), u=k?stat(b,M,1.1,L):e;
     st+=`<div class="dx-st"><span>${names[k]}</span><b>${b}</b><div class="dx-bar"><i style="width:${Math.min(100,b/200*100)}%;background:${barColor(b)}"></i></div><span class="n">${a}</span><span class="n">${e}</span><span class="n">${old?'':u}</span></div>`;
   });
   st+=`<div class="dx-st"><span>합계</span><b>${tot}</b><span></span><span></span><span></span><span></span></div>`;
