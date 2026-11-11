@@ -2,7 +2,7 @@
 <html lang="ko">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<link rel="stylesheet" href="dex.css"><script src="meta/bss.js" defer></script><script src="meta/vgc.js" defer></script><script src="dex.js" defer></script>
+<link rel="stylesheet" href="dex.css"><script src="meta/bss.js" defer></script><script src="meta/vgc.js" defer></script><script src="dex.js" defer></script><link rel="stylesheet" href="meta-tab.css"><script src="meta-tab.js" defer></script>
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <title>배틀 도감</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -305,7 +305,6 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
     <div><button class="plain" id="pt-clear" type="button">파티 비우기</button></div>
   </div>
   <div class="card"><h2>파티 진단</h2><div id="pt-sum"></div></div>
-  <div class="card"><h2>실전 데이터 추천</h2><div id="pt-meta"></div></div>
   <div class="card"><h2>상성 기반 추천</h2><div id="pt-rec"></div></div>
   <div class="card"><h2>타입별로 받는 배율</h2><div class="tw" id="pt-out"></div>
     <p class="note">특성이 하나뿐인 포켓몬은 그 특성(부유, 저수 등)을 반영했어. 빈 칸은 1배.</p></div>
@@ -315,6 +314,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
   <div class="card"><h2>내 공격 기술 타입 (최대 4개)</h2><div class="chips" id="cv-chips"></div></div>
   <div class="card"><h2>전체 포켓몬 상대로</h2><div id="cv-out"></div></div>
 </section>
+<section id="v-meta" hidden></section>
 
 <p class="note" id="ch-note" style="margin-bottom:6px">챔피언스: 개체값 없음(전부 최대), 노력치 대신 스탯 포인트(총 66, 한 능력치 최대 32), Lv.50, 테라스탈 없음.</p>
 <p class="note">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해. 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 철주먹, 단단한발톱, 옹골찬턱 같은 기술 종류별 특성은 기술 이름으로 구분해서 반영해. 접촉은 접촉하지 않는 물리기만 따로 빼고 나머지 물리기를 접촉으로 보니까 예외가 있을 수 있어.</p>
@@ -794,38 +794,6 @@ function start(){
   route();
 }
 start();
-</script>
-<script>
-/* ---------- 실전 데이터 추천 ---------- */
-function rMeta(){
-  const el=$('pt-meta'); if(!el)return;
-  const M=window.metaUI; if(!M||!M.has()){el.innerHTML='<div class="sub">실전 데이터를 못 불러왔어.</div>';return}
-  const f=M.fmt(), d=M.data(f), tog=M.toggleHTML();
-  if(!d){el.innerHTML=tog+'<div class="sub">이 포맷의 실전 데이터가 아직 없어.</div>';return}
-  const mem=party.filter(i=>i>=0), names=new Set(mem.map(i=>PK[i][0])), sc=new Map();
-  let found=0;
-  mem.forEach(i=>{const e=M.find(f,i); if(!e)return; found++;
-    (e.mates||[]).forEach(([j,pc])=>{const p=PK[j]; if(!p||names.has(p[0]))return;
-      const o=sc.get(p[0])||{i:j,s:0,by:[]}; o.s+=pc; if(!o.by.includes(PK[i][0]))o.by.push(PK[i][0]); sc.set(p[0],o)})});
-  let body;
-  if(!mem.length)body='<div class="sub">파티에 포켓몬을 넣으면 추천해줄게.</div>';
-  else if(!found)body='<div class="sub">파티 포켓몬이 이 포맷 실전 데이터에 없어.</div>';
-  else{
-    const list=[...sc.values()].sort((a,b)=>b.s-a.s).slice(0,8);
-    body=!list.length?'<div class="sub">추천할 만한 포켓몬이 없어.</div>':`<div class="rec">${list.map(o=>{const p=PK[o.i], e=M.find(f,o.i);
-      return `<button type="button" class="rec-i" data-i="${o.i}">${spr(o.i,'s').replace(' data-i=',' data-x=')}<b>${esc(p[0])}</b><span class="chips">${ptypes(p).map(chip).join('')}</span><span class="sub">${e?'사용률 '+e.u+'%':''}</span><span class="sub">같이 많이 쓰는 포켓몬: ${o.by.slice(0,2).map(esc).join(', ')}</span></button>`}).join('')}</div>
-    <p class="note" id="pt-meta-msg">누르면 파티의 빈 칸에 들어가.</p>`;
-  }
-  el.innerHTML=tog+body+`<p class="note">${M.source(f)}</p>`;
-}
-{const base=TABS.party; TABS.party=()=>{base();rMeta()}}
-window.addEventListener('DOMContentLoaded',()=>{if(window.metaUI)window.metaUI.onChange(rMeta);rMeta()});
-$('pt-meta').addEventListener('click',e=>{
-  const t=e.target.closest('[data-fmt]'); if(t){metaUI.setFmt(t.dataset.fmt);return}
-  const b=e.target.closest('button[data-i]'); if(!b)return;
-  const k=party.indexOf(-1), msg=$('pt-meta-msg');
-  if(k<0){if(msg)msg.textContent='파티가 꽉 찼어. 한 칸을 비우고 눌러줘.';return}
-  party[k]=+b.dataset.i; ptBox[k].set(party[k]); partyDemo=false; saveParty(); update()});
 </script>
 <script>
 /* ---------- 파티 보완 추천 ---------- */

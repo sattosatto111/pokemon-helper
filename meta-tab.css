@@ -1,0 +1,32 @@
+#mt-q{width:100%;box-sizing:border-box;margin:8px 0}
+.mt-types{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.mt-types button{padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font-size:12.5px;cursor:pointer}
+.mt-types button.on{background:var(--tc,var(--accent));border-color:var(--tc,var(--accent));color:#fff}
+.mt-row{border-bottom:1px solid var(--line)}
+.mt-h{display:grid;grid-template-columns:28px 44px minmax(0,1.4fr) minmax(70px,1fr) minmax(0,1fr);align-items:center;gap:8px;width:100%;padding:8px 4px;background:none;border:0;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.mt-h:hover,.mt-row.open .mt-h{background:var(--soft)}
+.mt-rk{font-weight:700;color:var(--muted);text-align:center}
+.mt-h .spr.s{width:40px;height:40px}
+.mt-nm{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mt-nm .chips{gap:3px}.mt-nm .chip{font-size:11px;padding:0 7px}
+.mt-us{display:flex;flex-direction:column;gap:3px}
+.mt-bar{display:block;height:7px;border-radius:999px;background:var(--field);overflow:hidden}
+.mt-bar i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.mt-pv{font-size:12px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt-det{padding:6px 8px 14px;background:var(--soft)}
+.mt-det h4{margin:12px 0 4px;font-size:13px;color:var(--muted)}
+.mt-mr{display:grid;grid-template-columns:minmax(0,1fr) 90px 48px;gap:8px;align-items:center;font-size:13px;padding:2px 0}
+.mt-mr b{text-align:right;font-weight:600}
+.mt-mates{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:6px}
+.mt-mate{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);cursor:pointer;font-size:12px}
+.mt-mate:hover{border-color:var(--accent)}
+.mt-mate .spr.s{width:44px;height:44px}
+.mt-mate small{color:var(--muted)}
+.mt-dexbtn,.mt-more{margin-top:12px;padding:8px 16px;border-radius:10px;border:1px solid var(--accent);background:var(--panel);color:var(--accent);font-weight:600;cursor:pointer}
+.mt-more{display:block;width:100%}
+.mt-dexbtn:hover,.mt-more:hover{background:var(--accent);color:#fff}
+@media(max-width:560px){
+  .mt-h{grid-template-columns:22px 40px minmax(0,1fr) 64px;gap:6px}
+  .mt-pv{display:none}
+  .mt-mr{grid-template-columns:minmax(0,1fr) 60px 44px}
+}
