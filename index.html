@@ -212,7 +212,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
 
 <section id="v-battle" hidden>
   <div class="card">
-    <div class="chips"><button type="button" class="plain" id="bt-1">1대1</button><button type="button" class="plain" id="bt-2">2대2</button></div>
+    <div class="chips"><button type="button" class="plain" id="bt-1">1마리씩</button><button type="button" class="plain" id="bt-2">2마리씩</button></div>
     <div class="cols">
       <div><h2 style="margin-bottom:8px">내 포켓몬</h2><div id="bt-m"></div></div>
       <div><h2 style="margin-bottom:8px">상대 포켓몬</h2><div id="bt-o"></div></div>
@@ -880,9 +880,9 @@ function rBattle(){
       <div class="vs"><div class="mon" style="${tbg(a.p,a.i)}">${art(a.i)}<span>${esc(a.p[0])}</span></div><div class="x">VS</div><div class="mon" style="${tbg(b.p,b.i)}">${art(b.i)}<span>${esc(b.p[0])}</span></div></div>
       <div style="text-align:center"><span class="vt ${v[0]}">${v[1]}</span></div>
       <div class="mrow"><b>내 공격</b><div class="chips">${btChips(mine.st,true)}</div>
-        <b>노려볼 견제기</b><div class="chips">${mine.cov.length?btChips(mine.cov,true):'<span class="sub">딱히 없어</span>'}</div></div>
+        <b>노려볼 견제 타입</b><div class="chips">${mine.cov.length?btChips(mine.cov,true):'<span class="sub">딱히 없어</span>'}</div></div>
       <div class="mrow"><b>상대 공격</b><div class="chips">${btChips(theirs.st,false)}</div>
-        <b>경계할 기술</b><div class="chips">${theirs.cov.length?btChips(theirs.cov,false):'<span class="sub">딱히 없어</span>'}</div></div>
+        <b>경계할 타입</b><div class="chips">${theirs.cov.length?btChips(theirs.cov,false):'<span class="sub">딱히 없어</span>'}</div></div>
       <div class="mrow"><b>스피드</b><div class="sub" style="color:var(--ink)">종족값 ${sa} vs ${sb} · ${sa===sb?'동속 (랜덤)':sa>sb?esc(a.p[0])+' 선공':esc(b.p[0])+' 선공'}</div></div>
     </div>`);
   }
@@ -946,7 +946,8 @@ async function setMode(m,noSave){
 }
 Object.assign(window,{setMode,getMode,GEN,CH,eff,pT,pS,pL,pA,avail,mvT,mvP,mvC,typeOK});
 function route(){
-  const h=location.hash.slice(1); tab=TABS[h]?h:'battle';
+  const h=location.hash.slice(1), prev=tab; tab=TABS[h]?h:'battle';
+  if(prev!==tab&&prev)window.scrollTo(0,0);
   for(const k in TABS)$('v-'+k).hidden=k!==tab;
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+tab));
   update();
@@ -1047,7 +1048,9 @@ function recCalc(){
     list.push({i,p,s,imm,res,bst:pS(i).reduce((a,b)=>a+b,0)}) });
   list.sort((a,b)=>b.s-a.s||b.bst-a.bst);
   const seen=new Set(party.filter(i=>i>=0).map(i=>PK[i][0]));  // 데이터에 같은 이름이 중복된 항목이 있어 이름 기준으로 한 번만
-  return {targets,list:list.filter(x=>!seen.has(x.p[0])&&seen.add(x.p[0])).slice(0,8)};
+  const bn=x=>x.p[0].replace(/ \(메가.*$/,'');  // 메가/기본 중복은 점수 높은 쪽만
+  const seenB=new Set([...seen].map(n=>n.replace(/ \(메가.*$/,'')));
+  return {targets,list:list.filter(x=>!seen.has(x.p[0])&&!seenB.has(bn(x))&&seen.add(x.p[0])&&seenB.add(bn(x))).slice(0,8)};
 }
 function rRec(){
   const el=$('pt-rec'), r=recCalc();
