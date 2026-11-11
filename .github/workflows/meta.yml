@@ -5,15 +5,60 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: Update meta data
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
           python-version: "3.x"
       - run: python -I -X utf8 scripts/build_meta.py
+      - name: Validate built data
+        run: |
+          python -I -X utf8 - meta <<'PY'
+          import json, os, re, sys
+          mode = sys.argv[1]
+          errs = []
+          def load(p, prefix):
+              size = os.path.getsize(p)
+              if size < 20 * 1024:
+                  errs.append(f"{p}: {size} bytes < 20 KB")
+              s = open(p, encoding="utf-8").read()
+              if not (s.startswith(prefix) and s.endswith(";")):
+                  errs.append(f"{p}: unexpected prefix/suffix")
+                  return None
+              try:
+                  return json.loads(s[len(prefix):-1])
+              except ValueError as e:
+                  errs.append(f"{p}: JSON parse failed: {e}")
+                  return None
+          if mode == "meta":
+              for k in ("bss", "vgc"):
+                  d = load(f"meta/{k}.js", "window.META=window.META||{};window.META." + k + "=")
+                  if d is None:
+                      continue
+                  n = len(d.get("mons", []))
+                  if n < 50:
+                      errs.append(f"meta/{k}.js: {n} mons (< 50)")
+                  if not re.fullmatch(r"\d{4}-\d{2}", str(d.get("month", ""))):
+                      errs.append(f"meta/{k}.js: bad month {d.get('month')!r}")
+          elif mode == "teams":
+              d = load("meta/teams.js", "window.TEAMS=")
+              seasons = (d or {}).get("seasons", [])
+              if not any(len(s.get("teams", [])) >= 20 for s in seasons):
+                  errs.append(f"meta/teams.js: no season with >= 20 teams ({len(seasons)} seasons)")
+          else:
+              sys.exit("usage: validate.py meta|teams")
+          if errs:
+              print("VALIDATION FAILED")
+              print("\n".join(errs))
+              sys.exit(1)
+          print(f"validation ok ({mode})")
+          PY
       - name: Commit if changed
         run: |
           if [ -n "$(git status --porcelain meta)" ]; then

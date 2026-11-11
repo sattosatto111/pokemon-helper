@@ -14,6 +14,7 @@ UA = {"User-Agent": "Mozilla/5.0 (compatible; pokemon-meta-builder)"}
 BASE = "https://champs.pokedb.tokyo/opendata/s%d_%s_ranked_teams.json"
 PAPI = "https://raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv/"
 TOP_TEAMS, TOP_CORES, TOP_USAGE = 100, 30, 40
+MAX_SEASONS = 50  # upper bound for the season probe
 
 # (national dex, form index) -> PokeAPI pokemon identifier (non-default forms)
 FORMS = {
@@ -34,6 +35,23 @@ def get(url, cache=True):
     data = urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=120).read()
     open(p, "wb").write(data)
     return data
+
+def fetch_json(url, cache=True):
+    """Parsed season dict, or None with a logged reason (HTTP/network error, soft-404 HTML, wrong shape)."""
+    try:
+        raw = get(url, cache)
+    except Exception as e:  # HTTPError (non-2xx), URLError, timeout
+        print(f"WARN fetch failed: {url}: {e}")
+        return None
+    try:
+        d = json.loads(raw)
+    except ValueError:
+        print(f"WARN non-JSON response (soft-404 HTML?): {url}: {raw[:60]!r}")
+        return None
+    if isinstance(d, dict) and "teams" in d:
+        return d
+    print(f"WARN unexpected JSON shape (no 'teams'): {url}")
+    return None
 
 def csv_rows(name):
     return list(csv.DictReader(io.StringIO(get(PAPI + name).decode("utf-8"))))
@@ -71,13 +89,16 @@ def main():
             miss_mon[(m["id"], m["pokemon"], m["form"])] += 1  # form not in app: fall back to base
             pid = default_of.get(dex)
         return id2idx.get(pid)
-    n = 1
-    while True:  # discover latest published season
-        try: get(BASE % (n + 1, "single"), cache=False); n += 1; time.sleep(1)
-        except Exception: break
+    n = 0
+    while n < MAX_SEASONS and fetch_json(BASE % (n + 1, "single"), cache=False):  # discover latest published season
+        n += 1; time.sleep(1)
+    if n == 0: sys.exit("no published season found (see WARN lines above)")
+    if n == MAX_SEASONS: print(f"WARN season probe hit cap {MAX_SEASONS}")
     for s in range(n, 0, -1):
         for rule in ("single", "double"):
-            d = json.loads(get(BASE % (s, rule)))
+            d = fetch_json(BASE % (s, rule))
+            if d is None:
+                print(f"WARN skipping season {s} {rule}"); continue
             teams = []
             for t in d["teams"]:
                 ms = [m for m in t["team"] if m.get("id")]
@@ -99,7 +120,7 @@ def main():
                 "usage": [[k, v] for k, v in us.most_common(TOP_USAGE)]})
             time.sleep(1)
     out = {"source": {"name": "ポケDB チャンピオンズ (pokedb.tokyo)", "url": "https://champs.pokedb.tokyo/guide/opendata",
-                      "license": "No license stated; programmatic download of open data is invited, no attribution required (credit given anyway)"},
+                      "note": "pokedb 오픈 데이터 (https://champs.pokedb.tokyo/guide/opendata) · 출처 표기"},
            "items": items, "seasons": seasons}
     p = os.path.join(ROOT, "meta", "teams.js")
     with open(p, "w", encoding="utf-8", newline="\n") as f:
