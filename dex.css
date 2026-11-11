@@ -24,6 +24,9 @@ body.dx-lock{overflow:hidden}
 .dx-ef>b{min-width:34px;padding-top:3px}
 .dx-ef div{display:flex;gap:4px;flex-wrap:wrap}
 .dx-mv-in{width:100%;box-sizing:border-box;margin-bottom:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:inherit}
+.dx-more{display:block;width:100%;margin-top:8px;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;cursor:pointer}
+.dx-more[hidden]{display:none}
+@media(max-width:640px){.dx-mvw{max-height:none!important;overflow:visible!important}.dx-mvw th{position:static}}
 .dx-mvw{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:8px}
 .dx-mvw table{width:100%;border-collapse:collapse;font-size:13px}
 .dx-mvw td,.dx-mvw th{padding:6px 8px;text-align:left;border-bottom:1px solid var(--line)}

@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-let rerender=null,back=null,prevFocus=null,sortKey='p',sortDir=-1,moves=[];
+let mvAll=false,pushed=false,rerender=null,back=null,prevFocus=null,sortKey='p',sortDir=-1,moves=[];
 const CAT=['물리','특수','변화'];
 const STN=['HP','공격','방어','특공','특방','스피드'];
 function barColor(v){return v>=130?'#2aa876':v>=100?'#5bb552':v>=70?'#d9b200':v>=50?'#e8862a':'#d9544d'}
@@ -60,8 +60,8 @@ function render(i){
   const c1=TC[types[0]], c2=TC[types[types.length-1]];
   const art=SPR_URL+'other/official-artwork/'+SPR[i]+'.png';
   const px=SPR_URL+SPR[i]+'.png';
-  const ec=old?['DV15·노력0','DV15·노력 최대','']:evCols();
-  let st=`<div class="dx-st"><span></span><span></span><span></span>${ec.map(c=>`<span class="h">${c}</span>`).join('')}</div>`;
+  const ec=old?['노력0','노력MAX','']:evCols();
+  let st=`<div class="dx-st"><span></span><span></span><span></span>${ec.map(c=>`<span class="h"${old&&c?' title="개체값 DV15 기준. 노력0은 노력치 0, 노력MAX는 노력치 최대"':''}>${c}</span>`).join('')}</div>`;
   const names=G===1&&!isCh()?['HP','공격','방어','특수','','스피드']:STN;
   base.forEach((b,k)=>{
     if(!names[k])return;
@@ -83,10 +83,11 @@ ${aAv(i)?'':'<div class="dx-na">이 세대엔 등장하지 않아</div>'}
 ${G<3&&!isCh()?'':`<h3>특성</h3><div class="dx-ab">${ab.map(a=>`<span>${esc(a)}</span>`).join('')||'<span>없음</span>'}</div>`}
 <div id="dx-meta">${metaBlock(i)}</div>
 <h3>상성 · 받는 데미지${one?` (특성 ${esc(one)} 반영)`:''}</h3>${ef||'<div class="dx-ef">약점·저항 없음</div>'}
-<h3>배우는 기술 ${moves.length}개</h3>
+<h3>배우는 공격 기술 ${moves.length}개</h3>
 <input class="dx-mv-in" type="search" placeholder="기술 이름·타입·분류로 찾기" autocomplete="off">
 <div class="dx-mvw"><table><thead><tr><th data-k="n">기술</th><th data-k="t">타입</th><th data-k="c">분류</th><th data-k="p">위력</th></tr></thead><tbody></tbody></table></div>
-<div class="dx-act"><button class="p" data-a="ty">상성 보기</button><button data-a="da">데미지 공격자로</button><button data-a="pt">파티에 넣기</button></div>
+<button type="button" class="dx-more" hidden></button>
+<div class="dx-act"><button class="p" data-a="ty">상성 보기</button><button data-a="da">공격하는 쪽으로</button><button data-a="dd">맞는 쪽으로</button><button data-a="sp">스피드 비교</button><button data-a="pt">파티에 넣기</button></div>
 </div>`;
 }
 function paintMoves(){
@@ -94,9 +95,14 @@ function paintMoves(){
   const v={n:m=>m[0],t:m=>m[1],c:m=>m[3],p:m=>m[2]};
   const rows=moves.filter(m=>!q||m[0].toLowerCase().includes(q)||TN[m[1]].includes(q)||(CAT[m[3]]||'변화').includes(q))
     .sort((a,b)=>{const x=v[sortKey](a),y=v[sortKey](b);return (typeof x==='string'?x.localeCompare(y,'ko'):x-y)*sortDir||a[0].localeCompare(b[0],'ko')});
-  back.querySelector('tbody').innerHTML=rows.map(m=>`<tr><td>${esc(m[0])}</td><td>${chip(m[1])}</td><td>${CAT[m[3]]||'변화'}</td><td>${m[2]||'-'}</td></tr>`).join('')||'<tr><td colspan="4">찾는 기술이 없어</td></tr>';
+  const lim=mvAll||!matchMedia('(max-width:640px)').matches?rows.length:20;
+  back.querySelector('tbody').innerHTML=rows.slice(0,lim).map(m=>`<tr><td>${esc(m[0])}</td><td>${chip(m[1])}</td><td>${CAT[m[3]]||'변화'}</td><td>${m[2]||'-'}</td></tr>`).join('')||'<tr><td colspan="4">찾는 기술이 없어</td></tr>';
+  const mb=back.querySelector('.dx-more');
+  mb.hidden=rows.length<=lim; mb.textContent='더 보기 ('+(rows.length-lim)+')';
 }
-function go(i,pre,h){closeDex(true);try{demo[pre]=false}catch(e){}setPk(pre,i,true);if(location.hash==='#'+h)update();else location.hash='#'+h}
+function go(i,pre,h){const was=pushed;closeDex(true);try{demo[pre]=false}catch(e){}setPk(pre,i,true);
+  if(was){history.replaceState(null,'','#'+h);window.dispatchEvent(new HashChangeEvent('hashchange'))}
+  else if(location.hash==='#'+h)update();else location.hash='#'+h}
 function addParty(i){
   if(partyDemo){party=party.map(()=>-1);ptBox.forEach(b=>b.set(-1));partyDemo=false}
   const k=party.indexOf(-1); if(k<0)return false;
@@ -104,10 +110,13 @@ function addParty(i){
 }
 function openDex(i){
   if(!(i>=0&&PK[i]))return;
+  const keep=pushed;
   if(back)closeDex(true);
   prevFocus=document.activeElement;
   back=document.createElement('div'); back.id='dx-back';
-  cur=i;
+  cur=i; mvAll=false;
+  if(keep){pushed=true;history.replaceState({dex:i},'')}
+  else if(!/^#dex=/.test(location.hash)){history.pushState({dex:i},'');pushed=true}
   back.innerHTML='<div id="dx" role="dialog" aria-modal="true" aria-labelledby="dx-t" tabindex="-1">'+render(i)+'</div>';
   document.body.appendChild(back); document.body.classList.add('dx-lock');
   const dlg=back.firstChild; paintMoves();
@@ -120,12 +129,15 @@ function openDex(i){
     if(e.target.closest('.dx-x'))return closeDex();
     const ft=e.target.closest('[data-fmt]');
     if(ft){metaUI.setFmt(ft.dataset.fmt);return}
+    if(e.target.closest('.dx-more')){mvAll=true;return paintMoves()}
     const mt=e.target.closest('[data-mate]'); if(mt)return openDex(+mt.dataset.mate);
     const th=e.target.closest('th[data-k]');
     if(th){const k=th.dataset.k; if(k===sortKey)sortDir=-sortDir; else{sortKey=k;sortDir=k==='p'?-1:1} return paintMoves()}
     const b=e.target.closest('[data-a]'); if(!b)return;
     if(b.dataset.a==='ty')go(i,'ty','types');
     else if(b.dataset.a==='da')go(i,'da','damage');
+    else if(b.dataset.a==='dd')go(i,'dd','damage');
+    else if(b.dataset.a==='sp')go(i,'sa','speed');
     else if(addParty(i)){closeDex(true);location.hash='#party'}
   });
   const bind=()=>back.querySelector('.dx-mv-in').addEventListener('input',paintMoves);
@@ -144,6 +156,8 @@ function openDex(i){
 }
 function closeDex(quiet){
   if(!back)return;
+  const was=pushed; pushed=false;
+  if(was&&!quiet&&history.state&&history.state.dex!=null){history.back()}
   rerender=null;
   back.remove(); back=null; document.body.classList.remove('dx-lock');
   if(/^#dex=/.test(location.hash))history.replaceState(null,'',location.pathname+location.search+'#'+tab);
@@ -158,6 +172,7 @@ document.addEventListener('click',e=>{
 function fromHash(){const m=/^#dex=(\d+)$/.exec(location.hash); if(m)openDex(+m[1])}
 document.addEventListener('modechange',()=>{if(back&&rerender)rerender()});
 window.addEventListener('hashchange',fromHash);
+window.addEventListener('popstate',()=>{if(back)closeDex(true)});
 fromHash();
 window.openDex=openDex;
 })();
