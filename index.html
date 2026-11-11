@@ -5,7 +5,11 @@
 <link rel="stylesheet" href="dex.css"><script src="meta/bss.js" defer></script><script src="meta/teams.js" defer></script><script src="meta/ko.js" defer></script><script src="meta/vgc.js" defer></script><script src="dex.js" defer></script><link rel="stylesheet" href="meta-tab.css"><script src="meta-tab.js" defer></script>
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 <title>배틀 도감</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="포켓몬 챔피언스 랭크배틀 상성·데미지·스피드 계산기 + 실전 메타·인기 파티">
+<meta name="theme-color" content="#c0262d" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#7a1519" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="배틀 도감"><meta property="og:description" content="포켓몬 챔피언스 랭크배틀 상성·데미지·스피드 계산기 + 실전 메타·인기 파티"><meta property="og:type" content="website"><meta property="og:url" content="https://sattosatto111.github.io/pokemon-helper/"><meta property="og:image" content="https://sattosatto111.github.io/pokemon-helper/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="배틀 도감"><meta name="twitter:description" content="포켓몬 챔피언스 랭크배틀 상성·데미지·스피드 계산기 + 실전 메타·인기 파티"><meta name="twitter:image" content="https://sattosatto111.github.io/pokemon-helper/og.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
 /* Layout: sticky tab bar on top, one working column (max 920px); each tab is input cards above, result card below. */
@@ -140,6 +144,8 @@ button.chip[aria-pressed=true]{opacity:1;box-shadow:inset 0 -2px 0 rgba(0,0,0,.1
 .hp i{display:block;height:100%}
 .hp .keep{background:linear-gradient(90deg,#22c55e,#16a34a)} .hp .maybe{background:#f59e0b;opacity:.7}
 .note{font-size:12.5px;color:var(--muted);margin:0}
+.foot{margin-top:18px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--muted)}
+.foot summary{cursor:pointer;font-weight:600}.foot details p{margin:6px 0 0}.foot a{color:var(--accent)}
 .tw{overflow-x:auto}
 table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%}
 th,td{padding:6px 6px;text-align:center;border-bottom:1px solid var(--line);font-size:13px;white-space:nowrap}
@@ -191,7 +197,9 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
   nav a.on{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);box-shadow:none}
   .top{box-shadow:0 2px 10px rgba(120,20,20,.2)}
   .brand{padding-block:10px}
-  .modesw{overflow:visible}
+  .modesw{flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+  #gen-note{bottom:calc(72px + 12px + env(safe-area-inset-bottom,0px))}
+  input,select,textarea{font-size:16px!important}
   .lv{margin-left:auto}
   nav a{font-size:10.5px;padding-inline:0}
 }
@@ -201,7 +209,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
 <header class="top"><div class="wrap">
   <div class="brand"><h1>배틀 도감</h1>
     <div class="hd-r"><div class="modesw" id="modesw" role="group" aria-label="세대 선택"><button type="button" data-m="ch" title="Pokémon Champions"><i aria-hidden="true"></i>챔피언스</button>
-<button type="button" data-m="g1" title="레드·그린"><i aria-hidden="true"></i>1세대</button><button type="button" data-m="g2" title="골드·실버"><i aria-hidden="true"></i>2세대</button><button type="button" data-m="g3" title="루비·사파이어"><i aria-hidden="true"></i>3세대</button><button type="button" data-m="g4" title="디아루가·펄기아 세대(DP)"><i aria-hidden="true"></i>4세대</button><button type="button" data-m="g5" title="블랙·화이트"><i aria-hidden="true"></i>5세대</button><button type="button" data-m="g6" title="X·Y"><i aria-hidden="true"></i>6세대</button><button type="button" data-m="g7" title="썬·문"><i aria-hidden="true"></i>7세대</button><button type="button" data-m="g8" title="소드·실드"><i aria-hidden="true"></i>8세대</button><button type="button" data-m="g9" title="스칼렛·바이올렛"><i aria-hidden="true"></i>9세대</button></div>
+<button type="button" data-m="g1" title="레드·그린"><i aria-hidden="true"></i>1세대</button><button type="button" data-m="g2" title="골드·실버"><i aria-hidden="true"></i>2세대</button><button type="button" data-m="g3" title="루비·사파이어"><i aria-hidden="true"></i>3세대</button><button type="button" data-m="g4" title="다이아몬드·펄"><i aria-hidden="true"></i>4세대</button><button type="button" data-m="g5" title="블랙·화이트"><i aria-hidden="true"></i>5세대</button><button type="button" data-m="g6" title="X·Y"><i aria-hidden="true"></i>6세대</button><button type="button" data-m="g7" title="썬·문"><i aria-hidden="true"></i>7세대</button><button type="button" data-m="g8" title="소드·실드"><i aria-hidden="true"></i>8세대</button><button type="button" data-m="g9" title="스칼렛·바이올렛"><i aria-hidden="true"></i>9세대</button></div>
     <label class="lv"><span id="lv-t">9세대 기준 · 레벨</span> <input type="number" id="lv" min="1" max="100" value="50"></label></div></div>
   <nav id="nav">
     <a href="#battle"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4 20 4 20 9.5 9 20.5 3.5 20.5 3.5 15zM4 20l4-4M14 10l-4 4"/></svg><span>대전</span></a><a href="#types"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg><span>상성</span></a><a href="#damage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3 5 13h6l-1 8 8-10h-6z"/></svg><span>데미지</span></a><a href="#speed"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4M10 3h4"/></svg><span>스피드</span></a><a href="#party"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h5M15.5 12h5"/><circle cx="12" cy="12" r="3"/></svg><span>파티</span></a><a href="#coverage"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg><span>공격 범위</span></a><a href="#meta"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>메타</span></a>
@@ -318,8 +326,14 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
 </section>
 <section id="v-meta" hidden></section>
 
-<p class="note" id="ch-note" style="margin-bottom:6px">챔피언스: 개체값 없음(전부 최대), 노력치 대신 스탯 포인트(총 66, 한 능력치 최대 32), Lv.50, 테라스탈 없음.</p>
-<p class="note"><span id="gen-foot">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해.</span> 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 철주먹, 단단한발톱, 옹골찬턱 같은 기술 종류별 특성은 기술 이름으로 구분해서 반영해. 접촉은 접촉하지 않는 물리기만 따로 빼고 나머지 물리기를 접촉으로 보니까 예외가 있을 수 있어.</p>
+<footer class="foot">
+<details><summary>계산 기준</summary>
+<p class="note" id="ch-note">챔피언스: 개체값 없음, 스탯 포인트는 총 66에 한 능력치 최대 32, Lv.50, 테라스탈 없음.</p>
+<p class="note"><span id="gen-foot">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해.</span> 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 철주먹, 단단한발톱, 옹골찬턱 같은 기술 종류별 특성은 기술 이름으로 구분해서 반영해. 접촉은 접촉하지 않는 물리기만 따로 빼고 나머지 물리기를 접촉으로 보니까 예외가 있을 수 있어.</p></details>
+<details><summary>출처</summary>
+<p class="note">데이터: <a href="https://github.com/smogon/pokemon-showdown" target="_blank" rel="noopener">Pokémon Showdown</a>(MIT, © Guangcong Luo and contributors), <a href="https://pokeapi.co" target="_blank" rel="noopener">PokeAPI</a>(BSD-3-Clause) / <a href="https://github.com/PokeAPI/sprites" target="_blank" rel="noopener">스프라이트</a>, <a href="https://www.smogon.com/stats/" target="_blank" rel="noopener">Smogon usage stats</a>, <a href="https://championsbattledata.com" target="_blank" rel="noopener">Pokémon Champions Battle Data</a>(Battle data provided by Pokémon Champions Battle Data), <a href="https://champs.pokedb.tokyo/" target="_blank" rel="noopener">pokedb</a> 공개 데이터.</p></details>
+<p class="note">비공식 팬 사이트야. Pokémon 및 관련 명칭·이미지의 권리는 Nintendo / Creatures Inc. / GAME FREAK inc. / The Pokémon Company에 있어.</p>
+</footer>
 </main>
 
 <script>
@@ -349,7 +363,7 @@ const NAMES=PK.map(p=>p[0]), MNAMES=MV.map(m=>m[0]);
 const find=n=>NAMES.indexOf(n);
 const chip=t=>`<span class="chip" style="background:${TC[t]}">${TN[t]}</span>`;
 /* 포켓몬 이미지: PokeAPI 스프라이트, 없으면 공식 일러스트로 대체 */
-const SPR_URL='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
+const SPR_URL='https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/';
 const sprSrc=i=>typeof SPR!=='undefined'&&SPR[i]>0?SPR_URL+SPR[i]+'.png':'';
 const spr=(i,c='')=>{const s=sprSrc(i);return s?`<img class="spr ${c}" data-i="${i}" src="${s}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${SPR_URL}other/official-artwork/${SPR[i]}.png'">`:''};
 const art=(i,c='')=>SPR[i]?`<img class="spr art ${c}" data-i="${i}" src="${SPR_URL}other/official-artwork/${SPR[i]}.png" alt="" loading="lazy" onerror="this.onerror=null;this.src=sprSrc(${i})">`:spr(i,c);
