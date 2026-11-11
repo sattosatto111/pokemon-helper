@@ -172,7 +172,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
         <label class="f">도구<select id="da-item">
           <option value="">없음</option><option value="choiceP">구애머리띠</option><option value="choiceS">구애안경</option>
           <option value="orb">생명의구슬</option><option value="belt">달인의띠</option>
-          <option value="type">타입 강화 도구 (1.2배)</option><option value="band">힘의머리띠/박식안경</option></select></label>
+          <option value="type">타입 강화 도구 (1.2배)</option><option value="band">힘의머리띠/박식안경</option><option value="glove">펀치글러브 (펀치 1.1배)</option></select></label>
       </div>
       <div class="cks"><label class="ck"><input type="checkbox" id="da-burn">화상</label>
         <label class="ck"><input type="checkbox" id="da-pinch">HP 1/3 이하</label>
@@ -228,6 +228,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
     <div><button class="plain" id="pt-clear" type="button">파티 비우기</button></div>
   </div>
   <div class="card"><h2>파티 진단</h2><div id="pt-sum"></div></div>
+  <div class="card"><h2>파티 보완 추천</h2><div id="pt-rec"></div></div>
   <div class="card"><h2>타입별로 받는 배율</h2><div class="tw" id="pt-out"></div>
     <p class="note">특성이 하나뿐인 포켓몬은 그 특성(부유, 저수 등)을 반영했어. 빈 칸은 1배.</p></div>
 </section>
@@ -237,7 +238,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
   <div class="card"><h2>전체 포켓몬 상대로</h2><div id="cv-out"></div></div>
 </section>
 
-<p class="note">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해. 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 접촉이나 펀치 여부로 강해지는 특성(단단한발톱, 철주먹 등)은 아직 반영하지 않아.</p>
+<p class="note">상성표와 데미지 공식은 9세대 기준이고 개체값은 31로 계산해. 데미지는 반올림 차이로 실제와 1 정도 다를 수 있어. 위력이 변하는 기술은 위력을 직접 고쳐서 써. 철주먹, 단단한발톱, 옹골찬턱 같은 기술 종류별 특성은 기술 이름으로 구분해서 반영해. 접촉은 접촉하지 않는 물리기만 따로 빼고 나머지 물리기를 접촉으로 보니까 예외가 있을 수 있어.</p>
 </main>
 
 <script>
@@ -284,7 +285,7 @@ const rk=r=>r>=0?(2+r)/2:2/(2-r);
 const mtxt=m=>m===.5?'½':m===.25?'¼':m===.125?'⅛':String(+m.toFixed(2));
 
 /* ---------- 검색 입력 ---------- */
-function combo(input,names,onPick,icons){
+function combo(input,names,onPick,icons,render){
   const list=document.createElement('ul'); list.className='list'; list.hidden=true; input.parentNode.appendChild(list);
   let hits=[],cur=-1;
   const paint=()=>[...list.children].forEach((li,j)=>li.classList.toggle('on',j===cur));
@@ -295,7 +296,7 @@ function combo(input,names,onPick,icons){
     const a=[],b=[];
     for(let i=0;i<names.length;i++){const k=names[i].toLowerCase().indexOf(q); if(k===0)a.push(i); else if(k>0&&b.length<40)b.push(i)}
     hits=a.concat(b).slice(0,40); cur=hits.length?0:-1;
-    list.innerHTML=hits.length?hits.map(i=>`<li data-i="${i}">${icons?spr(i):''}${esc(names[i])}</li>`).join(''):'<li class="none">검색 결과가 없어</li>';
+    list.innerHTML=hits.length?hits.map(i=>`<li data-i="${i}">${icons?spr(i):''}${render?render(i):esc(names[i])}</li>`).join(''):'<li class="none">검색 결과가 없어</li>';
     paint(); list.hidden=false;
   }
   function pick(i){input.value=names[i];list.hidden=true;setIc(i);onPick(i)}
@@ -350,6 +351,18 @@ function rTypes(){
 /* ---------- 데미지 ---------- */
 const HITS={'더블어택':2,'더블펀처':2,'트윈빔':2,'더블니들':2,'기어소서':2,'더블촙':2,'드래곤애로':2,'더블윙':2,'수류연타':3,
 '스케일샷':3,'록블라스트':3,'고드름침':3,'본러시':3,'스위프뺨치기':3,'물수리검':3,'연속뺨치기':3,'연속펀치':3,'마구할퀴기':3};
+/* 기술 분류 목록 (기술 데이터에 플래그가 없어서 이름으로 구분) */
+const mset=t=>new Set(t.split(/\s+/));
+const PUNCH=mset('그로우펀치 냉동펀치 드레인펀치 마하펀치 메가톤펀치 번개펀치 분노의주먹 불꽃펀치 불릿펀치 섀도펀치 연속펀치 잼잼펀치 제트펀치 코멧펀치 폭발펀치 힘껏펀치 더블펀처 아이스해머 암해머 플라스마피스트 수류연타 기습 스카이어퍼');
+const BITE=mset('깨물어부수기 물기 번개엄니 불꽃엄니 얼음엄니 맹독엄니 아가미물기 사이코팽 필살앞니 물고버티기');
+const PULSE=mset('파동탄 악의파동 용의파동 물의파동 근원의파동 대지의파동');
+const SLICE=mset('제비반환 에어커터 에어슬래시 아쿠아커터 원념의칼 연속자르기 풀베기 베어가르기 깜짝베기 잎날가르기 셸블레이드 리프블레이드 사이코커터 성스러운칼 신비의칼 솔라블레이드 시저크로스 암석액스 크로스포이즌 거수참 도각참 타키온커터 사이코블레이드');
+const SOUND=mset('폭음파 벌레의야단법석 수다 스케일노이즈 매혹의보이스 에코보이스 하이퍼보이스 오버드라이브 옛노래 돌림노래 바크아웃 코골기 물거품아리아 소란피기 플레어송 차밍보이스 사이코노이즈');
+const RECOIL=mset('브레이브버드 이판사판태클 플레어드라이브 볼트태클 우드해머 양날박치기 돌진 와일드볼트 웨이브태클 점프킥 무릎차기 파멸의빛 클로로블라스트');
+/* 접촉: 물리기는 대부분 접촉이라 "접촉 안 하는 물리기"만 적고, 나머지 물리기는 접촉으로 본다. 특수기 중 접촉하는 기술만 따로 적는다. */
+const NOCONTACT=mset('가시대포 고드름침 고드름떨구기 얼음뭉치 구슬던지기 씨기관총 씨폭탄 알폭탄 돌떨구기 스톤샤워 스톤에지 록블라스트 암석봉인 암석포 암석액스 지진 땅고르기 단애의칼 사우전드애로 사우전드웨이브 모래지옥 뼈다귀부메랑 더스트슈트 독침 독침천발 바늘미사일 대폭발 자폭 3연화살 드래곤애로 스케일샷 부리캐논 그림자꿰매기 폴터가이스트 아쿠아커터 잎날가르기 꽃보라 화염볼 마그넷봄 공격지령 사이코커터 빙산바람 떨어뜨리기 고양이돈받기');
+const CONTACT_SP=mset('드레인키스 꽃잎댄스 엉겨붙기');
+const isContact=(n,cat)=>!!n&&(cat?CONTACT_SP.has(n):!NOCONTACT.has(n));
 const SKIN={'프리즈스킨':14,'스카이스킨':2,'페어리스킨':17,'일렉트릭스킨':12};
 const PINCH={'맹화':9,'급류':10,'심록':11,'벌레의알림':6};
 const TERR={elec:12,grass:11,psy:13};
@@ -374,7 +387,7 @@ function readCtx(){
     burn:$('da-burn').checked,pinch:$('da-pinch').checked,help:$('da-help').checked,wall:$('dd-wall').checked,
     crit:$('crit').checked,spread:$('spread').checked,wx:$('wx').value,tr:$('tr').value};
 }
-function calc(c,mt,cat,pow,hits){
+function calc(c,mt,cat,pow,hits,nm){
   const aab=c.aab; let dab=c.dab;
   if(aab==='틀깨기'||aab==='테라볼티지'||aab==='터보블레이즈')dab='';
   let pm=1;
@@ -383,6 +396,19 @@ function calc(c,mt,cat,pow,hits){
   if(aab==='테크니션'&&pow<=60)pm*=1.5;
   if(c.ait==='type')pm*=1.2;
   if(c.ait==='band')pm*=1.1;
+  const con=isContact(nm,cat);
+  if(c.ait==='glove'&&PUNCH.has(nm))pm*=1.1;
+  if(aab==='철주먹'&&PUNCH.has(nm))pm*=1.2;
+  if(aab==='단단한발톱'&&con)pm*=1.3;
+  if(aab==='옹골찬턱'&&BITE.has(nm))pm*=1.5;
+  if(aab==='메가런처'&&PULSE.has(nm))pm*=1.5;
+  if(aab==='예리함'&&SLICE.has(nm))pm*=1.5;
+  if(aab==='펑크록'&&SOUND.has(nm))pm*=1.3;
+  if(aab==='이판사판'&&RECOIL.has(nm))pm*=1.2;
+  if(aab==='강철술사'&&mt===8)pm*=1.5;
+  if(aab==='트랜지스터'&&mt===12)pm*=1.3;
+  if(aab==='용의턱'&&mt===15)pm*=1.5;
+  if(aab==='수포'&&mt===10)pm*=2;
   if(c.help)pm*=1.5;
   if(TERR[c.tr]===mt)pm*=1.3;
   if(c.tr==='mist'&&mt===15)pm*=.5;
@@ -428,6 +454,8 @@ function calc(c,mt,cat,pow,hits){
     if(c.burn&&!cat&&aab!=='근성')v=Math.floor(v*.5);
     if(c.wall&&!c.crit)v=Math.floor(v*.5);
     if(guard)v=Math.floor(v*.5);
+    if(dab==='복슬복슬'&&con)v=Math.floor(v*.5);
+    if(dab==='펑크록'&&SOUND.has(nm))v=Math.floor(v*.5);
     if(c.ait==='orb')v=Math.floor(v*1.3);
     if(c.ait==='belt'&&te>1)v=Math.floor(v*1.2);
     if(c.dit==='berry'&&te>1)v=Math.floor(v*.5);
@@ -439,7 +467,7 @@ function calc(c,mt,cat,pow,hits){
 function rDamage(){
   const c=readCtx(), out=$('dm-out');
   if(!c){out.innerHTML='<h2>결과</h2><div class="sub">공격하는 쪽과 맞는 쪽 포켓몬을 둘 다 골라줘.</div>';$('dm-rank').innerHTML='<div class="sub">포켓몬을 고르면 순위가 나와.</div>';return}
-  const hits=num('mv-h',1,10,1), r=calc(c,+$('mv-t').value,+$('mv-c').value,num('mv-p',1,999,1),hits);
+  const hits=num('mv-h',1,10,1), r=calc(c,+$('mv-t').value,+$('mv-c').value,num('mv-p',1,999,1),hits,$('mv').value.trim());
   const hp=c.hp, now=c.hpNow, mn=r.rolls[0], mx=r.rolls[15];
   const pc=v=>(v/hp*100).toFixed(1);
   const keep=Math.max(0,(now-mx)/hp*100), maybe=Math.max(0,Math.min(now,now-mn)/hp*100-keep);
@@ -450,7 +478,7 @@ function rDamage(){
     <div class="hp" role="img" aria-label="맞은 뒤 남는 HP"><i class="keep" style="width:${keep}%"></i><i class="maybe" style="width:${maybe}%"></i></div>
     <div class="sub">데미지 ${mn} ~ ${mx}${hits>1?` (${hits}회 합계)`:''} / 상대 HP ${now}${now<hp?' / '+hp:''} · ${chip(r.mt)} ${tag}${r.stab>1?` · 자속 ×${r.stab}`:''} · 실제 위력 ${r.pow} · 공격 실수치 ${r.A}, 방어 실수치 ${r.D}</div>
     <div class="note">난수 16개: ${r.rolls.join(', ')}</div>`;
-  const list=(c.a[10]||[]).map(i=>{const m=MV[i]; if(!m[2])return null; const h=HITS[m[0]]||1; const x=calc(c,m[1],m[3],m[2],h); return {i,m,h,x}})
+  const list=(c.a[10]||[]).map(i=>{const m=MV[i]; if(!m[2])return null; const h=HITS[m[0]]||1; const x=calc(c,m[1],m[3],m[2],h,m[0]); return {i,m,h,x}})
     .filter(Boolean).sort((p,q)=>q.x.rolls[15]-p.x.rolls[15]||q.x.rolls[0]-p.x.rolls[0]).slice(0,15);
   $('dm-rank').innerHTML=list.length?`<table><tr><th class="l">기술</th><th>타입</th><th>분류</th><th>위력</th><th>데미지</th><th class="l">결과</th></tr>`+
     list.map(o=>`<tr data-m="${o.i}" style="cursor:pointer"><td class="l">${esc(o.m[0])}</td><td>${chip(o.x.mt)}</td><td>${o.m[3]?'특수':'물리'}</td><td>${o.m[2]}${o.h>1?'×'+o.h:''}</td><td>${pc(o.x.rolls[0])}~${pc(o.x.rolls[15])}%</td><td class="l">${koText(o.x.rolls,now)}</td></tr>`).join('')+'</table>'
@@ -586,7 +614,7 @@ function start(){
   ['ty-tera','da-tera','dd-tera'].forEach(i=>$(i).innerHTML=teraOpts);
   $('mv-t').innerHTML=typeOpts;
   for(const k in sel) box[k]=combo($(k+'-pk'),NAMES,i=>{ if(i<0){ if(sel[k]>=0&&k!=='ty'){sel[k]=-1;setPk(k,-1)} return } setPk(k,i) },true);
-  mvBox=combo($('mv'),MNAMES,i=>{ if(i>=0)setMove(i) });
+  mvBox=combo($('mv'),MNAMES,i=>{ if(i>=0)setMove(i) },false,i=>{const m=MV[i]; return `${chip(m[1])}<span class="mvn">${esc(m[0])}</span><span class="mvm">${m[2]?(m[3]?'특수':'물리')+' '+m[2]:'변화'}</span>`});
   $('dm-rank').addEventListener('click',e=>{const r=e.target.closest('tr[data-m]');if(r)setMove(+r.dataset.m)});
   $('pt-slots').innerHTML=party.map((_,k)=>`<div class="combo"><input type="text" id="pt-${k}" placeholder="${k+1}번 포켓몬" autocomplete="off"></div>`).join('');
   party.forEach((_,k)=>ptBox[k]=combo($('pt-'+k),NAMES,i=>{party[k]=i;partyDemo=false;saveParty();update()},true));
@@ -612,3 +640,53 @@ function start(){
 }
 start();
 </script>
+<script>
+/* ---------- 파티 보완 추천 ---------- */
+function recCalc(){
+  const mem=party.filter(i=>i>=0).map(i=>PK[i]); if(!mem.length)return null;
+  const abOf=p=>p[9].length===1?AB[p[9][0]]:'';
+  const info=[]; for(let t=0;t<18;t++){let w=0,r=0;
+    mem.forEach(p=>{const m=eff(t,ptypes(p),abOf(p)); if(m>1)w++; if(m<1)r++}); info.push({t,w,r})}
+  let targets=info.filter(x=>x.w>=3||(x.w>=2&&x.r===0));
+  if(!targets.length)targets=info.filter(x=>x.w>=2);
+  if(!targets.length)targets=info.filter(x=>x.w>=1&&x.w>x.r);
+  if(!targets.length)return {targets:[],list:[]};
+  const sc=m=>m===0||m<=.25?1.5:m<1?1:m===1?0:m<4?-1:-1.5;
+  const list=[];
+  PK.forEach((p,i)=>{ if(party.includes(i))return;
+    const ty=ptypes(p), ab=abOf(p); let s=0; const imm=[],res=[];
+    for(const x of targets){const m=eff(x.t,ty,ab); s+=x.w*sc(m); if(m===0)imm.push(x.t); else if(m<1)res.push(x.t)}
+    for(const x of info){ if(x.w>=1&&!targets.includes(x)&&eff(x.t,ty,ab)>1)s-=.3 }
+    list.push({i,p,s,imm,res,bst:p.slice(3,9).reduce((a,b)=>a+b,0)}) });
+  list.sort((a,b)=>b.s-a.s||b.bst-a.bst);
+  return {targets,list:list.slice(0,8)};
+}
+function rRec(){
+  const el=$('pt-rec'), r=recCalc();
+  if(!r){el.innerHTML='<div class="sub">파티에 포켓몬을 넣으면 추천해줄게.</div>';return}
+  if(!r.targets.length){el.innerHTML='<div class="sub">눈에 띄는 약점이 없어서 추천할 게 없어.</div>';return}
+  const nm=a=>a.map(t=>TN[t]).join('·');
+  el.innerHTML=`<div class="info"><span>보완할 약점</span>${r.targets.map(x=>chip(x.t)).join('')}</div>
+    <div class="rec">${r.list.map(o=>{const why=[o.imm.length?nm(o.imm.slice(0,3))+' 무효':'',o.res.length?nm(o.res.slice(0,3))+' 반감':''].filter(Boolean).join(' · ');
+      return `<button type="button" class="rec-i" data-i="${o.i}">${spr(o.i,'s')}<b>${esc(o.p[0])}</b><span class="chips">${ptypes(o.p).map(chip).join('')}</span><span class="sub">${why||'약점이 겹치지 않아'}</span></button>`}).join('')}</div>
+    <p class="note" id="pt-rec-msg">누르면 파티의 빈 칸에 들어가. 특성이 하나뿐인 포켓몬만 특성을 반영했어.</p>`;
+}
+{const base=TABS.party; TABS.party=()=>{base();rRec()}}
+$('pt-rec').addEventListener('click',e=>{const b=e.target.closest('button[data-i]'); if(!b)return;
+  const k=party.indexOf(-1), msg=$('pt-rec-msg');
+  if(k<0){msg.textContent='파티가 꽉 찼어. 한 칸을 비우고 눌러줘.';return}
+  party[k]=+b.dataset.i; ptBox[k].set(party[k]); partyDemo=false; saveParty(); update()});
+update();
+</script>
+<style id="feat-css">
+.list li .mvn{flex:1;min-width:0}
+.list li .mvm{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.rec{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.rec-i{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px;text-align:center;background:var(--field);border:1px solid var(--line);border-radius:12px;cursor:pointer;min-width:0}
+.rec-i:hover{border-color:var(--accent);background:var(--soft)}
+.rec-i .spr.s{width:56px;height:56px}
+.rec-i b{font-size:13.5px;font-weight:600}
+.rec-i .chips{justify-content:center;gap:4px}
+.rec-i .chip{font-size:11.5px;padding:1px 8px}
+.rec-i .sub{font-size:12px}
+</style>
