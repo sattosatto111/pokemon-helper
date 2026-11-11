@@ -8,6 +8,9 @@ body.dx-lock{overflow:hidden}
 .dx-head img{width:200px;height:200px;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
 .dx-head h2{margin:4px 0 8px;font-size:22px;justify-content:center}
 .dx-head h2::before{display:none}
+.dx-gen{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--muted);font-size:12px}
+.dx-na{margin:12px 0 4px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,#d9544d 16%,transparent);border:1px solid #d9544d;font-size:13.5px;font-weight:600}
+.dx-hint{font-size:12.5px;color:var(--muted);margin:14px 0 0}
 .dx-body{padding:4px 16px 20px}
 .dx-body h3{font-size:14px;margin:18px 0 8px;color:var(--muted)}
 .dx-st{display:grid;grid-template-columns:40px 32px 1fr 44px 44px 44px;gap:6px;align-items:center;font-size:13px;margin:3px 0}
