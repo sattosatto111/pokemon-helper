@@ -685,7 +685,8 @@ function recCalc(){
     for(const x of info){ if(x.w>=1&&!targets.includes(x)&&eff(x.t,ty,ab)>1)s-=.3 }
     list.push({i,p,s,imm,res,bst:p.slice(3,9).reduce((a,b)=>a+b,0)}) });
   list.sort((a,b)=>b.s-a.s||b.bst-a.bst);
-  return {targets,list:list.slice(0,8)};
+  const seen=new Set(party.filter(i=>i>=0).map(i=>PK[i][0]));  // 데이터에 같은 이름이 중복된 항목이 있어 이름 기준으로 한 번만
+  return {targets,list:list.filter(x=>!seen.has(x.p[0])&&seen.add(x.p[0])).slice(0,8)};
 }
 function rRec(){
   const el=$('pt-rec'), r=recCalc();
