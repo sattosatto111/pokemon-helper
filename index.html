@@ -195,60 +195,59 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
       <div class="combo"><input type="text" id="da-pk" placeholder="포켓몬 이름" autocomplete="off"></div>
       <div class="info" id="da-info"></div>
       <div class="fields">
-        <label class="f">공격/특공 노력치<input type="number" id="da-ev" min="0" max="252" step="4" value="252"></label>
-        <label class="f">성격<select id="da-nat"></select></label>
-        <label class="f">랭크<select id="da-rk"></select></label>
-        <label class="f">특성<select id="da-ab"></select></label>
-        <label class="f gen9">테라스탈<select id="da-tera"></select></label>
-        <label class="f">도구<select id="da-item">
-          <option value="">없음</option><option value="choiceP">구애머리띠</option><option value="choiceS">구애안경</option>
-          <option value="orb">생명의구슬</option><option value="belt">달인의띠</option>
-          <option value="type">타입 강화 도구 (1.2배)</option><option value="band">힘의머리띠/박식안경</option><option value="glove">펀치글러브 (펀치 1.1배)</option></select></label>
+        <label class="f" id="fl-da-pt"><span>공격/특공 노력치</span><input type="number" id="da-pt" min="0" max="252" step="4" value="252"></label>
+        <label class="f" id="fl-da-iv"><span>개체값</span><input type="number" id="da-iv" min="0" max="31" value="31"></label>
+        <label class="f" id="fl-da-nat"><span>성격</span><select id="da-nat"></select></label>
+        <label class="f" id="fl-da-rk"><span>랭크</span><select id="da-rk"></select></label>
+        <label class="f" id="fl-da-ab"><span>특성</span><select id="da-ab"></select></label>
+        <label class="f" id="fl-da-tera"><span>테라스탈</span><select id="da-tera"></select></label>
+        <label class="f" id="fl-da-item"><span>도구</span><select id="da-item"></select></label>
       </div>
-      <div class="cks"><label class="ck"><input type="checkbox" id="da-burn">화상</label>
-        <label class="ck"><input type="checkbox" id="da-pinch">HP 1/3 이하</label>
-        <label class="ck"><input type="checkbox" id="da-help">도우미 받음</label></div>
+      <div class="cks"><label class="ck" id="ck-burn"><input type="checkbox" id="da-burn">화상</label>
+        <label class="ck" id="ck-pinch"><input type="checkbox" id="da-pinch">HP 1/3 이하</label>
+        <label class="ck" id="ck-help"><input type="checkbox" id="da-help">도우미 받음</label></div>
     </div>
     <div class="card">
       <h2>맞는 쪽</h2>
       <div class="combo"><input type="text" id="dd-pk" placeholder="포켓몬 이름" autocomplete="off"></div>
       <div class="info" id="dd-info"></div>
       <div class="fields">
-        <label class="f">HP 노력치<input type="number" id="dd-hpev" min="0" max="252" step="4" value="0"></label>
-        <label class="f">방어/특방 노력치<input type="number" id="dd-ev" min="0" max="252" step="4" value="0"></label>
-        <label class="f">성격<select id="dd-nat"></select></label>
-        <label class="f">랭크<select id="dd-rk"></select></label>
-        <label class="f">특성<select id="dd-ab"></select></label>
-        <label class="f gen9">테라스탈<select id="dd-tera"></select></label>
-        <label class="f">도구<select id="dd-item">
-          <option value="">없음</option><option value="vest">돌격조끼</option><option value="evio">진화의휘석</option><option value="berry">반감열매</option></select></label>
-        <label class="f">남은 HP %<input type="number" id="dd-hp" min="1" max="100" value="100"></label>
+        <label class="f" id="fl-dd-hpp"><span>HP 노력치</span><input type="number" id="dd-hpp" min="0" max="252" step="4" value="0"></label>
+        <label class="f" id="fl-dd-hpiv"><span>HP 개체값</span><input type="number" id="dd-hpiv" min="0" max="31" value="31"></label>
+        <label class="f" id="fl-dd-pt"><span>방어/특방 노력치</span><input type="number" id="dd-pt" min="0" max="252" step="4" value="0"></label>
+        <label class="f" id="fl-dd-iv"><span>개체값</span><input type="number" id="dd-iv" min="0" max="31" value="31"></label>
+        <label class="f" id="fl-dd-nat"><span>성격</span><select id="dd-nat"></select></label>
+        <label class="f" id="fl-dd-rk"><span>랭크</span><select id="dd-rk"></select></label>
+        <label class="f" id="fl-dd-ab"><span>특성</span><select id="dd-ab"></select></label>
+        <label class="f" id="fl-dd-tera"><span>테라스탈</span><select id="dd-tera"></select></label>
+        <label class="f" id="fl-dd-item"><span>도구</span><select id="dd-item"></select></label>
+        <label class="f" id="fl-dd-hp"><span>남은 HP %</span><input type="number" id="dd-hp" min="1" max="100" value="100"></label>
       </div>
-      <div class="cks"><label class="ck"><input type="checkbox" id="dd-wall">리플렉터/빛의장막</label></div>
+      <div class="cks"><label class="ck"><input type="checkbox" id="dd-wall"><span id="wall-t">리플렉터/빛의장막</span></label></div>
     </div>
   </div>
   <div class="card">
     <h2>기술과 필드</h2>
     <div class="combo"><input type="text" id="mv" placeholder="기술 이름 (예: 지진)" autocomplete="off"></div>
     <div class="fields">
-      <label class="f">타입<select id="mv-t"></select></label>
-      <label class="f">분류<select id="mv-c"><option value="0">물리</option><option value="1">특수</option></select></label>
-      <label class="f">위력<input type="number" id="mv-p" min="1" max="999" value="100"></label>
-      <label class="f">타수<input type="number" id="mv-h" min="1" max="10" value="1"></label>
-      <label class="f">날씨<select id="wx"><option value="">없음</option><option value="sun">쾌청</option><option value="rain">비</option><option value="sand">모래바람</option><option value="snow">눈</option></select></label>
-      <label class="f">필드<select id="tr"><option value="">없음</option><option value="elec">일렉트릭필드</option><option value="grass">그래스필드</option><option value="psy">사이코필드</option><option value="mist">미스트필드</option></select></label>
+      <label class="f"><span>타입</span><select id="mv-t"></select></label>
+      <label class="f"><span>분류</span><select id="mv-c"><option value="0">물리</option><option value="1">특수</option></select></label>
+      <label class="f"><span>위력</span><input type="number" id="mv-p" min="1" max="999" value="100"></label>
+      <label class="f"><span>타수</span><input type="number" id="mv-h" min="1" max="10" value="1"></label>
+      <label class="f" id="fl-wx"><span>날씨</span><select id="wx"></select></label>
+      <label class="f" id="fl-tr"><span>필드</span><select id="tr"></select></label>
     </div>
     <div class="cks"><label class="ck"><input type="checkbox" id="crit">급소</label>
-      <label class="ck"><input type="checkbox" id="spread">더블 범위기 (0.75배)</label></div>
+      <label class="ck" id="ck-spread"><input type="checkbox" id="spread"><span id="spread-t">더블 범위기 (0.75배)</span></label></div>
   </div>
   <div class="card" id="dm-out"></div>
   <div class="card"><h2>배우는 기술 데미지 순위</h2><div class="tw" id="dm-rank"></div>
-    <p class="note">위쪽 설정 그대로 계산한 순위야. 줄을 누르면 그 기술이 선택돼. 위력이 정해지지 않은 기술은 빠져 있고, 2~5회 연속기는 3회로 계산했어.</p></div>
+    <p class="note">위 설정 그대로 계산한 순위야. 줄을 누르면 그 기술이 선택돼. 위력이 정해지지 않은 기술은 빠지고, 2~5회 연속기는 3회로 계산해.</p></div>
 </section>
 
 <section id="v-speed" hidden>
   <div class="cols" id="sp-cols"></div>
-  <div class="card"><div class="cks"><label class="ck"><input type="checkbox" id="sp-tr">트릭룸</label></div><div id="sp-out"></div></div>
+  <div class="card"><div class="cks"><label class="ck" id="sp-trl"><input type="checkbox" id="sp-tr">트릭룸</label></div><div id="sp-out"></div></div>
   <div class="card"><h2>스피드 실수치 표</h2><div class="tw" id="sp-table"></div></div>
 </section>
 
@@ -309,7 +308,8 @@ const CH=()=>document.documentElement.dataset.mode==='champions';
 const LV=()=>CH()?50:Math.min(100,Math.max(1,parseInt($('lv').value)||50));
 const num=(id,lo,hi,d)=>{const v=parseInt($(id).value);return isNaN(v)?d:Math.min(hi,Math.max(lo,v))};
 const sp2ev=n=>n<=0?0:8*n-4, ev2sp=e=>e<=0?0:Math.min(32,Math.round((e+4)/8));
-const evIn=(id,d)=>CH()?sp2ev(num(id,0,32,d||0)):num(id,0,252,d||0);
+const evIn=(id,d)=>CH()?sp2ev(num(id,0,32,d||0)):GEN()<=2?num(id,0,65535,d||0):num(id,0,252,d||0);
+const ivIn=id=>CH()?31:GEN()<=2?num(id,0,15,15):num(id,0,31,31);
 const tIn=id=>CH()?-1:+$(id).value;
 const evCols=()=>CH()?['0','32','32↑']:['무보정','252','252↑'];
 function eff(t,types,ab){
@@ -319,8 +319,14 @@ function eff(t,types,ab){
     if(SOLID.includes(ab)&&m>1) m*=.75; }
   return m;
 }
-function stat(b,ev,nat,L,iv){iv=iv==null?31:iv;return Math.floor((Math.floor((2*b+iv+Math.floor(ev/4))*L/100)+5)*nat)}
-function hpStat(b,ev,L){return b===1?1:Math.floor((2*b+31+Math.floor(ev/4))*L/100)+L+10}
+/* 1~2세대: DV 0~15 + 스탯경험치(0~65535), 성격 없음 / 3세대 이후: 개체값 + 노력치 + 성격 */
+const sxp=e=>Math.floor(Math.min(255,Math.ceil(Math.sqrt(e)))/4);
+function stat(b,ev,nat,L,iv){
+  if(GEN()<=2){iv=iv==null?15:iv;return Math.floor(((b+iv)*2+sxp(ev))*L/100)+5}
+  iv=iv==null?31:iv;return Math.floor((Math.floor((2*b+iv+Math.floor(ev/4))*L/100)+5)*Math.round(nat*10)/10)}
+function hpStat(b,ev,L,iv){
+  if(GEN()<=2){iv=iv==null?15:iv;return Math.floor(((b+iv)*2+sxp(ev))*L/100)+L+10}
+  iv=iv==null?31:iv;return b===1?1:Math.floor((2*b+iv+Math.floor(ev/4))*L/100)+L+10}
 const rk=r=>r>=0?(2+r)/2:2/(2-r);
 const mtxt=m=>m===.5?'½':m===.25?'¼':m===.125?'⅛':String(+m.toFixed(2));
 
@@ -410,108 +416,248 @@ const SKIN={'프리즈스킨':14,'스카이스킨':2,'페어리스킨':17,'일�
 const PINCH={'맹화':9,'급류':10,'심록':11,'벌레의알림':6};
 const TERR={elec:12,grass:11,psy:13};
 let mvBox;
-function setMove(i,quiet){const m=MV[i]; mvBox.set(i); $('mv-t').value=m[1]; $('mv-c').value=m[3]; $('mv-p').value=m[2]||60; $('mv-h').value=HITS[m[0]]||1; if(!quiet)update()}
+function setMove(i,quiet){const m=MV[i]; mvBox.set(i); $('mv-t').value=mvT(i); $('mv-c').value=mvC(i); $('mv-p').value=mvP(i)||60; $('mv-h').value=HITS[m[0]]||1; if(!quiet)update()}
 function koText(rolls,hp){
-  const mn=rolls[0],mx=rolls[15]; if(mx<=0)return '데미지가 안 들어가';
+  const N=rolls.length, mn=rolls[0], mx=rolls[N-1]; if(mx<=0)return '데미지가 안 들어가';
   for(let n=1;n<=8;n++){ if(mx*n<hp)continue;
-    if(mn*n>=hp)return `확정 ${n}타`;
+    if(mn*n>=hp)return n===1?'확정 1타, 한 방!':`확정 ${n}타`;
     let d=new Map([[0,1]]);
     for(let k=0;k<n;k++){const e=new Map();for(const[s,c]of d)for(const r of rolls){const v=Math.min(hp,s+r);e.set(v,(e.get(v)||0)+c)}d=e}
-    return `난수 ${n}타 (${((d.get(hp)||0)/Math.pow(16,n)*100).toFixed(1)}%)`; }
-  return '9타 이상';
+    return `난수 ${n}타 (${((d.get(hp)||0)/Math.pow(N,n)*100).toFixed(1)}%)`; }
+  return '9타 이상 걸려';
 }
+/* ---------- 세대별 계산 공통 ---------- */
+const pokeRound=n=>n%1>.5?Math.ceil(n):Math.floor(n);
+const chain=a=>{let M=4096;for(const m of a)if(m!==4096)M=(M*m+2048)>>12;return M};
+const TORD=[0,9,10,12,11,14,1,3,4,2,13,6,5,7,15,16,8]; /* 2~4세대: 타입 상성을 이 순서로 하나씩 적용 */
+const EXPL=mset('자폭 대폭발'), SUNH=mset('솔라빔 솔라블레이드');
+/* 특성이 처음 생긴 세대 (목록에 없으면 3세대) */
+const ABG={'선파워':4,'테크니션':4,'철주먹':4,'적응력':4,'색안경':4,'틀깨기':4,'천진':4,'이판사판':4,'노말스킨':4,'필터':4,'하드록':4,'마중물':4,'건조피부':4,'전기엔진':4,'내열':4,
+'초식':5,'멀티스케일':5,'테라볼티지':5,'터보블레이즈':5,'단단한발톱':6,'옹골찬턱':6,'메가런처':6,'프리즈스킨':6,'스카이스킨':6,'페어리스킨':6,'변환자재':6,'퍼코트':6,
+'일렉트릭스킨':7,'펑크록':7,'강철술사':7,'수포':7,'복슬복슬':7,'프리즘아머':7,'스펙터가드':7,'리베로':8,
+'트랜지스터':9,'용의턱':9,'예리함':9,'재앙의목간':9,'재앙의그릇':9,'재앙의검':9,'재앙의구슬':9,'정화의소금':9,'노릇노릇바디':9,'흙먹기':9};
+const abOK=(n,G)=>n&&G>=3&&G>=(ABG[n]||3)?n:'';
+/* 능력치 변화: 1~2세대는 표 + 상한 999, 3세대 이후는 (2+랭크)/2 */
+function bst(s,r){
+  if(GEN()<=2){s=r>=0?Math.floor(s*(2+r)/2):Math.floor(s*[100,66,50,40,33,28,25][-r]/100);return Math.min(999,Math.max(1,s))}
+  return r>=0?Math.floor(s*(2+r)/2):Math.floor(s*2/(2-r));
+}
+function typeInfo(G,mt,dty,dab){
+  const ts=dty.slice();
+  if(G>=2&&G<=4&&ts.length===2&&ts[0]!==ts[1]&&TORD.indexOf(ts[0])>TORD.indexOf(ts[1]))ts.reverse();
+  const seq=ts.map(t=>eff(mt,[t],'')), t0=seq.reduce((a,b)=>a*b,1);
+  const tt=G>=3?eff(mt,dty,SOLID.includes(dab)?'':dab):t0;
+  return {seq,t0,tt,abm:t0?tt/t0:1};
+}
+function wxApply(b,c,mt,nm,sb){
+  const w=c.wx; let m=1;
+  if((w==='sun'&&mt===9)||(w==='rain'&&mt===10))m=1.5;
+  else if((w==='sun'&&mt===10)||(w==='rain'&&mt===9))m=.5;
+  else if(sb&&SUNH.has(nm)&&(w==='rain'||w==='sand'||w==='snow'))m=.5;
+  return Math.floor(b*m);
+}
+const zeroRes=(n,mt,pow)=>({rolls:Array(n).fill(0),A:0,D:0,te:0,stab:1,mt,pow});
+
 function readCtx(){
-  const a=PK[sel.da], d=PK[sel.dd]; if(!a||!d)return null;
-  const L=LV(), hp=hpStat(d[3],evIn('dd-hpev'),L), pct=num('dd-hp',1,100,100);
-  return {a,d,L,hp,pct,hpNow:Math.max(1,Math.floor(hp*pct/100)),
-    aab:$('da-ab').value,dab:$('dd-ab').value,ait:$('da-item').value,dit:$('dd-item').value,
-    atera:tIn('da-tera'),dtera:tIn('dd-tera'),ar:+$('da-rk').value,dr:+$('dd-rk').value,
-    aev:evIn('da-ev'),anat:+$('da-nat').value,dev:evIn('dd-ev'),dnat:+$('dd-nat').value,
-    burn:$('da-burn').checked,pinch:$('da-pinch').checked,help:$('da-help').checked,wall:$('dd-wall').checked,
-    crit:$('crit').checked,spread:$('spread').checked,wx:$('wx').value,tr:$('tr').value};
+  const ai=sel.da, di=sel.dd; if(!PK[ai]||!PK[di])return null;
+  const G=GEN(), L=LV(), ds=pS(di), hp=hpStat(ds[0],evIn('dd-hpp'),L,ivIn('dd-hpiv')), pct=num('dd-hp',1,100,100), t9=G>=9&&!CH();
+  return {G,L,ai,di,at:pT(ai),dt:pT(di),as:pS(ai),ds,hp,pct,hpNow:Math.max(1,Math.floor(hp*pct/100)),
+    aab:abOK($('da-ab').value,G),dab:abOK($('dd-ab').value,G),
+    ait:G>=2?$('da-item').value:'',dit:G>=2?$('dd-item').value:'',
+    atera:t9?tIn('da-tera'):-1,dtera:t9?tIn('dd-tera'):-1,ar:+$('da-rk').value,dr:+$('dd-rk').value,
+    aev:evIn('da-pt'),aiv:ivIn('da-iv'),anat:G>=3?+$('da-nat').value:1,
+    dev:evIn('dd-pt'),div:ivIn('dd-iv'),dnat:G>=3?+$('dd-nat').value:1,
+    burn:$('da-burn').checked,pinch:G>=3&&$('da-pinch').checked,help:G>=3&&$('da-help').checked,wall:$('dd-wall').checked,
+    crit:$('crit').checked,spread:G>=3&&$('spread').checked,wx:G>=2?$('wx').value:'',tr:G>=6?$('tr').value:''};
 }
-function calc(c,mt,cat,pow,hits,nm){
-  const aab=c.aab; let dab=c.dab;
+const atkStat=(c,cat)=>stat(c.as[cat?3:1],c.aev,c.anat,c.L,c.aiv);
+const defStat=(c,cat)=>stat(c.ds[cat?4:2],c.dev,c.dnat,c.L,c.div);
+
+/* 1~2세대 (damage-calc gen12: 217~255 난수 39개, 타입 상성은 하나씩 내림) */
+function calcG12(c,mt,cat,pow,hits,nm){
+  const G=c.G, ti=typeInfo(G,mt,c.dt,'');
+  if(!ti.t0)return zeroRes(39,mt,pow);
+  let A=atkStat(c,cat), D=defStat(c,cat), lv=c.L;
+  const ign=c.crit&&(G===1||c.ar<=c.dr);
+  if(ign){ if(G===1)lv*=2 }
+  else{ A=bst(A,c.ar); D=bst(D,c.dr); if(!cat&&c.burn)A=Math.floor(A/2) }
+  if(EXPL.has(nm))D=Math.floor(D/2);
+  if(!ign&&c.wall)D*=2;
+  const A0=A, D0=D;
+  if(A>255||D>255){A=Math.floor(A/4)%256;D=Math.floor(D/4)%256}
+  let b=Math.floor(Math.floor(Math.floor(2*lv/5+2)*Math.max(1,A)*pow/Math.max(1,D))/50);
+  if(G===2&&c.crit)b*=2;
+  if(G===2&&c.ait==='type')b=Math.floor(b*1.1);
+  b=Math.min(997,b)+2;
+  if(G===2)b=wxApply(b,c,mt,nm,true);
+  const own=c.at.includes(mt); if(own)b=Math.floor(b*1.5);
+  for(const m of ti.seq)b=Math.floor(b*m);
+  const rolls=[];
+  for(let i=217;i<=255;i++)rolls.push((G===2?Math.max(1,Math.floor(b*i/255)):b===1?1:Math.floor(b*i/255))*hits);
+  return {rolls,A:A0,D:D0,te:ti.t0,stab:own?1.5:1,mt,pow};
+}
+/* 3세대 (damage-calc gen3: 난수는 맨 마지막, 상성은 하나씩 내림) */
+function calcG3(c,mt,cat,pow,hits,nm){
+  const aab=c.aab, ti=typeInfo(3,mt,c.dt,c.dab);
+  if(!ti.tt)return zeroRes(16,mt,pow);
+  let bp=pow; if(c.pinch&&PINCH[aab]===mt)bp=Math.floor(bp*1.5);
+  let A=atkStat(c,cat);
+  if(!cat&&(aab==='천하장사'||aab==='순수한힘'))A*=2;
+  if(c.ait==='type')A=Math.floor(A*1.1); else if(c.ait==='choiceP'&&!cat)A=Math.floor(A*1.5);
+  if(!cat&&(aab==='의욕'||(aab==='근성'&&c.burn)))A=Math.floor(A*1.5);
+  if(c.ar>0||(!c.crit&&c.ar<0))A=bst(A,c.ar);
+  let D=defStat(c,cat);
+  if(EXPL.has(nm))D=Math.floor(D/2);
+  if(c.dr<0||(!c.crit&&c.dr>0))D=bst(D,c.dr);
+  D=Math.max(1,D);
+  let b=Math.floor(Math.floor(Math.floor(2*c.L/5+2)*A*bp/D)/50);
+  if(c.burn&&!cat&&aab!=='근성')b=Math.floor(b/2);
+  if(c.wall&&!c.crit)b=Math.floor(b/2);
+  if(c.spread)b=Math.floor(b/2);
+  b=wxApply(b,c,mt,nm,true);
+  b=(cat?b:Math.max(1,b))+2;
+  if(c.crit)b*=2;
+  if(c.help)b=Math.floor(b*1.5);
+  const own=c.at.includes(mt); if(own)b=Math.floor(b*1.5);
+  for(const m of ti.seq)b=Math.floor(b*m);
+  b=Math.floor(b*ti.abm);
+  const rolls=[]; for(let i=85;i<=100;i++)rolls.push(Math.max(1,Math.floor(b*i/100))*hits);
+  return {rolls,A,D,te:ti.tt,stab:own?1.5:1,mt,pow:bp};
+}
+/* 4세대 (damage-calc gen4: 난수 뒤에 자속·상성·도구 순서로 내림) */
+function calcG4(c,mt,cat,pow,hits,nm){
+  const aab=c.aab; let dab=c.dab; if(aab==='틀깨기')dab='';
+  if(aab==='노말스킨')mt=0;
+  const ti=typeInfo(4,mt,c.dt,dab);
+  if(!ti.tt)return zeroRes(16,mt,pow);
+  let bp=pow;
+  if(c.help)bp=Math.floor(bp*1.5);
+  if(aab==='테크니션'&&bp<=60)bp=Math.floor(bp*1.5);
+  if(c.ait==='band')bp=Math.floor(bp*1.1); else if(c.ait==='type')bp=Math.floor(bp*1.2);
+  if((aab==='철주먹'&&PUNCH.has(nm))||(aab==='이판사판'&&RECOIL.has(nm)))bp=Math.floor(bp*1.2);
+  else if(c.pinch&&PINCH[aab]===mt)bp=Math.floor(bp*1.5);
+  const ar=dab==='천진'?0:c.ar, dr=aab==='천진'?0:c.dr;
+  let A=atkStat(c,cat);
+  if(ar>0||(!c.crit&&ar<0))A=bst(A,ar);
+  if(!cat&&(aab==='천하장사'||aab==='순수한힘'))A*=2;
+  else if(cat&&aab==='선파워'&&c.wx==='sun')A=Math.floor(A*1.5);
+  else if(!cat&&(aab==='의욕'||(aab==='근성'&&c.burn)))A=Math.floor(A*1.5);
+  if(cat?c.ait==='choiceS':c.ait==='choiceP')A=Math.floor(A*1.5);
+  let D=defStat(c,cat);
+  if(dr<0||(!c.crit&&dr>0))D=bst(D,dr);
+  if(cat&&c.wx==='sand'&&c.dt.includes(5))D=Math.floor(D*1.5);
+  if(EXPL.has(nm))D=Math.floor(D/2);
+  D=Math.max(1,D);
+  let b=Math.floor(Math.floor(Math.floor(2*c.L/5+2)*bp*A/50)/D);
+  if(c.burn&&!cat&&aab!=='근성')b=Math.floor(b/2);
+  if(c.wall&&!c.crit)b=Math.floor(b/2);
+  if(c.spread)b=Math.floor(b*3/4);
+  b=wxApply(b,c,mt,nm,true)+2;
+  if(c.crit)b*=2;
+  if(c.ait==='orb')b=Math.floor(b*1.3);
+  const own=c.at.includes(mt), stab=own?(aab==='적응력'?2:1.5):1;
+  const rolls=[];
+  for(let i=85;i<=100;i++){
+    let v=Math.floor(b*i/100); v=Math.floor(v*stab);
+    for(const m of ti.seq)v=Math.floor(v*m);
+    v=Math.floor(v*ti.abm);
+    if(SOLID.includes(dab)&&ti.t0>1)v=Math.floor(v*.75);
+    if(c.ait==='belt'&&ti.t0>1)v=Math.floor(v*1.2);
+    if(aab==='색안경'&&ti.t0<1)v*=2;
+    if(c.dit==='berry'&&(ti.t0>1||mt===0))v=Math.floor(v*.5);
+    rolls.push(Math.max(1,v)*hits);
+  }
+  return {rolls,A,D,te:ti.tt,stab,mt,pow:bp};
+}
+/* 5~9세대 (damage-calc gen56 / gen789: 4096 기준 반올림 체인) */
+function calcG5(c,mt,cat,pow,hits,nm){
+  const G=c.G, aab=c.aab; let dab=c.dab;
   if(aab==='틀깨기'||aab==='테라볼티지'||aab==='터보블레이즈')dab='';
-  let pm=1;
-  if(aab in SKIN&&mt===0){mt=SKIN[aab];pm*=1.2}
-  else if(aab==='노말스킨'&&mt!==0){mt=0;pm*=1.2}
-  if(aab==='테크니션'&&pow<=60)pm*=1.5;
-  if(c.ait==='type')pm*=1.2;
-  if(c.ait==='band')pm*=1.1;
-  const con=isContact(nm,cat);
-  if(c.ait==='glove'&&PUNCH.has(nm))pm*=1.1;
-  if(aab==='철주먹'&&PUNCH.has(nm))pm*=1.2;
-  if(aab==='단단한발톱'&&con)pm*=1.3;
-  if(aab==='옹골찬턱'&&BITE.has(nm))pm*=1.5;
-  if(aab==='메가런처'&&PULSE.has(nm))pm*=1.5;
-  if(aab==='예리함'&&SLICE.has(nm))pm*=1.5;
-  if(aab==='펑크록'&&SOUND.has(nm))pm*=1.3;
-  if(aab==='이판사판'&&RECOIL.has(nm))pm*=1.2;
-  if(aab==='강철술사'&&mt===8)pm*=1.5;
-  if(aab==='트랜지스터'&&mt===12)pm*=1.3;
-  if(aab==='용의턱'&&mt===15)pm*=1.5;
-  if(aab==='수포'&&mt===10)pm*=2;
-  if(c.help)pm*=1.5;
-  if(TERR[c.tr]===mt)pm*=1.3;
-  if(c.tr==='mist'&&mt===15)pm*=.5;
-  pow=Math.max(1,Math.floor(pow*pm));
+  let ate=0;
+  if(aab in SKIN&&mt===0){mt=SKIN[aab];ate=1}
+  else if(aab==='노말스킨'&&mt!==0){mt=0;ate=G>=7}
+  const dty=c.dtera>=0?[c.dtera]:c.dt, aty=c.atera>=0?[c.atera]:c.at;
+  const ti=typeInfo(G,mt,dty,dab);
+  if(!ti.tt)return zeroRes(16,mt,pow);
+  const con=isContact(nm,cat), bm=[];
+  if(aab==='테크니션'&&pow<=60)bm.push(6144);
+  if((aab==='철주먹'&&PUNCH.has(nm))||(aab==='이판사판'&&RECOIL.has(nm)))bm.push(4915);
+  if(ate)bm.push(G===6?5325:4915);
+  if(aab==='단단한발톱'&&con)bm.push(5325);
+  if(aab==='옹골찬턱'&&BITE.has(nm))bm.push(6144);
+  if(aab==='메가런처'&&PULSE.has(nm))bm.push(6144);
+  if(aab==='예리함'&&SLICE.has(nm))bm.push(6144);
+  if(aab==='펑크록'&&SOUND.has(nm))bm.push(5325);
+  if(c.ait==='type')bm.push(4915); else if(c.ait==='band')bm.push(4505); else if(c.ait==='glove'&&PUNCH.has(nm))bm.push(4506);
+  if(c.help)bm.push(6144);
+  if(G>=6){
+    const grd=(t,ab)=>!t.includes(2)&&ab!=='부유';
+    if(grd(aty,aab)&&TERR[c.tr]===mt)bm.push(G>=8?5325:6144);
+    if(c.tr==='mist'&&mt===15&&grd(dty,dab))bm.push(2048);
+  }
+  if(SUNH.has(nm)&&(c.wx==='rain'||c.wx==='sand'||c.wx==='snow'))bm.push(2048);
+  pow=Math.max(1,pokeRound(pow*chain(bm)/4096));
   let ar=c.ar, dr=c.dr;
   if(dab==='천진')ar=0; if(aab==='천진')dr=0;
   if(c.crit){ar=Math.max(0,ar);dr=Math.min(0,dr)}
-  let A=stat(c.a[cat?6:4],c.aev,c.anat,c.L)*rk(ar);
-  if(!cat&&(aab==='천하장사'||aab==='순수한힘'))A*=2;
-  if(!cat&&aab==='의욕')A*=1.5;
-  if(!cat&&aab==='근성'&&c.burn)A*=1.5;
-  if(cat&&aab==='선파워'&&c.wx==='sun')A*=1.5;
-  if(c.pinch&&PINCH[aab]===mt)A*=1.5;
-  if(c.ait==='choiceP'&&!cat)A*=1.5;
-  if(c.ait==='choiceS'&&cat)A*=1.5;
-  if(dab==='재앙의목간'&&!cat)A*=.75;
-  if(dab==='재앙의그릇'&&cat)A*=.75;
-  const dty=c.dtera>=0?[c.dtera]:ptypes(c.d);
-  let D=stat(c.d[cat?7:5],c.dev,c.dnat,c.L)*rk(dr);
-  if(c.dit==='vest'&&cat)D*=1.5;
-  if(c.dit==='evio')D*=1.5;
-  if(c.wx==='sand'&&cat&&dty.includes(5))D*=1.5;
-  if(c.wx==='snow'&&!cat&&dty.includes(14))D*=1.5;
-  if(dab==='퍼코트'&&!cat)D*=2;
-  if(aab==='재앙의검'&&!cat)D*=.75;
-  if(aab==='재앙의구슬'&&cat)D*=.75;
-  A=Math.max(1,Math.floor(A)); D=Math.max(1,Math.floor(D));
-  let base=Math.floor(Math.floor(Math.floor(2*c.L/5+2)*pow*A/D)/50)+2;
-  if(c.spread)base=Math.floor(base*.75);
-  if(c.wx==='sun')base=Math.floor(base*(mt===9?1.5:mt===10?.5:1));
-  if(c.wx==='rain')base=Math.floor(base*(mt===10?1.5:mt===9?.5:1));
-  if(c.crit)base=Math.floor(base*1.5);
-  const own=ptypes(c.a).includes(mt)||((aab==='변환자재'||aab==='리베로')&&c.atera<0), adapt=aab==='적응력';
+  const am=[];
+  if(!cat&&(aab==='천하장사'||aab==='순수한힘'))am.push(8192);
+  if(!cat&&(aab==='의욕'||(aab==='근성'&&c.burn)))am.push(6144);
+  if(cat&&aab==='선파워'&&c.wx==='sun')am.push(6144);
+  if(c.pinch&&PINCH[aab]===mt)am.push(6144);
+  if(aab==='강철술사'&&mt===8)am.push(6144);
+  if(aab==='용의턱'&&mt===15)am.push(6144);
+  if(aab==='트랜지스터'&&mt===12)am.push(5325);
+  if(aab==='수포'&&mt===10)am.push(8192);
+  if(cat?c.ait==='choiceS':c.ait==='choiceP')am.push(6144);
+  if(dab==='재앙의목간'&&!cat)am.push(3072);
+  if(dab==='재앙의그릇'&&cat)am.push(3072);
+  const A=Math.max(1,pokeRound(bst(atkStat(c,cat),ar)*chain(am)/4096));
+  let D=bst(defStat(c,cat),dr);
+  if(cat&&c.wx==='sand'&&dty.includes(5)&&G>=4)D=pokeRound(D*3/2);
+  if(!cat&&c.wx==='snow'&&dty.includes(14))D=pokeRound(D*3/2);
+  const dm=[];
+  if(cat&&c.dit==='vest')dm.push(6144);
+  if(c.dit==='evio')dm.push(6144);
+  if(dab==='퍼코트'&&!cat)dm.push(8192);
+  if(aab==='재앙의검'&&!cat)dm.push(3072);
+  if(aab==='재앙의구슬'&&cat)dm.push(3072);
+  D=Math.max(1,pokeRound(D*chain(dm)/4096));
+  let b=Math.floor(Math.floor(Math.floor(2*c.L/5+2)*pow*A/D)/50)+2;
+  if(c.spread)b=pokeRound(b*3072/4096);
+  b=wxApply(b,c,mt,nm,false);
+  if(c.crit)b=Math.floor(b*(G>5?1.5:2));
+  const own=c.at.includes(mt)||((aab==='변환자재'||aab==='리베로')&&c.atera<0), adapt=aab==='적응력';
   let stab=1;
   if(c.atera>=0&&mt===c.atera) stab=own?(adapt?2.25:2):(adapt?2:1.5);
   else if(own) stab=(adapt&&c.atera<0)?2:1.5;
-  let te=eff(mt,dty,dab);
-  if(aab==='색안경'&&te>0&&te<1)te*=2;
-  const guard=(dab==='멀티스케일'||dab==='스펙터가드')&&c.pct>=100;
+  const sm=Math.round(stab*4096), fm=[];
+  if(c.wall&&!c.crit)fm.push(2048);
+  if(aab==='색안경'&&ti.t0<1)fm.push(8192);
+  if((dab==='멀티스케일'||dab==='스펙터가드')&&c.pct>=100)fm.push(2048);
+  if(dab==='복슬복슬'&&con)fm.push(2048);
+  if(dab==='펑크록'&&SOUND.has(nm))fm.push(2048);
+  if(SOLID.includes(dab)&&ti.t0>1)fm.push(3072);
+  if(c.ait==='belt'&&ti.t0>1)fm.push(4915); else if(c.ait==='orb')fm.push(5324);
+  if(c.dit==='berry'&&(ti.t0>1||mt===0))fm.push(2048);
+  const M=Math.max(41,Math.min(131072,chain(fm))), burn=c.burn&&!cat&&aab!=='근성';
   const rolls=[];
-  for(let r=85;r<=100;r++){
-    let v=Math.floor(base*r/100); v=Math.floor(v*stab); v=Math.floor(v*te);
-    if(c.burn&&!cat&&aab!=='근성')v=Math.floor(v*.5);
-    if(c.wall&&!c.crit)v=Math.floor(v*.5);
-    if(guard)v=Math.floor(v*.5);
-    if(dab==='복슬복슬'&&con)v=Math.floor(v*.5);
-    if(dab==='펑크록'&&SOUND.has(nm))v=Math.floor(v*.5);
-    if(c.ait==='orb')v=Math.floor(v*1.3);
-    if(c.ait==='belt'&&te>1)v=Math.floor(v*1.2);
-    if(c.dit==='berry'&&te>1)v=Math.floor(v*.5);
-    if(te>0&&v<1)v=1;
+  for(let i=85;i<=100;i++){
+    let v=Math.floor(b*i/100);
+    if(sm!==4096)v=pokeRound(v*sm/4096);
+    v=Math.floor(v*ti.tt);
+    if(burn)v=Math.floor(v/2);
+    v=pokeRound(Math.max(1,v*M/4096));
     rolls.push(v*hits);
   }
-  return {rolls,A,D,te,stab,mt,pow};
+  return {rolls,A,D,te:ti.tt,stab,mt,pow};
 }
+function calc(c,mt,cat,pow,hits,nm){return (c.G<=2?calcG12:c.G===3?calcG3:c.G===4?calcG4:calcG5)(c,mt,cat,pow,hits,nm)}
 function rDamage(){
   const c=readCtx(), out=$('dm-out');
-  if(!c){out.innerHTML='<h2>결과</h2><div class="sub">공격하는 쪽과 맞는 쪽 포켓몬을 둘 다 골라줘.</div>';$('dm-rank').innerHTML='<div class="sub">포켓몬을 고르면 순위가 나와.</div>';return}
+  if(!c){out.innerHTML='<h2>결과</h2><div class="sub">공격하는 쪽이랑 맞는 쪽 포켓몬을 둘 다 골라줘.</div>';$('dm-rank').innerHTML='<div class="sub">포켓몬을 고르면 순위가 나와.</div>';return}
   const hits=num('mv-h',1,10,1), r=calc(c,+$('mv-t').value,+$('mv-c').value,num('mv-p',1,999,1),hits,$('mv').value.trim());
-  const hp=c.hp, now=c.hpNow, mn=r.rolls[0], mx=r.rolls[15];
+  const hp=c.hp, now=c.hpNow, N=r.rolls.length, mn=r.rolls[0], mx=r.rolls[N-1];
   const pc=v=>(v/hp*100).toFixed(1);
   const keep=Math.max(0,(now-mx)/hp*100), maybe=Math.max(0,Math.min(now,now-mn)/hp*100-keep);
   const tag=r.te===0?'효과가 없다':r.te>1?`효과가 굉장하다 ×${mtxt(r.te)}`:r.te<1?`효과가 별로다 ×${mtxt(r.te)}`:'등배 ×1';
@@ -519,13 +665,13 @@ function rDamage(){
     <div class="big">${pc(mn)}% ~ ${pc(mx)}%</div>
     <div class="verdict">${koText(r.rolls,now)}</div>
     <div class="hp" role="img" aria-label="맞은 뒤 남는 HP"><i class="keep" style="width:${keep}%"></i><i class="maybe" style="width:${maybe}%"></i></div>
-    <div class="sub">데미지 ${mn} ~ ${mx}${hits>1?` (${hits}회 합계)`:''} / 상대 HP ${now}${now<hp?' / '+hp:''} · ${chip(r.mt)} ${tag}${r.stab>1?` · 자속 ×${r.stab}`:''} · 실제 위력 ${r.pow} · 공격 실수치 ${r.A}, 방어 실수치 ${r.D}</div>
-    <div class="note">난수 16개: ${r.rolls.join(', ')}</div>`;
-  const list=(c.a[10]||[]).map(i=>{const m=MV[i]; if(!m[2])return null; const h=HITS[m[0]]||1; const x=calc(c,m[1],m[3],m[2],h,m[0]); return {i,m,h,x}})
-    .filter(Boolean).sort((p,q)=>q.x.rolls[15]-p.x.rolls[15]||q.x.rolls[0]-p.x.rolls[0]).slice(0,15);
+    <div class="sub">데미지 ${mn} ~ ${mx}${hits>1?` (${hits}회 합계)`:''} · 상대 HP ${now}${now<hp?' / '+hp:''} · ${chip(r.mt)} ${tag}${r.stab>1?` · 자속 ×${r.stab}`:''} · 위력 ${r.pow} · 공격 ${r.A} / 방어 ${r.D}</div>
+    <div class="note">난수 ${N}개: ${r.rolls.join(', ')}</div>`;
+  const list=(pL(c.ai)||[]).map(i=>{const p=mvP(i); if(!p)return null; const h=HITS[MV[i][0]]||1; const x=calc(c,mvT(i),mvC(i),p,h,MV[i][0]); return {i,p,h,x,cat:mvC(i)}})
+    .filter(Boolean).sort((p,q)=>q.x.rolls[q.x.rolls.length-1]-p.x.rolls[p.x.rolls.length-1]||q.x.rolls[0]-p.x.rolls[0]).slice(0,15);
   $('dm-rank').innerHTML=list.length?`<table><tr><th class="l">기술</th><th>타입</th><th>분류</th><th>위력</th><th>데미지</th><th class="l">결과</th></tr>`+
-    list.map(o=>`<tr data-m="${o.i}" style="cursor:pointer"><td class="l">${esc(o.m[0])}</td><td>${chip(o.x.mt)}</td><td>${o.m[3]?'특수':'물리'}</td><td>${o.m[2]}${o.h>1?'×'+o.h:''}</td><td>${pc(o.x.rolls[0])}~${pc(o.x.rolls[15])}%</td><td class="l">${koText(o.x.rolls,now)}</td></tr>`).join('')+'</table>'
-    :'<div class="sub">이 포켓몬의 배우는 기술 데이터가 없어. 위에서 기술을 직접 골라줘.</div>';
+    list.map(o=>{const rl=o.x.rolls; return `<tr data-m="${o.i}" style="cursor:pointer"><td class="l">${esc(MV[o.i][0])}</td><td>${chip(o.x.mt)}</td><td>${o.cat?'특수':'물리'}</td><td>${o.p}${o.h>1?'×'+o.h:''}</td><td>${pc(rl[0])}~${pc(rl[rl.length-1])}%</td><td class="l">${koText(rl,now)}</td></tr>`}).join('')+'</table>'
+    :'<div class="sub">이 포켓몬은 배우는 기술 데이터가 없어. 위에서 기술을 직접 골라줘.</div>';
 }
 
 /* ---------- 스피드 ---------- */
@@ -533,29 +679,44 @@ function spSide(k,title){return `<div class="card"><h2>${title}</h2>
   <div class="combo"><input type="text" id="${k}-pk" placeholder="포켓몬 이름" autocomplete="off"></div>
   <div class="info" id="${k}-info"></div>
   <div class="fields">
-    <label class="f">스피드 노력치<input type="number" id="${k}-ev" min="0" max="252" step="4" value="252"></label>
-    <label class="f gen9">개체값<input type="number" id="${k}-iv" min="0" max="31" value="31"></label>
-    <label class="f">성격<select id="${k}-nat">${natOpts}</select></label>
-    <label class="f">랭크<select id="${k}-rk">${rankOpts}</select></label>
+    <label class="f" id="fl-${k}-pt"><span>스피드 노력치</span><input type="number" id="${k}-pt" min="0" max="252" step="4" value="252"></label>
+    <label class="f" id="fl-${k}-iv"><span>개체값</span><input type="number" id="${k}-iv" min="0" max="31" value="31"></label>
+    <label class="f" id="fl-${k}-nat"><span>성격</span><select id="${k}-nat">${natOpts}</select></label>
+    <label class="f"><span>랭크</span><select id="${k}-rk">${rankOpts}</select></label>
   </div>
-  <div class="cks"><label class="ck"><input type="checkbox" id="${k}-sc">구애스카프</label>
-    <label class="ck"><input type="checkbox" id="${k}-tw">순풍</label>
+  <div class="cks"><label class="ck" id="ck-${k}-sc"><input type="checkbox" id="${k}-sc">구애스카프</label>
+    <label class="ck" id="ck-${k}-tw"><input type="checkbox" id="${k}-tw">순풍</label>
     <label class="ck"><input type="checkbox" id="${k}-pz">마비</label></div></div>`}
-function spVal(k){const p=PK[sel[k]]; if(!p)return null;
-  let v=stat(p[8],evIn(k+'-ev'),+$(k+'-nat').value,LV(),CH()?31:num(k+'-iv',0,31,31))*rk(+$(k+'-rk').value);
-  if($(k+'-sc').checked)v*=1.5; if($(k+'-tw').checked)v*=2; if($(k+'-pz').checked)v*=.5; return Math.floor(v)}
+function spVal(k){const i=sel[k]; if(!PK[i])return null; const G=GEN();
+  let v=stat(pS(i)[5],evIn(k+'-pt'),G>=3?+$(k+'-nat').value:1,LV(),ivIn(k+'-iv'));
+  v=bst(v,+$(k+'-rk').value);
+  const m=[]; if(G>=4&&$(k+'-tw').checked)m.push(8192); if(G>=4&&$(k+'-sc').checked)m.push(6144);
+  if(m.length)v=pokeRound(v*chain(m)/4096);
+  if($(k+'-pz').checked)v=Math.floor(v*(G>=7?50:25)/100);
+  return G<=2?Math.min(999,v):v}
 function rSpeed(){
-  const a=spVal('sa'), b=spVal('sb'), tr=$('sp-tr').checked, L=LV();
+  const G=GEN(), a=spVal('sa'), b=spVal('sb'), tr=G>=4&&$('sp-tr').checked, L=LV();
   if(a==null||b==null){$('sp-out').innerHTML='<div class="sub">두 포켓몬을 골라줘.</div>'}
   else{ const na=esc(NAMES[sel.sa]), nb=esc(NAMES[sel.sb]);
     const first=a===b?null:((a>b)!==tr?na:nb);
-    $('sp-out').innerHTML=`<div class="big">${a} vs ${b}</div><div class="verdict">${first?first+'이(가) 먼저 움직여':'동속이라 순서가 랜덤이야'}</div>
-      <div class="sub">${na} ${a} · ${nb} ${b}${tr?' · 트릭룸 중이라 느린 쪽이 먼저':''}</div>`; }
-  const rows=['sa','sb'].map(k=>PK[sel[k]]).filter(Boolean);
-  $('sp-table').innerHTML=rows.length?`<table><tr><th class="l">포켓몬</th><th>최속</th><th>준속</th><th>무보정</th><th>최저</th><th>최속 스카프</th><th>준속 스카프</th></tr>`+
-    rows.map(p=>{const s=p[8],f=stat(s,252,1.1,L),n=stat(s,252,1,L);
-      return `<tr><td class="l">${esc(p[0])}</td><td>${f}</td><td>${n}</td><td>${stat(s,0,1,L)}</td><td>${stat(s,0,.9,L,CH()?31:0)}</td><td>${Math.floor(f*1.5)}</td><td>${Math.floor(n*1.5)}</td></tr>`}).join('')+
-    '</table><p class="note">'+(CH()?'최속은 스탯 포인트 32에 성격 보정, 준속은 스탯 포인트 32, 최저는 스탯 포인트 0에 하락 성격이야.':'최속은 노력치 252에 성격 보정, 준속은 노력치 252, 최저는 노력치 0에 개체값 0과 하락 성격이야.')+'</p>':'<div class="sub">포켓몬을 고르면 표가 나와.</div>';
+    $('sp-out').innerHTML=`<div class="big">${a} vs ${b}</div><div class="verdict">${first?first+' 선공!':'동속 — 순서는 랜덤'}</div>
+      <div class="sub">${na} ${a} · ${nb} ${b}${tr?' · 트릭룸이라 느린 쪽이 먼저 움직여':''}</div>`; }
+  const ids=['sa','sb'].map(k=>sel[k]).filter(i=>PK[i]);
+  let head,row,note;
+  if(G<=2){
+    head='<th>최대</th><th>노력 0</th><th>최저</th>';
+    row=s=>[stat(s,65535,1,L,15),stat(s,0,1,L,15),stat(s,0,1,L,0)];
+    note='최대는 DV 15에 스탯경험치 65535, 노력 0은 DV 15에 스탯경험치 0, 최저는 DV 0에 스탯경험치 0이야.';
+  }else{
+    const sc=G>=4, iv0=CH()?31:0;
+    head='<th>최속</th><th>준속</th><th>무보정</th><th>최저</th>'+(sc?'<th>최속 스카프</th><th>준속 스카프</th>':'');
+    row=s=>{const f=stat(s,252,1.1,L),n=stat(s,252,1,L),r=[f,n,stat(s,0,1,L),stat(s,0,.9,L,iv0)];
+      if(sc)r.push(pokeRound(f*6144/4096),pokeRound(n*6144/4096)); return r};
+    note=CH()?'최속은 스탯 포인트 32에 성격 보정, 준속은 스탯 포인트 32, 최저는 스탯 포인트 0에 하락 성격이야.':'최속은 노력치 252에 성격 보정, 준속은 노력치 252, 최저는 노력치 0에 개체값 0과 하락 성격이야.';
+  }
+  $('sp-table').innerHTML=ids.length?`<table><tr><th class="l">포켓몬</th>${head}</tr>`+
+    ids.map(i=>`<tr><td class="l">${esc(PK[i][0])}</td>${row(pS(i)[5]).map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')+
+    `</table><p class="note">${note}</p>`:'<div class="sub">포켓몬을 고르면 표가 나와.</div>';
 }
 
 /* ---------- 파티 ---------- */
@@ -701,6 +862,45 @@ function start(){
   route();
 }
 start();
+</script>
+<script>
+/* ---------- 세대별 입력칸 (데미지·스피드 탭) ---------- */
+let uiKind='ev';
+const PTIDS=['da-pt','dd-hpp','dd-pt','sa-pt','sb-pt'], IVIDS=['da-iv','dd-hpiv','dd-iv','sa-iv','sb-iv'];
+const kToEV=(k,v)=>k==='sp'?sp2ev(Math.min(32,v)):k==='dv'?4*sxp(v):Math.min(252,v);
+const kFromEV=(k,e)=>k==='sp'?ev2sp(e):k==='dv'?(e>=252?65535:e*e):e;
+function setOpts(id,list){const s=$(id); if(!s)return; const cur=s.value;
+  s.innerHTML=list.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join(''); if(list.some(o=>o[0]===cur))s.value=cur}
+function show(id,on){const e=$(id); if(e)e.style.display=on?'':'none'}
+function applyGenUI(){
+  const G=GEN(), ch=CH(), kind=ch?'sp':G<=2?'dv':'ev';
+  if(kind!==uiKind){
+    PTIDS.forEach(id=>{const el=$(id),v=parseInt(el.value); if(!isNaN(v))el.value=kFromEV(kind,kToEV(uiKind,Math.max(0,v)))});
+    if((kind==='dv')!==(uiKind==='dv'))IVIDS.forEach(id=>{const el=$(id),v=parseInt(el.value); if(!isNaN(v))el.value=kind==='dv'?Math.min(15,Math.ceil(v/2)):(v>=15?31:v*2)});
+    uiKind=kind;
+  }
+  const unit=kind==='sp'?'스탯 포인트':kind==='dv'?'노력 (0~65535)':'노력치',
+    nm={'da-pt':G===1?'공격/특수':'공격/특공','dd-hpp':'HP','dd-pt':G===1?'방어/특수':'방어/특방','sa-pt':'스피드','sb-pt':'스피드'};
+  PTIDS.forEach(id=>{const el=$(id); el.max=kind==='sp'?32:kind==='dv'?65535:252; el.step=kind==='ev'?4:1;
+    $('fl-'+id).firstChild.textContent=nm[id]+' '+unit});
+  const ivNm={'da-iv':nm['da-pt'],'dd-hpiv':'HP','dd-iv':nm['dd-pt'],'sa-iv':'스피드','sb-iv':'스피드'};
+  IVIDS.forEach(id=>{const el=$(id); el.max=kind==='dv'?15:31; $('fl-'+id).firstChild.textContent=ivNm[id]+(kind==='dv'?' DV (0~15)':' 개체값'); show('fl-'+id,!ch)});
+  ['da','dd','sa','sb'].forEach(k=>show('fl-'+k+'-nat',G>=3));
+  ['da','dd'].forEach(k=>{show('fl-'+k+'-ab',G>=3); show('fl-'+k+'-tera',G===9&&!ch); show('fl-'+k+'-item',G>=2)});
+  setOpts('da-item',[['','없음'],...(G>=3?[['choiceP','구애머리띠']]:[]),...(G>=4?[['choiceS','구애안경'],['orb','생명의구슬'],['belt','달인의띠']]:[]),
+    ...(G>=2?[['type',`타입 강화 도구 (${G<=3?'1.1':'1.2'}배)`]]:[]),...(G>=4?[['band','힘의머리띠/박식안경']]:[]),...(G>=9?[['glove','펀치글러브 (펀치 1.1배)']]:[])]);
+  setOpts('dd-item',[['','없음'],...(G>=6?[['vest','돌격조끼']]:[]),...(G>=5?[['evio','진화의휘석']]:[]),...(G>=4?[['berry','반감열매']]:[])]);
+  show('fl-wx',G>=2); show('fl-tr',G>=6);
+  setOpts('wx',[['','없음'],['sun','쾌청'],['rain','비'],...(G>=4?[['sand','모래바람']]:[]),...(G>=9?[['snow','눈']]:[])]);
+  setOpts('tr',[['','없음'],['elec','일렉트릭필드'],['grass','그래스필드'],...(G>=7?[['psy','사이코필드']]:[]),['mist','미스트필드']]);
+  setOpts('mv-t',TN.map((n,i)=>[String(i),n]).filter((o,i)=>typeOK(i)));
+  show('ck-pinch',G>=3); show('ck-help',G>=3); show('ck-spread',G>=3);
+  $('spread-t').textContent=`더블 범위기 (${G===3?'0.5':'0.75'}배)`;
+  ['sa','sb'].forEach(k=>{show('ck-'+k+'-sc',G>=4); show('ck-'+k+'-tw',G>=4)}); show('sp-trl',G>=4);
+  update();
+}
+applyGenUI();
+document.addEventListener('modechange',applyGenUI);
 </script>
 <script>
 /* ---------- 실전 데이터 추천 ---------- */
