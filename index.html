@@ -44,8 +44,12 @@ h1::before{content:"";width:22px;height:22px;border-radius:50%;flex:none;
 .modesw{display:flex;border:1px solid rgba(255,255,255,.4);border-radius:999px;overflow:hidden}
 .modesw button{background:transparent;color:rgba(255,255,255,.85);border:0;padding:4px 12px;font:inherit;font-size:12.5px;cursor:pointer}
 .modesw button.on{background:#fff;color:var(--accent);font-weight:600}
-html[data-mode=champions] .gen9,html[data-mode=champions] #lv{display:none!important}
-html:not([data-mode=champions]) #ch-note{display:none}
+html[data-mode=ch] .gen9,html[data-mode=ch] #lv{display:none!important}
+html:not([data-mode=ch]) #ch-note{display:none}
+html:not([data-mode=g9]) :is(label.f:has(>select[id$="-tera"]),#v-battle p.note.gen9,select.tera){display:none!important}
+html:is([data-mode=g1],[data-mode=g2]) label.f:has(>select[id$="-ab"]){display:none!important}
+.combo .na{display:block;margin-top:4px;font-size:12px;color:var(--weak,#c0392b)}
+#gen-note{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:50;background:var(--ink,#222);color:var(--panel,#fff);padding:8px 14px;border-radius:999px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.25)}
 .lv{color:rgba(255,255,255,.85);font-size:13px;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .lv input{width:62px;background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.35)!important;color:#fff!important;padding:4px 8px!important}
 nav{display:flex;gap:6px;overflow-x:auto;padding-block:6px 12px;scrollbar-width:none}
@@ -281,7 +285,9 @@ const AB={"1":"악취","2":"잔비","3":"가속","4":"전투무장","5":"옹골�
 const MV=[["1000만볼트",12,195,1,0],["10만마력",4,95,0,0],["10만볼트",12,90,1,0],["3연화살",1,90,0,0],["DD래리어트",16,85,0,0],["G의힘",11,80,0,0],["V제너레이트",9,180,0,0],["가시대포",0,20,0,0],["가위자르기",0,0,0,0],["가지찌르기",11,40,0,0],["강철날개",8,70,0,0],["개척하기",11,50,0,0],["객기",0,70,0,0],["거대해머",8,160,0,0],["거수참",8,100,0,0],["거수탄",8,100,0,0],["거품",10,40,1,0],["거품광선",10,65,1,0],["고드름떨구기",14,85,0,0],["고드름침",14,25,0,0],["고속스핀",0,50,0,0],["고스트다이브",7,90,0,0],["고양이돈받기",0,40,0,0],["골드러시",8,120,1,0],["공간절단",15,100,1,0],["공격지령",6,90,0,0],["공중날기",2,90,0,0],["괴력",0,80,0,0],["괴상한바람",7,60,1,0],["구르기",5,30,0,0],["구멍파기",4,80,0,0],["구슬던지기",0,15,0,0],["그라운드포스",4,90,0,0],["그래스믹서",11,65,1,0],["그래스슬라이더",11,55,0,0],["그로우펀치",1,40,0,0],["그림자꿰매기",7,80,0,0],["근원의파동",10,110,1,0],["기가드레인",11,75,1,0],["기가임팩트",0,150,0,0],["기사회생",1,0,0,0],["기선제압",1,65,0,3],["기습",16,70,0,1],["기어소서",8,50,0,0],["기어오르기",16,20,0,0],["기합구슬",1,120,1,0],["김밥말이",0,15,0,0],["깜짝베기",16,70,0,0],["깜짝헤드",9,150,1,0],["깨뜨리다",1,75,0,0],["깨물어부수기",16,80,0,0],["껍질끼우기",10,35,0,0],["꽁꽁프로스트",14,100,1,0],["꽃가루경단",6,90,1,0],["꽃보라",11,90,0,0],["꽃잎댄스",11,120,1,0],["꿈먹기",13,100,1,0],["나뭇잎",11,40,0,0],["나이트버스트",16,85,1,0],["나이트헤드",7,0,1,0],["난동부리기",0,120,0,0],["날개치기",2,60,0,0],["내던지기",16,0,0,0],["냉동빔",14,90,1,0],["냉동펀치",14,75,0,0],["노려맞히기",10,80,1,0],["놀래키기",7,30,0,0],["뇌격",12,130,0,0],["누르기",0,85,0,0],["눈보라",14,110,1,0],["눈사태",14,60,0,-4],["눈싸라기",14,40,1,0],["니트로차지",9,50,0,0],["다이그래스",11,10,0,0],["다이내믹풀플레임",9,0,0,0],["다이내믹풀플레임",9,0,1,0],["다이너클",1,10,0,0],["다이드라군",15,10,0,0],["다이록",5,10,0,0],["다이맥스포",15,100,1,0],["다이번",9,100,0,0],["다이빙",10,80,0,0],["다이사이코",13,10,0,0],["다이스트림",10,10,0,0],["다이스틸",8,10,0,0],["다이썬더",12,10,0,0],["다이아스톰",5,100,0,0],["다이아이스",14,10,0,0],["다이아크",16,10,0,0],["다이애시드",3,10,0,0],["다이어스",4,10,0,0],["다이어택",0,10,0,0],["다이웜",6,10,0,0],["다이제트",2,10,0,0],["다이페어리",17,10,0,0],["다이할로우",7,10,0,0],["다크액셀",16,80,0,0],["단애의칼",4,120,0,0],["달려들기",6,50,0,0],["대검돌격",15,120,0,0],["대격분",9,120,0,0],["대지의파동",0,50,1,0],["대지의힘",4,90,1,0],["대포무노포",10,65,1,0],["대폭발",0,250,0,0],["더블니들",6,25,0,0],["더블어택",0,35,0,0],["더블윙",2,40,0,0],["더블촙",15,40,0,0],["더블펀처",8,60,0,0],["더스트슈트",3,120,0,0],["덤벼들기",6,80,0,0],["덩굴방망이",11,100,0,0],["덩굴채찍",11,45,0,0],["데스윙",2,80,1,0],["도각참",16,85,0,0],["도둑질",16,60,0,0],["독찌르기",3,80,0,0],["독침",3,15,0,0],["독침천발",3,60,0,0],["돌떨구기",5,50,0,0],["돌려차기",1,60,0,0],["돌림노래",0,60,1,0],["돌진",0,90,0,0],["두번차기",1,30,0,0],["둥실둥실폴",2,90,0,0],["드래곤다이브",15,100,0,0],["드래곤애로",15,50,0,0],["드래곤에너지",15,150,1,0],["드래곤클로",15,80,0,0],["드래곤테일",15,60,0,-6],["드래곤해머",15,90,0,0],["드럼어택",11,80,0,0],["드레인키스",17,50,1,0],["드레인펀치",1,75,0,0],["드릴라이너",4,80,0,0],["들이받기",4,120,0,0],["따라가때리기",16,40,0,0],["땅가르기",4,0,0,0],["땅고르기",4,60,0,0],["떨어뜨리기",5,50,0,0],["뛰어오르기",2,85,0,0],["라이징랜드오버",4,0,0,0],["라이징랜드오버",4,0,1,0],["라이징볼트",12,70,1,0],["라이트닝드라이브",12,100,1,0],["라이트닝서프라이드",12,175,1,0],["러블리스타임팩트",17,0,0,0],["러블리스타임팩트",17,0,1,0],["러스터캐논",8,80,1,0],["러스터퍼지",13,95,1,0],["레이디얼에지스톰",5,190,0,0],["레이징불",0,90,0,0],["레이징지오프리즈",14,0,0,0],["레이징지오프리즈",14,0,1,0],["로켓박치기",0,130,0,0],["로킥",1,65,0,0],["록블라스트",5,25,0,0],["록클라임",0,90,0,0],["루미나콜리전",13,80,1,0],["리벤지",1,60,0,-4],["리프블레이드",11,90,0,0],["리프스톰",11,130,1,0],["마구찌르기",0,15,0,0],["마구할퀴기",0,18,0,0],["마그넷봄",8,60,0,0],["마그마스톰",9,100,1,0],["마지막수단",0,0,1,0],["마지막일침",6,50,0,0],["마하펀치",1,40,0,1],["막치기",0,40,0,0],["만나자마자",6,90,0,2],["매그니튜드",4,0,0,0],["매지컬리프",11,60,1,0],["매지컬샤인",17,80,1,0],["매지컬액셀",17,100,0,0],["매지컬플레임",9,75,1,0],["매혹의보이스",17,80,1,0],["맥시멈사이브레이커",13,0,0,0],["맥시멈사이브레이커",13,0,1,0],["맹독엄니",3,50,0,0],["머드샷",4,55,1,0],["멀티어택",0,120,0,0],["메가드레인",11,40,1,0],["메가톤킥",0,120,0,0],["메가톤펀치",0,80,0,0],["메가혼",6,120,0,0],["메탈버스트",8,0,0,0],["메탈클로",8,50,0,0],["메테오드라이브",8,100,0,0],["메테오빔",5,120,1,0],["모래지옥",4,35,0,0],["목숨걸기",1,0,1,0],["몸통박치기",0,40,0,0],["무릎차기",1,130,0,0],["무한다이빔",15,160,1,0],["무한암야로의유인",7,0,0,0],["무한암야로의유인",7,0,1,0],["묵사발",0,0,0,0],["문라이트블래스터",7,200,1,0],["문포스",17,95,1,0],["물거품아리아",10,90,1,0],["물고버티기",16,80,0,0],["물기",16,60,0,0],["물대포",10,40,1,0],["물수리검",10,15,1,1],["물의맹세",10,80,1,0],["물의파동",10,60,1,0],["미래예지",13,120,1,0],["미러샷",8,65,1,0],["미러코트",13,0,1,-5],["미스트버스트",17,100,1,0],["미스트볼",13,95,1,0],["바늘미사일",6,25,0,0],["바늘팔",11,60,0,0],["바다의심포니",10,195,1,0],["바다회오리",10,35,1,0],["바둥바둥",0,0,0,0],["바디프레스",1,80,0,0],["바람일으키기",2,40,1,0],["바위깨기",1,40,0,0],["바크아웃",16,55,1,0],["박치기",0,70,0,0],["반짝반짝스톰",17,120,1,0],["받아던지기",1,70,0,-1],["발경",1,60,0,0],["발꿈치찍기",1,120,0,0],["발버둥",0,50,0,0],["방전",12,80,1,0],["배대뒤치기",1,60,0,-6],["배리어러시",13,70,0,0],["백귀야행",7,60,1,0],["번개",12,110,1,0],["번개엄니",12,65,0,0],["번개펀치",12,75,0,0],["번개폭풍",12,100,1,0],["번액셀",9,80,0,0],["벌레먹기",6,60,0,0],["벌레의야단법석",6,90,1,0],["벌레의저항",6,50,1,0],["베놈쇼크",3,65,1,0],["베어가르기",0,70,0,0],["변덕레이저",15,80,1,0],["병상첨병",7,65,1,0],["보복",16,50,0,0],["본러시",4,25,0,0],["볼부비부비",12,20,0,0],["볼트체인지",12,70,1,0],["볼트태클",12,120,0,0],["봄의폭풍",17,100,1,0],["부리캐논",2,100,0,-3],["분노",0,20,0,0],["분노의앞니",0,0,0,0],["분노의주먹",7,50,0,0],["분연",9,80,1,0],["분풀이",16,75,0,0],["분함의발구르기",4,75,0,0],["분화",9,150,1,0],["불꽃세례",9,40,1,0],["불꽃엄니",9,65,0,0],["불꽃의맹세",9,80,1,0],["불꽃채찍",9,80,0,0],["불꽃춤",9,80,1,0],["불꽃튀기기",9,70,1,0],["불꽃펀치",9,75,0,0],["불대문자",9,110,1,0],["불릿펀치",8,40,0,1],["불사르기",9,130,1,0],["불새",2,140,0,0],["불태우기",9,60,1,0],["브레이브버드",2,120,0,0],["브레이징소울비트",15,185,1,0],["브레이크클로",0,75,0,0],["브이브이브레이크",0,0,0,0],["블라스트번",9,150,1,0],["블랙홀이클립스",16,0,0,0],["블랙홀이클립스",16,0,1,0],["블러드문",0,140,1,0],["블레이즈킥",9,85,0,0],["블룸샤인엑스트라",11,0,0,0],["블룸샤인엑스트라",11,0,1,0],["블리자드랜스",14,120,0,0],["비검천중파",16,65,0,0],["비밀의힘",0,70,0,0],["비장의무기",0,140,0,0],["빙산바람",14,100,0,0],["뼈다귀부메랑",4,50,0,0],["뼈다귀치기",4,65,0,0],["뿔드릴",0,0,0,0],["뿔찌르기",0,65,0,0],["사과산",11,80,1,0],["사념의박치기",13,80,0,0],["사우전드애로",4,90,0,0],["사우전드웨이브",4,90,0,0],["사이코노이즈",13,75,1,0],["사이코부스트",13,140,1,0],["사이코브레이크",13,100,1,0],["사이코블레이드",13,80,0,0],["사이코쇼크",13,80,1,0],["사이코웨이브",13,0,1,0],["사이코커터",13,70,0,0],["사이코키네시스",13,90,1,0],["사이코팽",13,85,0,0],["사죄의찌르기",16,80,0,0],["생생버블",10,60,1,0],["섀도다이브",7,120,0,0],["섀도레이",7,100,1,0],["섀도본",7,85,0,0],["섀도볼",7,80,1,0],["섀도스틸",7,90,0,0],["섀도애로우즈스트라이크",7,180,0,0],["섀도클로",7,70,0,0],["섀도펀치",7,60,0,0],["선샤인스매셔",8,200,0,0],["섬뜩한주문",13,80,1,0],["성묘",7,50,0,0],["성스러운불꽃",9,100,0,0],["성스러운칼",1,90,0,0],["세차게휘두르기",16,60,0,0],["셸블레이드",10,75,0,0],["셸암즈",3,90,1,0],["소금물",10,65,1,0],["소금절이",5,40,0,0],["소닉붐",0,0,1,0],["소란피기",0,90,1,0],["소울크래시",17,75,0,0],["속여때리기",16,60,0,0],["속이기",0,40,0,3],["속임수",16,95,0,0],["손바닥치기",1,15,0,0],["솔라블레이드",11,125,0,0],["솔라빔",11,120,1,0],["수다",2,65,1,0],["수류연타",10,25,0,0],["슈퍼아쿠아토네이도",10,0,0,0],["슈퍼아쿠아토네이도",10,0,1,0],["스마트혼",8,70,0,0],["스모그",3,30,1,0],["스위프뺨치기",0,25,0,0],["스카이어퍼",1,85,0,0],["스케일노이즈",15,110,1,0],["스케일샷",15,25,0,0],["스타어설트",1,150,0,0],["스톤샤워",5,75,0,0],["스톤에지",5,100,0,0],["스팀버스트",10,110,1,0],["스파크",12,65,0,0],["스파킹기가볼트",12,0,0,0],["스파킹기가볼트",12,0,1,0],["스피드스타",0,60,1,0],["승부굳히기",16,60,0,0],["시간의포효",15,150,1,0],["시그널빔",6,75,1,0],["시드플레어",11,120,1,0],["시럽봄",11,60,1,0],["시저크로스",6,80,0,0],["신비의칼",1,85,1,0],["신비의힘",13,70,1,0],["신속",0,80,0,2],["신통력",13,80,1,0],["심판의뭉치",0,100,1,0],["싱크로노이즈",13,120,1,0],["썬더다이브",12,100,0,0],["썬더프리즌",12,80,1,0],["쑥쑥봄버",11,100,0,0],["씨기관총",11,25,0,0],["씨폭탄",11,80,0,0],["아가미물기",10,85,0,0],["아그아그존",16,80,1,0],["아머캐논",9,120,1,0],["아스트랄비트",7,120,1,0],["아이스볼",14,30,0,0],["아이스스피너",14,80,0,0],["아이스해머",14,100,0,0],["아이언롤러",8,130,0,0],["아이언테일",8,100,0,0],["아이언헤드",8,80,0,0],["아쿠아브레이크",10,85,0,0],["아쿠아스텝",10,80,0,0],["아쿠아제트",10,40,0,1],["아쿠아커터",10,70,0,0],["아쿠아테일",10,90,0,0],["아프로브레이크",0,120,0,0],["악독사슬",3,100,1,0],["악의파동",16,80,1,0],["안다리걸기",1,0,0,0],["알로라의수호자",17,0,1,0],["알폭탄",0,100,0,0],["암석봉인",5,60,0,0],["암석액스",5,65,0,0],["암석포",5,150,0,0],["암해머",1,100,0,0],["암흑강타",16,75,0,0],["앙갚음",16,1,0,0],["애시드봄",3,40,1,0],["애시드포이즌딜리트",3,0,0,0],["애시드포이즌딜리트",3,0,1,0],["애크러뱃",2,55,0,0],["액셀록",5,40,0,1],["앵커샷",8,80,0,0],["야금야금",0,70,0,0],["야습",7,40,0,1],["양날박치기",5,150,0,0],["어시스트파워",13,20,1,0],["얼어붙는시선",13,90,1,0],["얼어붙은바람",14,55,1,0],["얼어붙은세계",14,65,1,0],["얼음뭉치",14,40,0,1],["얼음숨결",14,60,1,0],["얼음엄니",14,65,0,0],["얼티메이트드래곤번",15,0,0,0],["얼티메이트드래곤번",15,0,1,0],["엄습하는일격",6,70,0,0],["엄청난힘",1,120,0,0],["업어후리기",1,60,0,0],["엉겨붙기",6,20,1,0],["에너지볼",11,90,1,0],["에어로블라스트",2,100,1,0],["에어슬래시",2,75,1,0],["에어커터",2,60,1,0],["에코보이스",0,40,1,0],["엑셀브레이크",1,100,0,0],["역린",15,120,0,0],["연속뺨치기",0,15,0,0],["연속자르기",6,40,0,0],["연속펀치",0,18,0,0],["연옥",9,100,1,0],["열불내기",9,75,0,0],["열사의대지",4,70,1,0],["열사의폭풍",4,100,1,0],["열탕",10,80,1,0],["열풍",9,95,1,0],["염동력",13,50,1,0],["옛노래",0,75,1,0],["오라윙",13,80,1,0],["오라휠",12,110,0,0],["오로라빔",14,65,1,0],["오리진즈슈퍼노바",13,185,1,0],["오물공격",3,65,1,0],["오물웨이브",3,95,1,0],["오물폭탄",3,90,1,0],["오버드라이브",12,80,1,0],["오버히트",9,130,1,0],["와이드브레이커",15,60,0,0],["와이드포스",13,80,1,0],["와일드볼트",12,90,0,0],["요정의바람",17,40,1,0],["용성군",15,130,1,0],["용의분노",15,0,1,0],["용의숨결",15,60,1,0],["용의파동",15,85,1,0],["용해액",3,40,1,0],["우드해머",11,120,0,0],["우드혼",11,75,0,0],["울트라대시어택",0,0,0,0],["울트라대시어택",0,0,1,0],["원념의칼",9,90,0,0],["원더스팀",17,90,1,0],["원수갚기",0,70,0,0],["원시의힘",5,60,1,0],["월즈엔드폴",5,0,0,0],["월즈엔드폴",5,0,1,0],["웨더볼",0,50,1,0],["웨이브태클",10,120,0,0],["유턴",6,70,0,0],["은빛바람",6,60,1,0],["은혜갚기",0,0,0,0],["이글이글번",9,60,0,0],["이차원러시",16,100,0,0],["이차원홀",13,80,1,0],["이판사판태클",0,120,0,0],["인파이트",1,120,0,0],["일렉트로빔",12,130,1,0],["일렉트릭네트",12,55,1,0],["일렉트릭볼",12,0,1,0],["잎날가르기",11,55,0,0],["자연의분노",17,0,1,0],["자연의은혜",0,0,0,0],["자이로볼",8,0,0,0],["자폭",0,200,0,0],["잠깨움뺨치기",1,70,0,0],["잠재댄스",0,90,1,0],["잠재파워",0,60,1,0],["잼잼펀치",0,70,0,0],["적당히손봐주기",0,40,0,0],["전격부리",12,85,0,0],["전격파",12,60,1,0],["전광석화",0,40,0,1],["전광쌍격",12,120,0,0],["전기쇼크",12,40,1,0],["전력무쌍격렬권",1,0,0,0],["전력무쌍격렬권",1,0,1,0],["전자포",12,120,1,0],["절대영도",14,0,1,0],["절대포식회전참",6,0,0,0],["절대포식회전참",6,0,1,0],["점프킥",1,100,0,0],["정신차리기",0,70,0,0],["제비반환",2,60,0,0],["제트펀치",10,60,0,1],["조이기",0,15,0,0],["죽기살기",0,0,0,0],["쥐어짜기",0,0,1,0],["지구던지기",1,0,0,0],["지옥의바퀴",1,80,0,0],["지옥찌르기",16,80,0,0],["지진",4,100,0,0],["진공파",1,40,1,1],["진심의공격",0,210,0,0],["진흙뿌리기",4,20,1,0],["진흙폭탄",4,65,1,0],["질투의불꽃",9,70,1,0],["질풍신뢰",12,70,1,1],["집게덫",11,35,0,0],["집게해머",10,100,0,0],["집단구타",16,0,0,0],["짓밟기",0,65,0,0],["쪼기",2,35,0,0],["쪼아대기",2,60,0,0],["찌리리따끔따끔",12,80,0,0],["찌릿찌릿일렉",12,60,1,0],["찍찍베기",0,20,0,0],["찝기",0,55,0,0],["차밍보이스",17,40,1,0],["차지빔",12,50,1,0],["찬물끼얹기",10,50,1,0],["찬바람폭풍",2,100,1,0],["참기",0,0,0,1],["참방참방서핑",10,90,1,0],["천둥차기",1,90,0,0],["천추지한",7,75,1,0],["철제광선",8,140,1,0],["초월나선연격",8,0,0,0],["초월나선연격",8,0,1,0],["치근거리기",17,90,0,0],["칠성탈혼퇴",7,195,0,0],["카운터",1,0,0,-5],["카타스트로피",16,1,1,0],["칼등치기",0,40,0,0],["칼바람",0,80,1,0],["코골기",0,50,1,0],["코멧펀치",8,90,0,0],["코어퍼니셔",15,100,1,0],["콜드플레어",14,140,1,0],["콸콸오라",13,80,1,0],["퀵턴",10,60,0,0],["크로스썬더",12,100,0,0],["크로스촙",1,100,0,0],["크로스포이즌",3,70,0,0],["크로스플레임",9,100,1,0],["클로로블라스트",11,150,1,0],["클리어스모그",3,50,1,0],["킬러스핀",3,30,0,0],["타오르는분노",16,90,1,0],["타키온커터",8,50,1,0],["탁류",10,90,1,0],["탁쳐서떨구기",16,65,0,0],["탐내다",0,60,0,0],["태권당수",1,50,0,0],["테라버스트",0,80,1,0],["테라클러스터",0,120,1,0],["테크노버스터",0,120,1,0],["토해내기",0,0,1,0],["투닥투닥프렌드타임",17,190,0,0],["트라이어택",0,80,1,0],["트랩셸",9,150,1,-3],["트로피컬킥",11,70,0,0],["트리플다이브",10,30,0,0],["트리플악셀",14,20,0,0],["트리플킥",1,10,0,0],["트릭플라워",11,70,0,0],["트림",3,120,1,0],["트윈빔",13,40,1,0],["파괴광선",0,150,1,0],["파도타기",10,90,1,0],["파동탄",1,80,1,0],["파라볼라차지",12,65,1,0],["파멸의빛",17,140,1,0],["파멸의소원",8,140,1,0],["파워젬",5,80,1,0],["파워풀에지",5,95,0,0],["파워휩",11,120,0,0],["파이널다이브클래시",2,0,0,0],["파이널다이브클래시",2,0,1,0],["파이트액셀",1,100,0,0],["파찌파찌액셀",12,80,0,2],["페이탈클로",3,80,0,0],["페인트",0,30,0,2],["포이즌액셀",3,100,0,0],["포이즌테일",3,50,0,0],["포톤가이저",13,100,1,0],["폭발펀치",1,100,0,0],["폭음파",0,140,1,0],["폭포오르기",10,80,0,0],["폭풍",2,110,1,0],["폴터가이스트",7,110,0,0],["푸른불꽃",9,130,1,0],["풀묶기",11,0,1,0],["풀베기",0,50,0,0],["풀의맹세",11,80,1,0],["프레젠트",0,0,0,0],["프리즈드라이",14,70,1,0],["프리즈볼트",14,140,0,0],["프리즘레이저",13,160,1,0],["프리폴",2,60,0,0],["플라스마피스트",12,100,0,0],["플라잉프레스",1,100,0,0],["플레어드라이브",9,120,0,0],["플레어송",9,80,1,0],["플뢰르캐논",17,130,1,0],["피카피카썬더",12,0,1,0],["필살앞니",0,80,0,0],["필살피카슛",12,210,0,0],["하늘을태우는멸망의빛",13,200,1,0],["하드롤러",6,65,0,0],["하드프레스",8,0,0,0],["하드플랜트",11,150,1,0],["하이드로스팀",10,80,1,0],["하이드로캐논",10,150,1,0],["하이드로펌프",10,110,1,0],["하이퍼다크크러셔",16,180,0,0],["하이퍼드릴",0,100,0,0],["하이퍼보이스",0,90,1,0],["하트스탬프",13,60,0,0],["한판내기",15,80,0,0],["할퀴기",0,40,0,0],["핥기",7,30,0,0],["해수스파우팅",10,150,1,0],["헤비봄버",8,0,0,0],["혼내기",16,0,0,0],["화룡점정",2,120,0,0],["화염바퀴",9,60,0,0],["화염방사",9,90,1,0],["화염볼",9,120,0,0],["화염탄",9,100,1,0],["화풀이",0,0,0,0],["환상빔",13,65,1,0],["회오리",15,40,1,0],["회오리불꽃",9,35,1,0],["회전부리",2,80,0,0],["휘감기",0,10,0,0],["휘적휘적포",11,80,1,0],["휠스핀",8,100,0,0],["흡수",11,20,1,0],["흡혈",6,80,0,0],["히트스탬프",9,0,0,0],["힘껏치기",0,80,0,0],["힘껏펀치",1,150,0,-3]];
 
 </script>
+<script src="gens/common.js"></script>
 <script>
+if(window.GD&&GD.mvExtra)MV.push(...GD.mvExtra);
 const TN=['노말','격투','비행','독','땅','바위','벌레','고스트','강철','불꽃','물','풀','전기','에스퍼','얼음','드래곤','악','페어리'];
 const TC=['#75755a','#ae342b','#6c5ccd','#8c398c','#96722a','#8a792c','#778516','#5b4984','#6b6b89','#c4531a','#3c6ed3','#3c8a2d','#a88400','#d43d69','#36898a','#582ddc','#58453a','#bb4d8b'];
 const SPEC=[[[],[5,8],[7]],[[0,5,8,14,16],[2,3,6,13,17],[7]],[[1,6,11],[5,8,12],[]],[[11,17],[3,4,5,7],[8]],
@@ -303,18 +309,45 @@ const SPR_URL='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/
 const sprSrc=i=>typeof SPR!=='undefined'&&SPR[i]>0?SPR_URL+SPR[i]+'.png':'';
 const spr=(i,c='')=>{const s=sprSrc(i);return s?`<img class="spr ${c}" data-i="${i}" src="${s}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${SPR_URL}other/official-artwork/${SPR[i]}.png'">`:''};
 const art=(i,c='')=>SPR[i]?`<img class="spr art ${c}" data-i="${i}" src="${SPR_URL}other/official-artwork/${SPR[i]}.png" alt="" loading="lazy" onerror="this.onerror=null;this.src=sprSrc(${i})">`:spr(i,c);
-const tbg=p=>{const t=p[2]>=0?[p[1],p[2]]:[p[1]];const a=TC[t[0]],b=TC[t[t.length-1]];return `--g:linear-gradient(135deg,color-mix(in srgb,${a} 38%,var(--panel)),color-mix(in srgb,${b} 18%,var(--panel)))`};
+const tbg=(p,i)=>{const t=i>=0?pT(i):ptypes(p);const a=TC[t[0]],b=TC[t[t.length-1]];return `--g:linear-gradient(135deg,color-mix(in srgb,${a} 38%,var(--panel)),color-mix(in srgb,${b} 18%,var(--panel)))`};
 const ptypes=p=>p[2]>=0?[p[1],p[2]]:[p[1]];
-const CH=()=>document.documentElement.dataset.mode==='champions';
+/* ---------- 세대 모드: 상태 / 접근자 ---------- */
+let MODE='g9'; const getMode=()=>MODE, GEN=()=>MODE==='ch'?9:+MODE[1], CH=()=>MODE==='ch';
+document.documentElement.dataset.mode=MODE;
+window.GD=window.GD||{};
+const GG=()=>{const n=GEN();return n<9?GD[n]||null:null};
+const pT=i=>{const g=GG(),o=g&&g.types&&g.types[i];return o?o.filter(t=>t>=0):ptypes(PK[i])};
+const pS=i=>{const g=GG(),o=g&&g.stats&&g.stats[i];return o||PK[i].slice(3,9)};
+const pL=i=>GEN()<9?((GG()&&GG().learn&&GG().learn[i])||[]):(PK[i][10]||[]);
+const pA=i=>{if(GEN()<3)return[];const g=GG(),o=g&&g.abil&&g.abil[i];return o||PK[i][9]};
+const abOne=i=>{const a=pA(i);return a.length===1?AB[a[0]]:''};
+let AV=[];
+function buildAv(){const g=GEN(),a=GD.avail;
+  AV=PK.map((p,i)=>{const r=a&&a[i], mega=/\(메가/.test(p[0]), n9=!r||r[1]>=9;
+    if(MODE==='ch')return n9||mega;
+    if(g===9)return n9&&!mega&&!/\(원시\)|^울트라네크로즈마/.test(p[0]);
+    return !r||(r[0]<=g&&g<=r[1])})}
+buildAv();
+const avail=i=>AV[i]!==false;
+const mvO=j=>{const g=GG();return g&&g.moves&&g.moves[j]};
+const mvT=j=>{const o=mvO(j);return o?o[0]:MV[j][1]};
+const mvP=j=>{const o=mvO(j);return o?o[1]:MV[j][2]};
+const mvC=j=>{const o=mvO(j);let c=o?o[2]:(MV[j][2]?(MV[j][3]?1:0):2); if(c!==2&&GEN()<=3)c=mvT(j)<=8?0:1; return c};
+const typeOK=t=>{const g=GEN();return g>=6||(g===1?![8,16,17].includes(t):t!==17)};
+const E1=E.map(r=>r.slice()), E25=E.map(r=>r.slice());
+E1[7][13]=0;E1[6][3]=2;E1[3][6]=2;E1[14][9]=1;   // 1세대: 고스트→에스퍼 무효, 벌레↔독 2배, 얼음→불꽃 등배
+E25[7][8]=.5;E25[16][8]=.5;                        // 2~5세대: 강철이 고스트·악 반감
+const chart=()=>{const g=GEN();return g===1?E1:g<=5?E25:E};
+const COMBOS=[];
 const LV=()=>CH()?50:Math.min(100,Math.max(1,parseInt($('lv').value)||50));
 const num=(id,lo,hi,d)=>{const v=parseInt($(id).value);return isNaN(v)?d:Math.min(hi,Math.max(lo,v))};
 const sp2ev=n=>n<=0?0:8*n-4, ev2sp=e=>e<=0?0:Math.min(32,Math.round((e+4)/8));
 const evIn=(id,d)=>CH()?sp2ev(num(id,0,32,d||0)):num(id,0,252,d||0);
-const tIn=id=>CH()?-1:+$(id).value;
+const tIn=id=>MODE==='g9'?+$(id).value:-1;
 const evCols=()=>CH()?['0','32','32↑']:['무보정','252','252↑'];
 function eff(t,types,ab){
-  let m=1; for(const d of types) m*=E[t][d];
-  if(ab){ const d=DAB[ab]; if(d&&t in d) m*=d[t];
+  const C=chart(); let m=1; for(const d of types) m*=C[t][d];
+  if(ab&&GEN()>=3){ const d=DAB[ab]; if(d&&t in d) m*=d[t];
     if(ab==='불가사의부적'&&m<=1) m=0;
     if(SOLID.includes(ab)&&m>1) m*=.75; }
   return m;
@@ -327,19 +360,21 @@ const mtxt=m=>m===.5?'½':m===.25?'¼':m===.125?'⅛':String(+m.toFixed(2));
 /* ---------- 검색 입력 ---------- */
 function combo(input,names,onPick,icons,render){
   const list=document.createElement('ul'); list.className='list'; list.hidden=true; input.parentNode.appendChild(list);
-  let hits=[],cur=-1;
+  let hits=[],cur=-1,ci=-1;
+  const na=document.createElement('small'); na.className='na'; na.hidden=true; na.textContent='이 세대엔 없어'; input.parentNode.appendChild(na);
+  const note=()=>{const bad=!!icons&&ci>=0&&!avail(ci); na.hidden=!bad; input.classList.toggle('bad',bad)};
   const paint=()=>[...list.children].forEach((li,j)=>li.classList.toggle('on',j===cur));
   function setIc(i){const s=icons&&i>=0?sprSrc(i):''; input.classList.toggle('ic',!!s); input.style.backgroundImage=s?`url(${s})`:''}
   function show(){
-    const q=input.value.trim().toLowerCase(); setIc(-1);
-    if(!q){list.hidden=true;onPick(-1);return}
+    const q=input.value.trim().toLowerCase(); setIc(-1); na.hidden=true;
+    if(!q){list.hidden=true;ci=-1;onPick(-1);return}
     const a=[],b=[];
-    for(let i=0;i<names.length;i++){const k=names[i].toLowerCase().indexOf(q); if(k===0)a.push(i); else if(k>0&&b.length<40)b.push(i)}
+    for(let i=0;i<names.length;i++){if(icons&&!avail(i))continue;const k=names[i].toLowerCase().indexOf(q); if(k===0)a.push(i); else if(k>0&&b.length<40)b.push(i)}
     hits=a.concat(b).slice(0,40); cur=hits.length?0:-1;
     list.innerHTML=hits.length?hits.map(i=>`<li data-i="${i}">${icons?spr(i):''}${render?render(i):esc(names[i])}</li>`).join(''):'<li class="none">검색 결과가 없어</li>';
     paint(); list.hidden=false;
   }
-  function pick(i){input.value=names[i];list.hidden=true;setIc(i);onPick(i)}
+  function pick(i){input.value=names[i];list.hidden=true;setIc(i);ci=i;note();onPick(i)}
   input.addEventListener('input',show);
   input.addEventListener('focus',()=>input.select());
   list.addEventListener('click',e=>{const li=e.target.closest('li[data-i]');if(li)pick(+li.dataset.i)});
@@ -351,7 +386,7 @@ function combo(input,names,onPick,icons,render){
     else if(e.key==='ArrowUp'){cur=(cur-1+hits.length)%hits.length;paint();e.preventDefault()}
     else if(e.key==='Enter'){pick(hits[cur]);e.preventDefault()}
   });
-  return {set(i){input.value=i>=0?names[i]:'';setIc(i)}};
+  const api={set(i){input.value=i>=0?names[i]:'';setIc(i);ci=i;note()},refresh:note}; COMBOS.push(api); return api;
 }
 
 /* ---------- 공통 선택지 ---------- */
@@ -360,32 +395,32 @@ const rankOpts=[6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6].map(r=>`<option value="${r}"${r
 const typeOpts=TN.map((n,i)=>`<option value="${i}">${n}</option>`).join('');
 const teraOpts='<option value="-1">없음</option>'+typeOpts;
 const sel={ty:-1,da:-1,dd:-1,sa:-1,sb:-1}, box={};
-function info(p,i){return `<span class="pbg" style="${tbg(p)}">${spr(i)}</span>`+ptypes(p).map(chip).join('')+`<span>H${p[3]} A${p[4]} B${p[5]} C${p[6]} D${p[7]} S${p[8]}</span>`}
+function info(p,i){const s=pS(i);return `<span class="pbg" style="${tbg(p,i)}">${spr(i)}</span>`+pT(i).map(chip).join('')+`<span>H${s[0]} A${s[1]} B${s[2]} C${s[3]} D${s[4]} S${s[5]}</span>`}
 function setPk(pre,i,quiet){
   sel[pre]=i; const p=PK[i];
-  const ab=$(pre+'-ab'); if(ab) ab.innerHTML=p?p[9].map(a=>`<option>${esc(AB[a])}</option>`).join('')+'<option value="">반영 안 함</option>':'<option value="">없음</option>';
-  const inf=$(pre+'-info'); if(inf) inf.innerHTML=p?info(p,i)+(pre==='ty'?`<span>특성: ${p[9].map(a=>esc(AB[a])).join(', ')}</span>`:''):'<span>포켓몬을 골라줘</span>';
+  const ab=$(pre+'-ab'); if(ab) ab.innerHTML=p?pA(i).map(a=>`<option>${esc(AB[a])}</option>`).join('')+'<option value="">반영 안 함</option>':'<option value="">없음</option>';
+  const inf=$(pre+'-info'); if(inf) inf.innerHTML=p?info(p,i)+(pre==='ty'&&pA(i).length?`<span>특성: ${pA(i).map(a=>esc(AB[a])).join(', ')}</span>`:''):'<span>포켓몬을 골라줘</span>';
   if(box[pre]&&quiet) box[pre].set(i);
-  if(pre==='ty'&&p){tyT=ptypes(p);}
+  if(pre==='ty'&&p){tyT=pT(i);}
   if(!quiet) update();
 }
 
 /* ---------- 상성 ---------- */
 let tyT=[];
 function rTypes(){
-  $('ty-chips').innerHTML=TN.map((n,t)=>`<button type="button" class="chip" data-t="${t}" aria-pressed="${tyT.includes(t)}" style="background:${TC[t]}">${n}</button>`).join('');
+  $('ty-chips').innerHTML=TN.map((n,t)=>!typeOK(t)?'':`<button type="button" class="chip" data-t="${t}" aria-pressed="${tyT.includes(t)}" style="background:${TC[t]}">${n}</button>`).join('');
   const tera=tIn('ty-tera'), types=tera>=0?[tera]:tyT, ab=$('ty-ab').value;
   if(!types.length){$('ty-out').innerHTML='<div class="sub" style="grid-column:1/-1">포켓몬을 검색하거나 타입을 눌러서 골라줘.</div>';$('ty-statcard').hidden=true;return}
   const g=new Map();
-  for(let t=0;t<18;t++){const m=eff(t,types,ab);(g.get(m)||g.set(m,[]).get(m)).push(t)}
+  for(let t=0;t<18;t++){if(!typeOK(t))continue;const m=eff(t,types,ab);(g.get(m)||g.set(m,[]).get(m)).push(t)}
   $('ty-out').innerHTML=[...g.keys()].sort((a,b)=>b-a).map(m=>
     `<div class="mult ${m>1?'w':m===0?'z':m<1?'r':''}">${m===0?'무효':'×'+mtxt(m)}</div><div class="chips">${g.get(m).map(chip).join('')}</div>`).join('');
   const p=PK[sel.ty]; $('ty-statcard').hidden=!p; if(!p)return;
   const L=LV(), lab=['HP','공격','방어','특공','특방','스피드'];
   $('ty-stats').innerHTML=`<table><tr><th class="l">능력</th><th>종족값</th><th class="l" style="width:40%"></th><th>${evCols()[0]}</th><th>${evCols()[1]}</th><th>${evCols()[2]}</th></tr>`+
-    lab.map((n,k)=>{const b=p[3+k];const f=k===0?[hpStat(b,0,L),hpStat(b,252,L),'-']:[stat(b,0,1,L),stat(b,252,1,L),stat(b,252,1.1,L)];
+    lab.map((n,k)=>{const b=pS(sel.ty)[k];const f=k===0?[hpStat(b,0,L),hpStat(b,252,L),'-']:[stat(b,0,1,L),stat(b,252,1,L),stat(b,252,1.1,L)];
       return `<tr><td class="l">${n}</td><td>${b}</td><td class="l"><div class="bar" style="width:${Math.min(100,b/2)}%"></div></td><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td></tr>`}).join('')+
-    `<tr><td class="l">합계</td><td>${p.slice(3,9).reduce((a,b)=>a+b,0)}</td><td colspan="4"></td></tr></table>`;
+    `<tr><td class="l">합계</td><td>${pS(sel.ty).reduce((a,b)=>a+b,0)}</td><td colspan="4"></td></tr></table>`;
 }
 
 /* ---------- 데미지 ---------- */
@@ -566,39 +601,39 @@ function rParty(){
   const memI=party.filter(i=>i>=0), mem=memI.map(i=>PK[i]);
   if(!mem.length){$('pt-out').innerHTML='<div class="sub">파티에 포켓몬을 넣으면 표가 나와.</div>';$('pt-sum').innerHTML='<div class="sub">아직 파티가 비어 있어.</div>';return}
   const warn=[],good=[]; let h=`<table><tr><th class="l">공격 타입</th>${mem.map((p,k)=>`<th>${spr(memI[k],'s')}${esc((p[0].match(/\((.+)\)/)||[0,p[0]])[1].slice(0,6))}</th>`).join('')}<th>약점</th><th>반감</th></tr>`;
-  for(let t=0;t<18;t++){ let w=0,r=0;
-    const cells=mem.map(p=>{const m=eff(t,ptypes(p),p[9].length===1?AB[p[9][0]]:'');
+  for(let t=0;t<18;t++){ if(!typeOK(t))continue; let w=0,r=0;
+    const cells=memI.map(pi=>{const m=eff(t,pT(pi),abOne(pi));
       if(m>1)w++; if(m<1)r++;
       return `<td class="${m>=4?'w4':m>1?'w2':m===0?'r0':m<1?'r2':''}">${m===1?'':m===0?'무효':mtxt(m)}</td>`}).join('');
     const bad=w>=3||(w>=2&&r===0); if(bad)warn.push([t,w,r]); else if(w===0&&r>=2)good.push(t);
     h+=`<tr><td class="l">${chip(t)}</td>${cells}<td class="${bad?'warn':''}">${w}</td><td>${r}</td></tr>`; }
   $('pt-out').innerHTML=h+'</table>';
-  $('pt-sum').innerHTML=(warn.length?warn.map(x=>`<div class="info">${chip(x[0])}<span style="color:var(--ink)">약점 ${x[1]}마리, 받아낼 포켓몬 ${x[2]}마리. ${x[2]===0?'받을 포켓몬이 없어서 위험해.':'약점이 몰려 있어.'}</span></div>`).join(''):'<div class="sub">특별히 뚫리는 타입은 없어.</div>')+
-    (good.length?`<div class="info" style="margin-top:8px"><span>잘 받는 타입</span>${good.map(chip).join('')}</div>`:'');
+  $('pt-sum').innerHTML=(warn.length?warn.map(x=>`<div class="info">${chip(x[0])}<span style="color:var(--ink)">약점 ${x[1]}마리 / 받아낼 애 ${x[2]}마리. ${x[2]===0?'받아낼 애가 없어, 위험해!':'약점이 몰려 있어. 조심!'}</span></div>`).join(''):'<div class="sub">뻥 뚫리는 타입은 없어. 탄탄해!</div>')+
+    (good.length?`<div class="info" style="margin-top:8px"><span>든든한 타입</span>${good.map(chip).join('')}</div>`:'');
 }
 
 /* ---------- 공격 범위 ---------- */
 const cov=new Set([4,5]);
 function rCov(){
-  $('cv-chips').innerHTML=TN.map((n,t)=>`<button type="button" class="chip" data-t="${t}" aria-pressed="${cov.has(t)}" style="background:${TC[t]}">${n}</button>`).join('');
-  const ts=[...cov]; if(!ts.length){$('cv-out').innerHTML='<div class="sub">공격 타입을 하나 이상 골라줘.</div>';return}
-  let se=0,ne=0; const res=[];
-  PK.forEach((p,i)=>{const m=Math.max(...ts.map(t=>eff(t,ptypes(p))));if(m>1)se++;else if(m===1)ne++;else res.push(i)});
-  const n=PK.length, pct=v=>(v/n*100).toFixed(0);
-  const single=TN.map((_,d)=>[d,Math.max(...ts.map(t=>E[t][d]))]).filter(x=>x[1]<1).map(x=>chip(x[0])).join('');
+  $('cv-chips').innerHTML=TN.map((n,t)=>!typeOK(t)?'':`<button type="button" class="chip" data-t="${t}" aria-pressed="${cov.has(t)}" style="background:${TC[t]}">${n}</button>`).join('');
+  const ts=[...cov].filter(typeOK); if(!ts.length){$('cv-out').innerHTML='<div class="sub">공격 타입을 하나 이상 골라줘.</div>';return}
+  let se=0,ne=0,n=0; const res=[];
+  PK.forEach((p,i)=>{if(!avail(i))return;n++;const m=Math.max(...ts.map(t=>eff(t,pT(i))));if(m>1)se++;else if(m===1)ne++;else res.push(i)});
+  const pct=v=>(v/(n||1)*100).toFixed(0);
+  const single=TN.map((_,d)=>[d,Math.max(...ts.map(t=>chart()[t][d]))]).filter(x=>typeOK(x[0])&&x[1]<1).map(x=>chip(x[0])).join('');
   $('cv-out').innerHTML=`<div class="seg" role="img" aria-label="약점 ${se}, 등배 ${ne}, 반감 이하 ${res.length}">
       <i style="width:${se/n*100}%;background:var(--res)"></i><i style="width:${ne/n*100}%;background:var(--imm-bg)"></i><i style="width:${res.length/n*100}%;background:var(--weak)"></i></div>
-    <div class="info" style="margin-top:8px"><span style="color:var(--res)">약점을 찌름 ${se}마리 (${pct(se)}%)</span><span>등배 ${ne}마리 (${pct(ne)}%)</span><span style="color:var(--weak)">반감 이하 ${res.length}마리 (${pct(res.length)}%)</span></div>
-    ${single?`<div class="info" style="margin-top:10px"><span>반감하는 단일 타입</span>${single}</div>`:''}
-    <h2 style="margin:14px 0 8px">이 기술들을 반감 이하로 받는 포켓몬</h2>
-    <div class="names">${res.length?res.slice(0,80).map(i=>`<span class="tag">${spr(i,'s')}${esc(NAMES[i])}</span>`).join('')+(res.length>80?`<span class="sub">외 ${res.length-80}마리</span>`:''):'<span class="sub">없어. 전부 등배 이상으로 때릴 수 있어.</span>'}</div>`;
+    <div class="info" style="margin-top:8px"><span style="color:var(--res)">약점 적중 ${se}마리 (${pct(se)}%)</span><span>등배 ${ne}마리 (${pct(ne)}%)</span><span style="color:var(--weak)">막힘(반감 이하) ${res.length}마리 (${pct(res.length)}%)</span></div>
+    ${single?`<div class="info" style="margin-top:10px"><span>이 조합을 막는 타입</span>${single}</div>`:''}
+    <h2 style="margin:14px 0 8px">이 조합이 막히는 포켓몬</h2>
+    <div class="names">${res.length?res.slice(0,80).map(i=>`<span class="tag">${spr(i,'s')}${esc(NAMES[i])}</span>`).join('')+(res.length>80?`<span class="sub">외 ${res.length-80}마리</span>`:''):'<span class="sub">없어! 전부 최소 등배로 때려.</span>'}</div>`;
 }
 
 /* ---------- 대전 ---------- */
 const bt={mode:1,m:[-1,-1],o:[-1,-1]}, btBox={};
 function btSave(){try{localStorage.setItem('battle',JSON.stringify({mode:bt.mode,m:bt.m.map(i=>i>=0?NAMES[i]:''),o:bt.o.map(i=>i>=0?NAMES[i]:'')}))}catch(e){}}
 function btInit(){
-  for(const s of ['m','o']) $('bt-'+s).innerHTML=[0,1].map(k=>`<div class="brow" id="bt-${s}${k}-w"><div class="combo"><input type="text" id="bt-${s}${k}" placeholder="${s==='m'?'내':'상대'} ${k+1}번" autocomplete="off"></div><select id="bt-${s}${k}-t" class="gen9" aria-label="테라스탈">${teraOpts}</select></div>`).join('');
+  for(const s of ['m','o']) $('bt-'+s).innerHTML=[0,1].map(k=>`<div class="brow" id="bt-${s}${k}-w"><div class="combo"><input type="text" id="bt-${s}${k}" placeholder="${s==='m'?'내':'상대'} ${k+1}번" autocomplete="off"></div><select id="bt-${s}${k}-t" class="gen9 tera" aria-label="테라스탈">${teraOpts}</select></div>`).join('');
   let sv=null; try{sv=JSON.parse(localStorage.getItem('battle'))}catch(e){}
   const def={m:['한카리아스','핫삼'],o:['어흥염','드래펄트']};
   if(sv&&(sv.mode===1||sv.mode===2))bt.mode=sv.mode;
@@ -609,11 +644,11 @@ function btInit(){
   $('bt-1').addEventListener('click',()=>{bt.mode=1;btSave();update()});
   $('bt-2').addEventListener('click',()=>{bt.mode=2;btSave();update()});
 }
-function btMon(s,k){const p=PK[bt[s][k]]; if(!p)return null; const tera=tIn(`bt-${s}${k}-t`);
-  return {i:bt[s][k],p,def:tera>=0?[tera]:ptypes(p),atk:[...new Set(ptypes(p).concat(tera>=0?[tera]:[]))],ab:p[9].length===1?AB[p[9][0]]:''}}
+function btMon(s,k){const i=bt[s][k], p=PK[i]; if(!p)return null; const tera=tIn(`bt-${s}${k}-t`), ty=pT(i);
+  return {i,p,def:tera>=0?[tera]:ty,atk:[...new Set(ty.concat(tera>=0?[tera]:[]))],ab:abOne(i)}}
 function btHit(a,d){
   const st=a.atk.map(t=>[t,eff(t,d.def,d.ab)]), cov=new Map();
-  (a.p[10]||[]).forEach(i=>{const m=MV[i]; if(!m[2]||a.atk.includes(m[1]))return; const e=eff(m[1],d.def,d.ab); if(e>1)cov.set(m[1],e)});
+  pL(a.i).forEach(j=>{if(!MV[j]||!mvP(j))return; const t=mvT(j); if(a.atk.includes(t))return; const e=eff(t,d.def,d.ab); if(e>1)cov.set(t,e)});
   return {st,best:Math.max(...st.map(x=>x[1])),cov:[...cov].sort((x,y)=>y[1]-x[1])};
 }
 function btChips(list,good){return list.map(([t,m])=>`<span class="mc">${chip(t)}<span style="color:var(--${m>1?(good?'res':'weak'):m<1?(good?'weak':'res'):'muted'})">${m===0?'무효':'×'+mtxt(m)}</span></span>`).join('')}
@@ -625,15 +660,15 @@ function rBattle(){
     const a=btMon('m',i), b=btMon('o',j); if(!a||!b)continue;
     const mine=btHit(a,b), theirs=btHit(b,a);
     const v=mine.best>theirs.best?['g','상성 유리']:mine.best<theirs.best?['b','상성 불리']:['n','상성 비슷'];
-    const sa=a.p[8], sb=b.p[8];
+    const sa=pS(a.i)[5], sb=pS(b.i)[5];
     cards.push(`<div class="card">
-      <div class="vs"><div class="mon" style="${tbg(a.p)}">${art(a.i)}<span>${esc(a.p[0])}</span></div><div class="x">VS</div><div class="mon" style="${tbg(b.p)}">${art(b.i)}<span>${esc(b.p[0])}</span></div></div>
+      <div class="vs"><div class="mon" style="${tbg(a.p,a.i)}">${art(a.i)}<span>${esc(a.p[0])}</span></div><div class="x">VS</div><div class="mon" style="${tbg(b.p,b.i)}">${art(b.i)}<span>${esc(b.p[0])}</span></div></div>
       <div style="text-align:center"><span class="vt ${v[0]}">${v[1]}</span></div>
-      <div class="mrow"><b>내가 때리면</b><div class="chips">${btChips(mine.st,true)}</div>
-        <b>그 외 약점기</b><div class="chips">${mine.cov.length?btChips(mine.cov,true):'<span class="sub">배우는 기술 중엔 없어</span>'}</div></div>
-      <div class="mrow"><b>상대가 때리면</b><div class="chips">${btChips(theirs.st,false)}</div>
-        <b>조심할 기술</b><div class="chips">${theirs.cov.length?btChips(theirs.cov,false):'<span class="sub">배우는 기술 중엔 없어</span>'}</div></div>
-      <div class="mrow"><b>스피드</b><div class="sub" style="color:var(--ink)">종족값 ${sa} vs ${sb} · ${sa===sb?'같아':sa>sb?'내가 빨라':'상대가 빨라'}</div></div>
+      <div class="mrow"><b>내 공격</b><div class="chips">${btChips(mine.st,true)}</div>
+        <b>노려볼 견제기</b><div class="chips">${mine.cov.length?btChips(mine.cov,true):'<span class="sub">딱히 없어</span>'}</div></div>
+      <div class="mrow"><b>상대 공격</b><div class="chips">${btChips(theirs.st,false)}</div>
+        <b>경계할 기술</b><div class="chips">${theirs.cov.length?btChips(theirs.cov,false):'<span class="sub">딱히 없어</span>'}</div></div>
+      <div class="mrow"><b>스피드</b><div class="sub" style="color:var(--ink)">종족값 ${sa} vs ${sb} · ${sa===sb?'동속 (랜덤)':sa>sb?esc(a.p[0])+' 선공':esc(b.p[0])+' 선공'}</div></div>
     </div>`);
   }
   $('bt-out').innerHTML=cards.length?cards.join(''):'<div class="card"><div class="sub">내 포켓몬과 상대 포켓몬을 골라줘.</div></div>';
@@ -643,20 +678,37 @@ function rBattle(){
 const TABS={battle:rBattle,types:rTypes,damage:rDamage,speed:rSpeed,party:rParty,coverage:rCov};
 let tab='battle';
 function update(){try{TABS[tab]()}catch(e){console.error(e)}}
-let curMode='9세대';
-function setMode(m,noSave){
-  const to=m==='챔피언스', was=curMode==='챔피언스';
+const normMode=m=>{m=String(m==null?'':m).trim().toLowerCase();if(m==='ch'||m==='champions'||m==='챔피언스')return'ch';if(/^g[1-9]$/.test(m))return m;const x=m.match(/^(?:gen)?([1-9])(?:세대)?$/);return x?'g'+x[1]:'g9'};
+const genP={};
+function loadGen(n){
+  if(GD[n])return Promise.resolve(true);
+  return genP[n]||(genP[n]=new Promise(res=>{const sc=document.createElement('script');sc.src='gens/gen'+n+'.js';
+    sc.onload=()=>res(true); sc.onerror=()=>{sc.remove();delete genP[n];res(false)}; document.head.appendChild(sc)}));
+}
+function genNote(t){let el=$('gen-note'); if(!el){el=document.createElement('div');el.id='gen-note';document.body.appendChild(el)} el.textContent=t; clearTimeout(genNote.t); genNote.t=setTimeout(()=>el.remove(),4500)}
+let modeTok=0;
+async function setMode(m,noSave){
+  m=normMode(m); const tok=++modeTok, n=m==='ch'?9:+m[1];
+  if(n<9&&!(await loadGen(n))){ if(tok!==modeTok)return; genNote(n+'세대 데이터를 못 불러왔어. 9세대로 돌아갈게.'); m='g9'; }
+  if(tok!==modeTok)return;
+  const to=m==='ch', was=CH();
   if(to!==was)document.querySelectorAll('input[id$="-ev"],#dd-hpev').forEach(el=>{
     const v=parseInt(el.value); if(isNaN(v))return;
     el.value=to?ev2sp(Math.max(0,Math.min(252,v))):Math.min(252,sp2ev(Math.max(0,Math.min(32,v))))});
-  curMode=m; document.documentElement.dataset.mode=to?'champions':'';
+  MODE=m; document.documentElement.dataset.mode=m; buildAv();
   document.querySelectorAll('input[id$="-ev"],#dd-hpev').forEach(el=>{
     el.max=to?32:252; el.step=to?1:4;
     const lb=el.parentNode.firstChild; if(lb&&lb.nodeType===3)lb.nodeValue=lb.nodeValue.replace(/노력치|스탯 포인트/,to?'스탯 포인트':'노력치')});
-  $('lv-t').textContent=to?'챔피언스 기준 · Lv.50':'9세대 기준 · 레벨';
-  document.querySelectorAll('#modesw button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  const lt=$('lv-t'); if(lt)lt.textContent=to?'챔피언스 기준 · Lv.50':GEN()+'세대 기준 · 레벨';
+  document.querySelectorAll('#modesw button').forEach(b=>b.classList.toggle('on',normMode(b.dataset.m)===MODE));
+  tyT=tyT.filter(typeOK); for(const t of [...cov])if(!typeOK(t))cov.delete(t);
+  for(const k in sel)if(sel[k]>=0)setPk(k,sel[k],true);
+  COMBOS.forEach(c=>c.refresh());
   if(!noSave)try{localStorage.setItem('mode',m)}catch(e){}
+  update();
+  document.dispatchEvent(new Event('modechange'));
 }
+Object.assign(window,{setMode,getMode,GEN,CH,eff,pT,pS,pL,pA,avail,mvT,mvP,mvC,typeOK});
 function route(){
   const h=location.hash.slice(1); tab=TABS[h]?h:'battle';
   for(const k in TABS)$('v-'+k).hidden=k!==tab;
@@ -692,11 +744,10 @@ function start(){
   document.addEventListener('change',update);
   document.addEventListener('input',e=>{if(e.target.type==='number')update()});
   btInit();
-  let m0='9세대'; try{if(localStorage.getItem('mode')==='챔피언스')m0='챔피언스'}catch(e){}
-  const qm=new URLSearchParams(location.search).get('mode'); if(qm==='champions'||qm==='챔피언스')m0='챔피언스'; else if(qm==='gen9')m0='9세대';
+  let m0='g9'; try{m0=localStorage.getItem('mode')||'g9'}catch(e){}
+  const qm=new URLSearchParams(location.search).get('mode'); if(qm)m0=qm;
   setMode(m0,!qm);
-  if(qm)try{localStorage.setItem('mode',m0)}catch(e){}
-  $('modesw').addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(!b)return;setMode(b.dataset.m);update()});
+  const msw=$('modesw'); if(msw)msw.addEventListener('click',e=>{const b=e.target.closest('button[data-m]');if(b)setMode(b.dataset.m)});
   window.addEventListener('hashchange',route);
   route();
 }
@@ -737,21 +788,20 @@ $('pt-meta').addEventListener('click',e=>{
 <script>
 /* ---------- 파티 보완 추천 ---------- */
 function recCalc(){
-  const mem=party.filter(i=>i>=0).map(i=>PK[i]); if(!mem.length)return null;
-  const abOf=p=>p[9].length===1?AB[p[9][0]]:'';
-  const info=[]; for(let t=0;t<18;t++){let w=0,r=0;
-    mem.forEach(p=>{const m=eff(t,ptypes(p),abOf(p)); if(m>1)w++; if(m<1)r++}); info.push({t,w,r})}
+  const memI=party.filter(i=>i>=0); if(!memI.length)return null;
+  const info=[]; for(let t=0;t<18;t++){if(!typeOK(t))continue; let w=0,r=0;
+    memI.forEach(pi=>{const m=eff(t,pT(pi),abOne(pi)); if(m>1)w++; if(m<1)r++}); info.push({t,w,r})}
   let targets=info.filter(x=>x.w>=3||(x.w>=2&&x.r===0));
   if(!targets.length)targets=info.filter(x=>x.w>=2);
   if(!targets.length)targets=info.filter(x=>x.w>=1&&x.w>x.r);
   if(!targets.length)return {targets:[],list:[]};
   const sc=m=>m===0||m<=.25?1.5:m<1?1:m===1?0:m<4?-1:-1.5;
   const list=[];
-  PK.forEach((p,i)=>{ if(party.includes(i))return;
-    const ty=ptypes(p), ab=abOf(p); let s=0; const imm=[],res=[];
+  PK.forEach((p,i)=>{ if(party.includes(i)||!avail(i))return;
+    const ty=pT(i), ab=abOne(i); let s=0; const imm=[],res=[];
     for(const x of targets){const m=eff(x.t,ty,ab); s+=x.w*sc(m); if(m===0)imm.push(x.t); else if(m<1)res.push(x.t)}
     for(const x of info){ if(x.w>=1&&!targets.includes(x)&&eff(x.t,ty,ab)>1)s-=.3 }
-    list.push({i,p,s,imm,res,bst:p.slice(3,9).reduce((a,b)=>a+b,0)}) });
+    list.push({i,p,s,imm,res,bst:pS(i).reduce((a,b)=>a+b,0)}) });
   list.sort((a,b)=>b.s-a.s||b.bst-a.bst);
   const seen=new Set(party.filter(i=>i>=0).map(i=>PK[i][0]));  // 데이터에 같은 이름이 중복된 항목이 있어 이름 기준으로 한 번만
   return {targets,list:list.filter(x=>!seen.has(x.p[0])&&seen.add(x.p[0])).slice(0,8)};
@@ -763,7 +813,7 @@ function rRec(){
   const nm=a=>a.map(t=>TN[t]).join('·');
   el.innerHTML=`<div class="info"><span>보완할 약점</span>${r.targets.map(x=>chip(x.t)).join('')}</div>
     <div class="rec">${r.list.map(o=>{const why=[o.imm.length?nm(o.imm.slice(0,3))+' 무효':'',o.res.length?nm(o.res.slice(0,3))+' 반감':''].filter(Boolean).join(' · ');
-      return `<button type="button" class="rec-i" data-i="${o.i}">${spr(o.i,'s')}<b>${esc(o.p[0])}</b><span class="chips">${ptypes(o.p).map(chip).join('')}</span><span class="sub">${why||'약점이 겹치지 않아'}</span></button>`}).join('')}</div>
+      return `<button type="button" class="rec-i" data-i="${o.i}">${spr(o.i,'s')}<b>${esc(o.p[0])}</b><span class="chips">${pT(o.i).map(chip).join('')}</span><span class="sub">${why||'약점이 겹치지 않아'}</span></button>`}).join('')}</div>
     <p class="note" id="pt-rec-msg">누르면 파티의 빈 칸에 들어가. 특성이 하나뿐인 포켓몬만 특성을 반영했어.</p>`;
 }
 {const base=TABS.party; TABS.party=()=>{base();rRec()}}
