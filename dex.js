@@ -30,7 +30,7 @@ function metaHTML(i){
       const sec=(t,a)=>a&&a.length?`<h4>${t}</h4>${mRows(a)}`:'';
       const ms=(e.mates||[]).filter(m=>PK[m[0]]).slice(0,8);
       b=`<div class="dx-mu"><b>${e.rank?e.rank+'위':''}</b> 사용률 ${e.u}%<span> · ${esc(d.month||'')}${d.battles?' · '+Number(d.battles).toLocaleString()+'경기':''}</span></div>
-${sec('자주 쓰는 기술',e.moves)}${sec('도구',e.items)}${sec('특성',e.abilities)}${sec('자주 쓰는 노력치 배분',e.spreads)}
+${sec('자주 쓰는 기술',e.moves)}${sec('도구',e.items)}${sec('특성',e.abilities)}${sec('자주 쓰는 스탯 포인트 배분 (H/A/B/C/D/S)',e.spreads)}
 ${ms.length?`<h4>같이 많이 쓰는 포켓몬</h4><div class="dx-mates">${ms.map(([j,v])=>`<button type="button" class="dx-mate" data-mate="${j}">${spr(j,'s').replace(' data-i=',' data-x=')}<span>${esc(PK[j][0])}</span><small>${v}%</small></button>`).join('')}</div>`:''}
 <p class="dx-src">${mSource(f)}</p>`;
     }
