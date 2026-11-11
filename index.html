@@ -87,6 +87,13 @@ td.warn{color:var(--weak);font-weight:600}
 .seg i{display:block;height:100%}
 .names{display:flex;flex-wrap:wrap;gap:5px}
 button.plain{background:var(--soft);border:1px solid var(--line);border-radius:7px;padding:6px 12px;cursor:pointer}
+.plain[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:8px;margin-bottom:8px}
+.mrow{display:grid;grid-template-columns:88px minmax(0,1fr);gap:6px 10px;align-items:start}
+.mrow>b{font-size:12.5px;color:var(--muted);font-weight:600;padding-top:3px}
+.mc{display:inline-flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums;font-weight:600;font-size:13px}
+.vt{font-size:12px;font-weight:600;padding:2px 8px;border-radius:5px}
+.vt.g{background:var(--res-bg);color:var(--res)} .vt.b{background:var(--weak-bg);color:var(--weak)} .vt.n{background:var(--imm-bg);color:var(--muted)}
 @media (max-width:420px){ .big{font-size:28px} .grp{grid-template-columns:52px 1fr} }
 </style>
 
@@ -94,13 +101,25 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:7
   <div class="brand"><h1>배틀 도우미</h1>
     <label class="lv">9세대 기준 · 레벨 <input type="number" id="lv" min="1" max="100" value="50"></label></div>
   <nav id="nav">
-    <a href="#types">상성</a><a href="#damage">데미지</a><a href="#speed">스피드</a><a href="#party">파티</a><a href="#coverage">공격 범위</a>
+    <a href="#battle">대전</a><a href="#types">상성</a><a href="#damage">데미지</a><a href="#speed">스피드</a><a href="#party">파티</a><a href="#coverage">공격 범위</a>
   </nav>
 </div></header>
 
 <main class="wrap">
 
-<section id="v-types">
+<section id="v-battle" hidden>
+  <div class="card">
+    <div class="chips"><button type="button" class="plain" id="bt-1">1대1</button><button type="button" class="plain" id="bt-2">2대2</button></div>
+    <div class="cols">
+      <div><h2 style="margin-bottom:8px">내 포켓몬</h2><div id="bt-m"></div></div>
+      <div><h2 style="margin-bottom:8px">상대 포켓몬</h2><div id="bt-o"></div></div>
+    </div>
+    <p class="note">오른쪽 칸은 테라스탈 타입이야. 특성이 하나뿐인 포켓몬은 그 특성(부유 등)을 반영해.</p>
+  </div>
+  <div class="cols" id="bt-out"></div>
+</section>
+
+<section id="v-types" hidden>
   <div class="card">
     <h2>상대 포켓몬</h2>
     <div class="combo"><input type="text" id="ty-pk" placeholder="이름 검색 (예: 한카)" autocomplete="off"></div>
@@ -475,12 +494,56 @@ function rCov(){
     <div class="names">${res.length?res.slice(0,80).map(i=>`<span class="tag">${esc(NAMES[i])}</span>`).join('')+(res.length>80?`<span class="sub">외 ${res.length-80}마리</span>`:''):'<span class="sub">없어. 전부 등배 이상으로 때릴 수 있어.</span>'}</div>`;
 }
 
+/* ---------- 대전 ---------- */
+const bt={mode:1,m:[-1,-1],o:[-1,-1]}, btBox={};
+function btSave(){try{localStorage.setItem('battle',JSON.stringify({mode:bt.mode,m:bt.m.map(i=>i>=0?NAMES[i]:''),o:bt.o.map(i=>i>=0?NAMES[i]:'')}))}catch(e){}}
+function btInit(){
+  for(const s of ['m','o']) $('bt-'+s).innerHTML=[0,1].map(k=>`<div class="brow" id="bt-${s}${k}-w"><div class="combo"><input type="text" id="bt-${s}${k}" placeholder="${s==='m'?'내':'상대'} ${k+1}번" autocomplete="off"></div><select id="bt-${s}${k}-t" aria-label="테라스탈">${teraOpts}</select></div>`).join('');
+  let sv=null; try{sv=JSON.parse(localStorage.getItem('battle'))}catch(e){}
+  const def={m:['한카리아스','핫삼'],o:['어흥염','드래펄트']};
+  if(sv&&(sv.mode===1||sv.mode===2))bt.mode=sv.mode;
+  for(const s of ['m','o'])for(const k of [0,1]){
+    const nm=sv&&Array.isArray(sv[s])?sv[s][k]:def[s][k]; bt[s][k]=find(nm||'');
+    btBox[s+k]=combo($(`bt-${s}${k}`),NAMES,i=>{bt[s][k]=i;btSave();update()}); btBox[s+k].set(bt[s][k]);
+  }
+  $('bt-1').addEventListener('click',()=>{bt.mode=1;btSave();update()});
+  $('bt-2').addEventListener('click',()=>{bt.mode=2;btSave();update()});
+}
+function btMon(s,k){const p=PK[bt[s][k]]; if(!p)return null; const tera=+$(`bt-${s}${k}-t`).value;
+  return {p,def:tera>=0?[tera]:ptypes(p),atk:[...new Set(ptypes(p).concat(tera>=0?[tera]:[]))],ab:p[9].length===1?AB[p[9][0]]:''}}
+function btHit(a,d){
+  const st=a.atk.map(t=>[t,eff(t,d.def,d.ab)]), cov=new Map();
+  (a.p[10]||[]).forEach(i=>{const m=MV[i]; if(!m[2]||a.atk.includes(m[1]))return; const e=eff(m[1],d.def,d.ab); if(e>1)cov.set(m[1],e)});
+  return {st,best:Math.max(...st.map(x=>x[1])),cov:[...cov].sort((x,y)=>y[1]-x[1])};
+}
+function btChips(list,good){return list.map(([t,m])=>`<span class="mc">${chip(t)}<span style="color:var(--${m>1?(good?'res':'weak'):m<1?(good?'weak':'res'):'muted'})">${m===0?'무효':'×'+mtxt(m)}</span></span>`).join('')}
+function rBattle(){
+  $('bt-1').setAttribute('aria-pressed',bt.mode===1); $('bt-2').setAttribute('aria-pressed',bt.mode===2);
+  $('bt-m1-w').hidden=$('bt-o1-w').hidden=bt.mode===1;
+  const ks=bt.mode===1?[0]:[0,1], cards=[];
+  for(const i of ks)for(const j of ks){
+    const a=btMon('m',i), b=btMon('o',j); if(!a||!b)continue;
+    const mine=btHit(a,b), theirs=btHit(b,a);
+    const v=mine.best>theirs.best?['g','상성 유리']:mine.best<theirs.best?['b','상성 불리']:['n','상성 비슷'];
+    const sa=a.p[8], sb=b.p[8];
+    cards.push(`<div class="card">
+      <div class="chips"><strong>${esc(a.p[0])}</strong><span class="sub">vs</span><strong>${esc(b.p[0])}</strong><span class="vt ${v[0]}">${v[1]}</span></div>
+      <div class="mrow"><b>내가 때리면</b><div class="chips">${btChips(mine.st,true)}</div>
+        <b>그 외 약점기</b><div class="chips">${mine.cov.length?btChips(mine.cov,true):'<span class="sub">배우는 기술 중엔 없어</span>'}</div></div>
+      <div class="mrow"><b>상대가 때리면</b><div class="chips">${btChips(theirs.st,false)}</div>
+        <b>조심할 기술</b><div class="chips">${theirs.cov.length?btChips(theirs.cov,false):'<span class="sub">배우는 기술 중엔 없어</span>'}</div></div>
+      <div class="mrow"><b>스피드</b><div class="sub" style="color:var(--ink)">종족값 ${sa} vs ${sb} · ${sa===sb?'같아':sa>sb?'내가 빨라':'상대가 빨라'}</div></div>
+    </div>`);
+  }
+  $('bt-out').innerHTML=cards.length?cards.join(''):'<div class="card"><div class="sub">내 포켓몬과 상대 포켓몬을 골라줘.</div></div>';
+}
+
 /* ---------- 화면 전환 ---------- */
-const TABS={types:rTypes,damage:rDamage,speed:rSpeed,party:rParty,coverage:rCov};
-let tab='types';
+const TABS={battle:rBattle,types:rTypes,damage:rDamage,speed:rSpeed,party:rParty,coverage:rCov};
+let tab='battle';
 function update(){try{TABS[tab]()}catch(e){console.error(e)}}
 function route(){
-  const h=location.hash.slice(1); tab=TABS[h]?h:'types';
+  const h=location.hash.slice(1); tab=TABS[h]?h:'battle';
   for(const k in TABS)$('v-'+k).hidden=k!==tab;
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+tab));
   update();
@@ -513,6 +576,7 @@ function start(){
   $('pt-clear').addEventListener('click',()=>{party=party.map(()=>-1);ptBox.forEach(b=>b.set(-1));partyDemo=false;saveParty();update()});
   document.addEventListener('change',update);
   document.addEventListener('input',e=>{if(e.target.type==='number')update()});
+  btInit();
   window.addEventListener('hashchange',route);
   route();
 }
