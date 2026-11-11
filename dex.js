@@ -51,7 +51,14 @@ ${ms.length?`<h4>같이 많이 쓰는 포켓몬</h4><div class="dx-mates">${ms.m
   }
   return `<h3>실전 데이터</h3>${tog}${b}`;
 }
-function metaBlock(i){return isCh()?metaHTML(i):'<p class="dx-hint">실전 데이터는 챔피언스 모드에서 볼 수 있어</p>'}
+function metaBlock(i){
+  if(!isCh())return '<p class="dx-hint">실전 데이터는 챔피언스 모드에서 볼 수 있어</p>';
+  if(!metaUI.has()&&window.loadMeta){
+    window.loadMeta(['bss','vgc']).then(()=>{const m=document.getElementById('dx-meta');if(m&&m.querySelector('.dx-ld'))m.innerHTML=metaHTML(i)});
+    return '<p class="dx-hint dx-ld">실전 데이터 불러오는 중…</p>';
+  }
+  return metaHTML(i);
+}
 function render(i){
   const p=PK[i], types=aT(i), L=LV(), G=gen(), old=G<=2&&!isCh();
   const ab=G<3&&!isCh()?[]:aA(i).filter((a,k,x)=>x.indexOf(a)===k).map(a=>AB[a]);

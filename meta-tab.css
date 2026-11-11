@@ -68,3 +68,9 @@ span.mt-mate{cursor:default}
 .tm-x .note{margin:8px 0 0;font-size:12px}
 @media(max-width:560px){.tm-m{width:52px}.tm-m .spr.s{width:38px;height:38px}.tm-core{grid-template-columns:minmax(0,1fr) 38px}.tm-core .sub{display:none}}
 .tm-x h4{margin:8px 0 2px;padding:0;font-size:13px;color:var(--muted)}.tm-x .tm-xi{margin:2px 0 0}
+
+.mt-banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border-color:var(--accent)}.mt-banner .sub{margin:0;font-weight:600}.mt-banner .mt-dexbtn{margin:0}
+.mt-sn{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt-fm{display:block;font-size:11px;font-weight:400;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.tm-fm{font-size:10px}
+.tm-cmore{margin-top:6px;padding:6px 12px;font-size:12.5px}
