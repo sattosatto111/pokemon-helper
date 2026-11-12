@@ -383,10 +383,10 @@ const ptypes=p=>p[2]>=0?[p[1],p[2]]:[p[1]];
 let MODE='ch'; const getMode=()=>MODE, GEN=()=>MODE==='ch'?9:+MODE[1], CH=()=>MODE==='ch';
 document.documentElement.dataset.mode=MODE;
 window.GD=window.GD||{};
-const GG=()=>{const n=GEN();return n<9?GD[n]||null:null};
+const GG=()=>{const n=GEN();return n<9?GD[n]||null:CH()?GD.ch||null:null};
 const pT=i=>{const g=GG(),o=g&&g.types&&g.types[i];return o?o.filter(t=>t>=0):ptypes(PK[i])};
 const pS=i=>{const g=GG(),o=g&&g.stats&&g.stats[i];return o||PK[i].slice(3,9)};
-const pL=i=>GEN()<9?((GG()&&GG().learn&&GG().learn[i])||[]):(PK[i][10]||[]);
+const pL=i=>GEN()<9?((GG()&&GG().learn&&GG().learn[i])||[]):((CH()&&GG()&&GG().learn&&GG().learn[i])||PK[i][10]||[]);
 const pA=i=>{if(GEN()<3)return[];const g=GG(),o=g&&g.abil&&g.abil[i];return o||PK[i][9]};
 const abOne=i=>{const a=pA(i);return a.length===1?AB[a[0]]:''};
 let AV=[];
@@ -955,7 +955,7 @@ const normMode=m=>{m=String(m==null?'':m).trim().toLowerCase();if(m==='ch'||m===
 const genP={};
 function loadGen(n){
   if(GD[n])return Promise.resolve(true);
-  return genP[n]||(genP[n]=new Promise(res=>{const sc=document.createElement('script');sc.src='gens/gen'+n+'.js';
+  return genP[n]||(genP[n]=new Promise(res=>{const sc=document.createElement('script');sc.src='gens/'+(n==='ch'?'ch':'gen'+n)+'.js';
     sc.onload=()=>res(true); sc.onerror=()=>{sc.remove();delete genP[n];res(false)}; document.head.appendChild(sc)}));
 }
 function genNote(t){let el=$('gen-note'); if(!el){el=document.createElement('div');el.id='gen-note';document.body.appendChild(el)} el.textContent=t; clearTimeout(genNote.t); genNote.t=setTimeout(()=>el.remove(),4500)}
@@ -963,6 +963,7 @@ let modeTok=0;
 async function setMode(m,noSave){
   m=normMode(m); const tok=++modeTok, n=m==='ch'?9:+m[1];
   if(n<9&&!(await loadGen(n))){ if(tok!==modeTok)return; genNote(n+'세대 데이터를 못 불러왔어. 9세대로 돌아갈게.'); m='g9'; }
+  if(m==='ch'&&!(await loadGen('ch'))){ if(tok!==modeTok)return; genNote('챔피언스 데이터를 못 불러왔어. 9세대 데이터로 보여줄게.'); }
   if(tok!==modeTok)return;
   const to=m==='ch';
   MODE=m; document.documentElement.dataset.mode=m; buildAv(); applyDemo();
@@ -1049,9 +1050,9 @@ function applyGenUI(){
   IVIDS.forEach(id=>{const el=$(id); el.max=kind==='dv'?15:31; $('fl-'+id).firstChild.textContent=ivNm[id]+(kind==='dv'?' DV (0~15)':' 개체값'); show('fl-'+id,!ch)});
   ['da','dd','sa','sb'].forEach(k=>show('fl-'+k+'-nat',G>=3));
   ['da','dd'].forEach(k=>{show('fl-'+k+'-ab',G>=3); show('fl-'+k+'-tera',G===9&&!ch); show('fl-'+k+'-item',G>=2)});
-  setOpts('da-item',[['','없음'],...(G>=3?[['choiceP','구애머리띠']]:[]),...(G>=4?[['choiceS','구애안경'],['orb','생명의구슬'],['belt','달인의띠']]:[]),
-    ...(G>=2?[['type',`타입 강화 도구 (${G<=3?'1.1':'1.2'}배)`]]:[]),...(G>=4?[['band','힘의머리띠/박식안경']]:[]),...(G>=9?[['glove','펀치글러브 (펀치 1.1배)']]:[])]);
-  setOpts('dd-item',[['','없음'],...(G>=6?[['vest','돌격조끼']]:[]),...(G>=5?[['evio','진화의휘석']]:[]),...(G>=4?[['berry','반감열매']]:[])]);
+  setOpts('da-item',[['','없음'],...(G>=3&&!ch?[['choiceP','구애머리띠']]:[]),...(G>=4?[...(ch?[]:[['choiceS','구애안경']]),['orb','생명의구슬'],['belt','달인의띠']]:[]),
+    ...(G>=2?[['type',`타입 강화 도구 (${G<=3?'1.1':'1.2'}배)`]]:[]),...(G>=4?[['band','힘의머리띠/박식안경']]:[]),...(G>=9&&!ch?[['glove','펀치글러브 (펀치 1.1배)']]:[])]);
+  setOpts('dd-item',[['','없음'],...(G>=6&&!ch?[['vest','돌격조끼']]:[]),...(G>=5&&!ch?[['evio','진화의휘석']]:[]),...(G>=4?[['berry','반감열매']]:[])]);
   show('fl-wx',G>=2); show('fl-tr',G>=6);
   setOpts('wx',[['','없음'],['sun','쾌청'],['rain','비'],...(G>=4?[['sand','모래바람']]:[]),...(G>=9?[['snow','눈']]:[])]);
   setOpts('tr',[['','없음'],['elec','일렉트릭필드'],['grass','그래스필드'],...(G>=7?[['psy','사이코필드']]:[]),['mist','미스트필드']]);
