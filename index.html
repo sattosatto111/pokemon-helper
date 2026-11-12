@@ -288,7 +288,7 @@ button.plain{background:var(--soft);border:1px solid var(--line);border-radius:9
         <label class="f" id="fl-dd-item"><span>도구</span><select id="dd-item"></select></label>
         <label class="f" id="fl-dd-hp"><span>남은 HP %</span><input type="number" id="dd-hp" min="1" max="100" value="100"></label>
       </div>
-      <div class="cks"><label class="ck"><input type="checkbox" id="dd-wall"><span id="wall-t">리플렉터/빛의장막</span></label></div>
+      <div class="cks"><label class="ck"><input type="checkbox" id="dd-wall"><span id="wall-t">리플렉터/빛의장막</span></label><label class="ck" id="ck-titem"><input type="checkbox" id="dd-titem" checked>상대 도구 있음</label></div>
     </div>
   </div>
   <div class="card">
@@ -401,7 +401,7 @@ const avail=i=>AV[i]!==false;
 const mvO=j=>{const g=GG();return g&&g.moves&&g.moves[j]};
 const mvT=j=>{const o=mvO(j);return o?o[0]:MV[j][1]};
 const mvP=j=>{const o=mvO(j);return o?o[1]:MV[j][2]};
-const mvC=j=>{const o=mvO(j);let c=o?o[2]:(MV[j][3]?1:0); if(c!==2&&GEN()<=3)c=mvT(j)<=8?0:1; return c};
+const mvC=j=>{const o=mvO(j);let c=o?o[2]:MV[j][3]; if(c!==2&&GEN()<=3)c=mvT(j)<=8?0:1; return c};
 const typeOK=t=>{const g=GEN();return g>=6||(g===1?![8,16,17].includes(t):t!==17)};
 const E1=E.map(r=>r.slice()), E25=E.map(r=>r.slice());
 E1[7][13]=0;E1[6][3]=2;E1[3][6]=2;E1[14][9]=1;   // 1세대: 고스트→에스퍼 무효, 벌레↔독 2배, 얼음→불꽃 등배
@@ -497,7 +497,7 @@ function rTypes(){
   $('ty-stats').innerHTML=`<table><tr><th class="l">능력</th><th>종족값</th><th class="l" style="width:40%"></th><th>${evCols()[0]}</th><th>${evCols()[1]}</th><th>${evCols()[2]}</th></tr>`+
     lab.map((n,k)=>{if(GEN()===1&&k===4)return '';if(GEN()===1&&k===3)n='특수';const b=pS(sel.ty)[k],M=evMax(),old=GEN()<=2;const f=k===0?[hpStat(b,0,L),hpStat(b,M,L),'-']:[stat(b,0,1,L),stat(b,M,1,L),old?'-':stat(b,M,1.1,L)];
       return `<tr><td class="l">${n}</td><td>${b}</td><td class="l"><div class="bar" style="width:${Math.min(100,b/2)}%"></div></td><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td></tr>`}).join('')+
-    `<tr><td class="l">합계</td><td>${pS(sel.ty).reduce((a,b)=>a+b,0)}</td><td colspan="4"></td></tr></table>`;
+    `<tr><td class="l">합계</td><td>${pS(sel.ty).reduce((a,b,k)=>GEN()===1&&k===4?a:a+b,0)}</td><td colspan="4"></td></tr></table>`;
 }
 
 /* ---------- 데미지 ---------- */
@@ -518,7 +518,21 @@ const NOCONTACT=mset('가시대포 고드름침 고드름떨구기 얼음뭉치 
   '다이그래스 다이너클 다이드라군 다이록 다이번 다이사이코 다이스트림 다이스틸 다이썬더 다이아이스 다이아크 다이애시드 다이어스 다이어택 다이웜 다이제트 다이페어리 다이할로우');
 const CONTACT_SP=mset('드레인키스 꽃잎댄스 엉겨붙기 쥐어짜기 풀묶기');
 const isContact=(n,cat)=>!!n&&(cat?CONTACT_SP.has(n):!NOCONTACT.has(n));
-const SKIN={'프리즈스킨':14,'스카이스킨':2,'페어리스킨':17,'일렉트릭스킨':12};
+const SKIN={'프리즈스킨':14,'스카이스킨':2,'페어리스킨':17,'일렉트릭스킨':12,'드래곤스킨':15};
+/* 챔피언스 신특성 (이름 대신 AB id로 참조): 312 Fire Mane, 313 Eelevate, 314 Aura Guard */
+const ABID=(n,id)=>!!n&&n!=='?'&&n===AB[id];
+if(AB[313]&&AB[313]!=='?')DAB[AB[313]]={4:0};
+/* 틀깨기류가 무시하는 특성 (damage-calc 기준, 스펙터가드·프리즘아머·재앙 특성은 무시 못 해) */
+const MBK=mset('필터 하드록 멀티스케일 천진 펑크록 퍼코트 복슬복슬 불가사의부적');
+const mbIgn=n=>!!n&&(n in DAB||MBK.has(n)||ABID(n,313));
+const SF=mset('불꽃펀치 냉동펀치 번개펀치 짓밟기 돌려차기 박치기 누르기 독침 더블니들 물기 용해액 불꽃세례 화염방사 냉동빔 눈보라 환상빔 거품광선 오로라빔 전기쇼크 10만볼트 번개 염동력 사이코키네시스 핥기 스모그 오물공격 뼈다귀치기 불대문자 폭포오르기 휘감기 불새 거품 잼잼펀치 스톤샤워 필살앞니 트라이어택 화염바퀴 코골기 눈싸라기 오물폭탄 진흙뿌리기 대포무노포 전자포 얼어붙은바람 스파크 강철날개 성스러운불꽃 폭발펀치 용의숨결 고속스핀 아이언테일 메탈클로 회오리 깨물어부수기 원시의힘 섀도볼 바위깨기 속이기 열풍 비밀의힘 러스터퍼지 미스트볼 블레이즈킥 바늘팔 맹독엄니 브레이크클로 코멧펀치 놀래키기 암석봉인 은빛바람 시그널빔 신통력 탁류 뛰어오르기 머드샷 포이즌테일 볼트태클 물의파동 플레어드라이브 발경 독찌르기 악의파동 에어슬래시 벌레의야단법석 드래곤다이브 기합구슬 에너지볼 대지의힘 번개엄니 얼음엄니 불꽃엄니 진흙폭탄 사념의박치기 미러샷 러스터캐논 록클라임 방전 분연 크로스포이즌 더스트슈트 아이언헤드 수다 차지빔 시드플레어 괴상한바람 오물웨이브 니트로차지 로킥 애시드봄 열탕 연옥 벌레의저항 땅고르기 일렉트릭네트 하트스탬프 셸블레이드 그래스믹서 하드롤러 나이트버스트 폭풍 화염탄 옛노래 얼어붙은세계 뇌격 푸른불꽃 불꽃춤 프리즈볼트 콜드플레어 바크아웃 고드름떨구기 프리즈드라이 치근거리기 문포스 다이아스톰 스팀버스트 매지컬플레임 볼부비부비 그로우펀치 그림자꿰매기 물거품아리아 지옥찌르기 앵커샷 덤벼들기 불꽃채찍 트로피컬킥 라이트닝서프라이드 오리진즈슈퍼노바 섀도본 아쿠아브레이크 찌리리따끔따끔 브레이징소울비트 파찌파찌액셀 참방참방서핑 둥실둥실폴 찌릿찌릿일렉 이글이글번 더블펀처 드럼어택 화염볼 오라휠 와이드브레이커 사과산 G의힘 소울크래시 원더스팀 셸암즈 엄습하는일격 질투의불꽃 열사의대지 얼어붙는시선 타오르는분노 천둥차기 섬뜩한주문 페이탈클로 배리어러시 암석액스 봄의폭풍 신비의힘 빙산바람 독침천발 오라윙 천추지한 3연화살 백귀야행 비검천중파 찬바람폭풍 번개폭풍 열사의폭풍 발꿈치찍기 루미나콜리전 한판내기 소금절이 킬러스핀 플레어송 아쿠아스텝 달려들기 개척하기 찬물끼얹기 번액셀 다크액셀 포이즌액셀 파이트액셀 매지컬액셀 휘적휘적포 시럽봄 일렉트로빔 매혹의보이스 사이코노이즈 기선제압 악독사슬'); /* 우격다짐 대상: 추가 효과가 있는 기술 (Showdown secondary) */
+const NOTERA=mset('연속뺨치기 연속펀치 두번차기 마구찌르기 더블니들 바늘미사일 전광석화 가시대포 구슬던지기 마구할퀴기 뼈다귀부메랑 트리플킥 마하펀치 본러시 속이기 손바닥치기 씨기관총 고드름침 록블라스트 페인트 진공파 불릿펀치 얼음뭉치 야습 아쿠아제트 더블어택 더블촙 스위프뺨치기 기어소서 물수리검 액셀록 드래곤애로 스케일샷 트리플악셀 더블윙 수류연타 찍찍베기 트리플다이브 트윈빔 타키온커터'); /* 테라 자속 최소 위력 60 제외: 선제기·연속기 */
+const DEFPH=mset('사이코쇼크 사이코브레이크 신비의칼'), GRASSHALF=mset('지진 땅고르기 매그니튜드');
+const G1CRIT=mset('태권당수 잎날가르기 집게해머 베어가르기');
+const CNOTE={'병상첨병':'상대가 상태이상이면 위력이 2배가 돼. 위력을 직접 바꿔줘.','보복':'조건에 따라 위력이 바뀌어.','와이드포스':'조건에 따라 위력이 바뀌어.','폴터가이스트':'조건에 따라 위력이 바뀌어.',
+ '바디프레스':'내 방어로 계산해 (노력치·랭크는 공격 쪽 입력값 그대로, 성격 보정은 빼고).','속임수':'상대의 공격 스탯으로 계산해 (노력치·성격·랭크는 무보정).',
+ '사이코쇼크':'상대의 방어(물리 방어)로 계산해.','사이코브레이크':'상대의 방어(물리 방어)로 계산해.','신비의칼':'상대의 방어(물리 방어)로 계산해.',
+ '객기':'내가 화상·마비·독일 때 위력이 2배야. 위 화상 체크로 반영해.','애크러뱃':'내 도구가 없으면 위력이 2배로 계산돼.','탁쳐서떨구기':'6세대부터 상대가 도구를 갖고 있으면 위력이 1.5배야.','웨더볼':'날씨가 있으면 타입이 바뀌고 위력이 2배야.'};
 const PINCH={'맹화':9,'급류':10,'심록':11,'벌레의알림':6};
 const TERR={elec:12,grass:11,psy:13};
 let mvBox;
@@ -548,7 +562,7 @@ const EXPL=mset('자폭 대폭발'), SUNH=mset('솔라빔 솔라블레이드');
 const ABG={'선파워':4,'테크니션':4,'철주먹':4,'적응력':4,'색안경':4,'틀깨기':4,'천진':4,'이판사판':4,'노말스킨':4,'필터':4,'하드록':4,'마중물':4,'건조피부':4,'전기엔진':4,'내열':4,
 '초식':5,'멀티스케일':5,'테라볼티지':5,'터보블레이즈':5,'단단한발톱':6,'옹골찬턱':6,'메가런처':6,'프리즈스킨':6,'스카이스킨':6,'페어리스킨':6,'변환자재':6,'퍼코트':6,
 '일렉트릭스킨':7,'펑크록':8,'트랜지스터':8,'용의턱':8,'강철술사':7,'수포':7,'복슬복슬':7,'프리즘아머':7,'스펙터가드':7,'리베로':8,
-'예리함':9,'재앙의목간':9,'재앙의그릇':9,'재앙의검':9,'재앙의구슬':9,'정화의소금':9,'노릇노릇바디':9,'흙먹기':9};
+'예리함':9,'드래곤스킨':9,'메가솔라':9,'관통드릴':9,'우격다짐':5,'모래의힘':5,'재앙의목간':9,'재앙의그릇':9,'재앙의검':9,'재앙의구슬':9,'정화의소금':9,'노릇노릇바디':9,'흙먹기':9};
 const abOK=(n,G)=>n&&G>=3&&G>=(ABG[n]||3)?n:'';
 /* 능력치 변화: 1~2세대는 표 + 상한 999, 3세대 이후는 (2+랭크)/2 */
 function bst(s,r){
@@ -563,10 +577,10 @@ function typeInfo(G,mt,dty,dab){
   return {seq,t0,tt,abm:t0?tt/t0:1};
 }
 function wxApply(b,c,mt,nm,sb){
-  const w=c.wx; let m=1;
+  const w=c.mega?'sun':c.wx; let m=1;
   if((w==='sun'&&mt===9)||(w==='rain'&&mt===10))m=1.5;
   else if((w==='sun'&&mt===10)||(w==='rain'&&mt===9))m=.5;
-  else if(sb&&SUNH.has(nm)&&(w==='rain'||w==='sand'||w==='snow'))m=.5;
+  else if(sb&&SUNH.has(nm)&&(c.wx==='rain'||c.wx==='sand'||c.wx==='snow'))m=.5;
   return Math.floor(b*m);
 }
 const zeroRes=(n,mt,pow,ti,dab)=>({rolls:Array(n).fill(0),A:0,D:0,te:0,t0:ti&&ti.t0,abm:ti?ti.abm:1,dab,stab:1,mt,pow});
@@ -580,11 +594,11 @@ function readCtx(){
     atera:t9?tIn('da-tera'):-1,dtera:t9?tIn('dd-tera'):-1,ar:+$('da-rk').value,dr:+$('dd-rk').value,
     aev:evIn('da-pt'),aiv:ivIn('da-iv'),anat:G>=3?+$('da-nat').value:1,
     dev:evIn('dd-pt'),div:ivIn('dd-iv'),dnat:G>=3?+$('dd-nat').value:1,
-    burn:$('da-burn').checked,pinch:G>=3&&$('da-pinch').checked,help:G>=3&&$('da-help').checked,wall:$('dd-wall').checked,
+    titem:$('dd-titem')?$('dd-titem').checked:true,burn:$('da-burn').checked,pinch:G>=3&&$('da-pinch').checked,help:G>=3&&$('da-help').checked,wall:$('dd-wall').checked,
     crit:$('crit').checked,spread:G>=3&&$('spread').checked,wx:G>=2?$('wx').value:'',tr:G>=6?$('tr').value:''};
 }
-const atkStat=(c,cat)=>stat(c.as[cat?3:1],c.aev,c.anat,c.L,c.aiv);
-const defStat=(c,cat)=>stat(c.ds[cat?4:2],c.dev,c.dnat,c.L,c.div);
+const atkStat=(c,cat)=>c.ao?stat(c.ao[0],c.ao[1],c.ao[2],c.L,c.ao[3]):stat(c.as[cat?3:1],c.aev,c.anat,c.L,c.aiv);
+const defStat=(c,cat)=>stat(c.ds[c.dsi!=null?c.dsi:cat?4:2],c.dev,c.dnat,c.L,c.div);
 
 /* 1~2세대 (damage-calc gen12: 217~255 난수 39개, 타입 상성은 하나씩 내림) */
 function calcG12(c,mt,cat,pow,hits,nm){
@@ -625,7 +639,7 @@ function calcG3(c,mt,cat,pow,hits,nm){
   D=Math.max(1,D);
   let b=Math.floor(Math.floor(Math.floor(2*c.L/5+2)*A*bp/D)/50);
   if(c.burn&&!cat&&aab!=='근성')b=Math.floor(b/2);
-  if(c.wall&&!c.crit)b=Math.floor(b/2);
+  if(c.wall&&!c.crit)b=c.spread?Math.floor(b*2/3):Math.floor(b/2);
   if(c.spread)b=Math.floor(b/2);
   b=wxApply(b,c,mt,nm,true);
   b=(cat?b:Math.max(1,b))+2;
@@ -639,7 +653,7 @@ function calcG3(c,mt,cat,pow,hits,nm){
 }
 /* 4세대 (damage-calc gen4: 난수 뒤에 자속·상성·도구 순서로 내림) */
 function calcG4(c,mt,cat,pow,hits,nm){
-  const aab=c.aab; let dab=c.dab; if(aab==='틀깨기')dab='';
+  const aab=c.aab; let dab=c.dab; if(aab==='틀깨기'&&mbIgn(dab))dab='';
   if(aab==='노말스킨')mt=0;
   const ti=typeInfo(4,mt,c.dt,dab);
   if(!ti.tt)return zeroRes(16,mt,pow,ti,dab);
@@ -662,8 +676,8 @@ function calcG4(c,mt,cat,pow,hits,nm){
   if(EXPL.has(nm))D=Math.floor(D/2);
   D=Math.max(1,D);
   let b=Math.floor(Math.floor(Math.floor(2*c.L/5+2)*bp*A/50)/D);
-  if(c.burn&&!cat&&aab!=='근성')b=Math.floor(b/2);
-  if(c.wall&&!c.crit)b=Math.floor(b/2);
+  if(c.burn&&!cat&&aab!=='근성'&&!c.nobrn)b=Math.floor(b/2);
+  if(c.wall&&!c.crit)b=c.spread?Math.floor(b*2/3):Math.floor(b/2);
   if(c.spread)b=Math.floor(b*3/4);
   b=wxApply(b,c,mt,nm,true)+2;
   if(c.crit)b*=2;
@@ -685,10 +699,11 @@ function calcG4(c,mt,cat,pow,hits,nm){
 /* 5~9세대 (damage-calc gen56 / gen789: 4096 기준 반올림 체인) */
 function calcG5(c,mt,cat,pow,hits,nm){
   const G=c.G, aab=c.aab; let dab=c.dab;
-  if(aab==='틀깨기'||aab==='테라볼티지'||aab==='터보블레이즈')dab='';
+  if((aab==='틀깨기'||aab==='테라볼티지'||aab==='터보블레이즈')&&mbIgn(dab))dab='';
   let ate=0;
-  if(aab in SKIN&&mt===0){mt=SKIN[aab];ate=1}
-  else if(aab==='노말스킨'&&mt!==0){mt=0;ate=G>=7}
+  if(c.fixT){}
+  else if(aab in SKIN&&mt===0){mt=SKIN[aab];ate=1}
+  else if(aab==='노말스킨'){mt=0;ate=G>=7}
   const dty=c.dtera>=0?[c.dtera]:c.dt, aty=c.atera>=0?[c.atera]:c.at;
   const ti=typeInfo(G,mt,dty,dab);
   if(!ti.tt)return zeroRes(16,mt,pow,ti,dab);
@@ -696,6 +711,8 @@ function calcG5(c,mt,cat,pow,hits,nm){
   if(aab==='테크니션'&&pow<=60)bm.push(6144);
   if((aab==='철주먹'&&PUNCH.has(nm))||(aab==='이판사판'&&RECOIL.has(nm)))bm.push(4915);
   if(ate)bm.push(G===6?5325:4915);
+  if((aab==='우격다짐'&&SF.has(nm))||(aab==='모래의힘'&&c.wx==='sand'&&[4,5,8].includes(mt)))bm.push(5325);
+  if(c.bpx)bm.push(...c.bpx);
   if(aab==='단단한발톱'&&con)bm.push(5325);
   if(aab==='옹골찬턱'&&BITE.has(nm))bm.push(6144);
   if(aab==='메가런처'&&PULSE.has(nm))bm.push(6144);
@@ -707,7 +724,9 @@ function calcG5(c,mt,cat,pow,hits,nm){
     const grd=(t,ab)=>!t.includes(2)&&ab!=='부유';
     if(grd(aty,aab)&&TERR[c.tr]===mt)bm.push(G>=8?5325:6144);
     if(c.tr==='mist'&&mt===15&&grd(dty,dab))bm.push(2048);
+    if(c.tr==='grass'&&GRASSHALF.has(nm)&&grd(dty,dab))bm.push(2048);
   }
+  if(G>=9&&c.atera>=0&&mt===c.atera&&c.at.includes(c.atera)&&hits===1&&pow>0&&pow<60&&!NOTERA.has(nm))pow=60;
   if(SUNH.has(nm)&&(c.wx==='rain'||c.wx==='sand'||c.wx==='snow'))bm.push(2048);
   pow=Math.max(1,pokeRound(pow*chain(bm)/4096));
   let ar=c.ar, dr=c.dr;
@@ -718,6 +737,7 @@ function calcG5(c,mt,cat,pow,hits,nm){
   if(!cat&&(aab==='의욕'||(aab==='근성'&&c.burn)))am.push(6144);
   if(cat&&aab==='선파워'&&c.wx==='sun')am.push(6144);
   if(c.pinch&&PINCH[aab]===mt)am.push(6144);
+  if(ABID(aab,312)&&mt===9)am.push(6144);
   if(aab==='강철술사'&&mt===8)am.push(6144);
   if(aab==='용의턱'&&mt===15)am.push(6144);
   if(aab==='트랜지스터'&&mt===12)am.push(G>=9?5325:6144);
@@ -727,14 +747,15 @@ function calcG5(c,mt,cat,pow,hits,nm){
   if(dab==='재앙의그릇'&&cat)am.push(3072);
   const A=Math.max(1,pokeRound(bst(atkStat(c,cat),ar)*chain(am)/4096));
   let D=bst(defStat(c,cat),dr);
-  if(cat&&c.wx==='sand'&&dty.includes(5)&&G>=4)D=pokeRound(D*3/2);
-  if(!cat&&c.wx==='snow'&&dty.includes(14))D=pokeRound(D*3/2);
+  const dc=c.dsi!=null?0:cat;
+  if(dc&&c.wx==='sand'&&dty.includes(5)&&G>=4)D=pokeRound(D*3/2);
+  if(!dc&&c.wx==='snow'&&dty.includes(14))D=pokeRound(D*3/2);
   const dm=[];
-  if(cat&&c.dit==='vest')dm.push(6144);
+  if(dc&&c.dit==='vest')dm.push(6144);
   if(c.dit==='evio')dm.push(6144);
-  if(dab==='퍼코트'&&!cat)dm.push(8192);
-  if(aab==='재앙의검'&&!cat)dm.push(3072);
-  if(aab==='재앙의구슬'&&cat)dm.push(3072);
+  if(dab==='퍼코트'&&!dc)dm.push(8192);
+  if(aab==='재앙의검'&&!dc)dm.push(3072);
+  if(aab==='재앙의구슬'&&dc)dm.push(3072);
   D=Math.max(1,pokeRound(D*chain(dm)/4096));
   let b=Math.floor(Math.floor(Math.floor(2*c.L/5+2)*pow*A/D)/50)+2;
   if(c.spread)b=pokeRound(b*3072/4096);
@@ -745,15 +766,15 @@ function calcG5(c,mt,cat,pow,hits,nm){
   if(c.atera>=0&&mt===c.atera) stab=own?(adapt?2.25:2):(adapt?2:1.5);
   else if(own) stab=(adapt&&c.atera<0)?2:1.5;
   const sm=Math.round(stab*4096), fm=[];
-  if(c.wall&&!c.crit)fm.push(2048);
+  if(c.wall&&!c.crit)fm.push(c.spread?2732:2048);
   if(aab==='색안경'&&ti.t0<1)fm.push(8192);
   if((dab==='멀티스케일'||dab==='스펙터가드')&&c.pct>=100)fm.push(2048);
-  if(dab==='복슬복슬'&&con)fm.push(2048);
+  if((dab==='복슬복슬'||ABID(dab,314))&&con)fm.push(2048);
   if(dab==='펑크록'&&SOUND.has(nm))fm.push(2048);
   if(SOLID.includes(dab)&&ti.t0>1)fm.push(3072);
   if(c.ait==='belt'&&ti.t0>1)fm.push(4915); else if(c.ait==='orb')fm.push(5324);
   if(c.dit==='berry'&&(ti.t0>1||mt===0))fm.push(2048);
-  const M=Math.max(41,Math.min(131072,chain(fm))), burn=c.burn&&!cat&&aab!=='근성';
+  const M=Math.max(41,Math.min(131072,chain(fm))), burn=c.burn&&!cat&&aab!=='근성'&&!c.nobrn;
   const rolls=[];
   for(let i=85;i<=100;i++){
     let v=Math.floor(b*i/100);
@@ -767,7 +788,22 @@ function calcG5(c,mt,cat,pow,hits,nm){
 }
 /* 고정 데미지 기술: 레벨 / 정해진 수치 / HP 절반 / 일격필살 */
 const FIXD={'지구던지기':'lv','나이트헤드':'lv','용의분노':40,'소닉붐':20,'분노의앞니':'half','자연의분노':'half','절대영도':'ko','땅가르기':'ko','뿔드릴':'ko','가위자르기':'ko'};
+/* 기술별 특수 규칙 (damage-calc 기준): 쓰는 스탯이 다른 기술, 조건부 위력, 날씨 타입 */
+function prep(c,mt,pow,nm){
+  const G=c.G, o={...c}, x=[];
+  if(nm==='바디프레스')o.ao=[c.as[2],c.aev,1,c.aiv];
+  else if(nm==='속임수'){o.ao=[c.ds[1],0,1,31];o.ar=0}
+  if(G>=5&&DEFPH.has(nm))o.dsi=2;
+  if(G>=9&&c.aab==='메가솔라')o.mega=1;
+  const W=o.mega?'sun':c.wx;
+  if(nm==='웨더볼'&&G>=3){o.fixT=1; if(W){mt={sun:9,rain:10,sand:5,snow:14}[W]; pow*=2}}
+  else if(nm==='애크러뱃'&&G>=4&&!c.ait)pow*=2;
+  else if(nm==='객기'&&G>=3&&c.burn){ if(G>=5)x.push(8192); else pow*=2; if(G>=6)o.nobrn=1 }
+  else if(nm==='탁쳐서떨구기'&&G>=6&&c.titem)x.push(6144);
+  o.bpx=x; return [o,mt,pow];
+}
 function calc(c,mt,cat,pow,hits,nm){
+  [c,mt,pow]=prep(c,mt,pow,nm);
   const r=(c.G<=2?calcG12:c.G===3?calcG3:c.G===4?calcG4:calcG5)(c,mt,cat,pow,hits,nm), f=FIXD[nm];
   if(f===undefined)return r;
   const dmg=r.te===0?0:f==='lv'?c.L:f==='half'?Math.max(1,Math.floor(c.hpNow/2)):f==='ko'?c.hpNow:f;
@@ -776,16 +812,26 @@ function calc(c,mt,cat,pow,hits,nm){
 function rDamage(){
   const c=readCtx(), out=$('dm-out');
   if(!c){out.innerHTML='<h2>결과</h2><div class="sub">공격하는 쪽이랑 맞는 쪽 포켓몬을 둘 다 골라줘.</div>';$('dm-rank').innerHTML='<div class="sub">포켓몬을 고르면 순위가 나와.</div>';return}
-  const hits=num('mv-h',1,10,1), r=calc(c,+$('mv-t').value,+$('mv-c').value,num('mv-p',1,999,1),hits,$('mv').value.trim());
+  const nm0=$('mv').value.trim(), mj0=MNAMES.indexOf(nm0); show('ck-titem',c.G>=6);
+  const status=mj0>=0&&mvC(mj0)===2, hits=num('mv-h',1,10,1);
+  if(status){out.innerHTML='<h2>결과</h2><div class="sub">변화 기술이라 데미지를 주지 않아.</div>'; const mini=$('dm-mini'); if(mini)mini.innerHTML='<b>데미지 없음</b><span>변화 기술이야</span>'}
+  else rResult(c,out,hits);
+  rRank(c);
+}
+function rResult(c,out,hits){
+  const r=calc(c,+$('mv-t').value,+$('mv-c').value,num('mv-p',1,999,1),hits,$('mv').value.trim());
   const hp=c.hp, now=c.hpNow, N=r.rolls.length, mn=r.rolls[0], mx=r.rolls[N-1];
   const pc=v=>(v/hp*100).toFixed(1);
   const keep=Math.max(0,(now-mx)/hp*100), maybe=Math.max(0,Math.min(now,now-mn)/hp*100-keep);
   const t0=r.t0===undefined?r.te:r.t0, abt=r.dab&&r.abm!==undefined&&r.abm!==1?` · ${esc(r.dab)} ${r.abm===0?'무효':'×'+mtxt(r.abm)}`:'';
   const tag=(t0===0||r.te===0?'효과가 없다':t0>1?`효과가 굉장하다 ×${mtxt(t0)}`:t0<1?`효과가 별로다 ×${mtxt(t0)}`:'등배 ×1')+abt;
   const nm=$('mv').value.trim(), mj=MNAMES.indexOf(nm), fx=FIXD[nm], notes=[];
-  if(mj>=0&&mvC(mj)===2)notes.push('변화 기술이라 데미지를 주지 않아.');
-  else if(fx!==undefined)notes.push(fx==='lv'?'레벨만큼 고정 데미지를 줘.':fx==='half'?'상대 현재 HP의 절반을 깎아.':fx==='ko'?'일격필살기라 맞으면 쓰러져 (명중률은 따로 봐야 해).':`${fx} 고정 데미지를 줘.`);
+  if(fx!==undefined)notes.push(fx==='lv'?'레벨만큼 고정 데미지를 줘.':fx==='half'?'상대 현재 HP의 절반을 깎아.':fx==='ko'?'일격필살기라 맞으면 쓰러져 (명중률은 따로 봐야 해).':`${fx} 고정 데미지를 줘.`);
   else if(mj>=0&&!mvP(mj))notes.push('위력이 변하는 기술이야, 직접 맞춰줘.');
+  if(CNOTE[nm])notes.push(CNOTE[nm]);
+  if(c.G===1&&G1CRIT.has(nm))notes.push('1세대에선 급소가 거의 항상 터져. 급소를 체크해서 봐줘.');
+  if(c.wall&&c.spread&&c.G>=3)notes.push('더블 범위기 체크라서 리플렉터/빛의장막을 더블 배틀 기준(약 2/3)으로 계산했어.');
+  if(c.G>=6&&c.tr==='grass'&&GRASSHALF.has(nm))notes.push('그래스필드라 위력이 절반이야.');
   if(hits>1)notes.push('연속기 확률은 근사치야.');
   const verdict=koText(r.rolls,now), range=`${pc(mn)}% ~ ${pc(mx)}%`;
   out.innerHTML=`<h2>결과</h2>
@@ -795,8 +841,11 @@ function rDamage(){
     <div class="sub">데미지 ${mn} ~ ${mx}${hits>1?` (${hits}회 합계)`:''} · 상대 HP ${now}${now<hp?' / '+hp:''} · ${chip(r.mt)} ${tag}${r.stab>1?` · 자속 ×${r.stab}`:''}${r.fixed?'':` · 위력 ${r.pow} · 공격 ${r.A} / 방어 ${r.D}`}</div>
     <div class="note">난수 ${N}개: ${r.rolls.join(', ')}</div>${notes.map(t=>`<div class="note">${t}</div>`).join('')}`;
   const mini=$('dm-mini'); if(mini)mini.innerHTML=`<b>${range}</b><span>${verdict}</span>`;
+}
+function rRank(c){
+  const now=c.hpNow, pc=v=>(v/c.hp*100).toFixed(1);
   const list=(pL(c.ai)||[]).map(i=>{const p=mvP(i), fz=FIXD[MV[i][0]]!==undefined; if(!p&&!fz||mvC(i)===2)return null; const h=HITS[MV[i][0]]||1; const x=calc(c,mvT(i),mvC(i),p||1,h,MV[i][0]); return {i,p,h,x,cat:mvC(i)}})
-    .filter(Boolean).sort((p,q)=>q.x.rolls[q.x.rolls.length-1]-p.x.rolls[p.x.rolls.length-1]||q.x.rolls[0]-p.x.rolls[0]).slice(0,15);
+    .filter(Boolean).sort((p,q)=>(FIXD[MV[p.i][0]]==='ko')-(FIXD[MV[q.i][0]]==='ko')||q.x.rolls[q.x.rolls.length-1]-p.x.rolls[p.x.rolls.length-1]||q.x.rolls[0]-p.x.rolls[0]).slice(0,15);
   $('dm-rank').innerHTML=list.length?`<table><tr><th class="l">기술</th><th>타입</th><th>분류</th><th>위력</th><th>데미지</th><th class="l">결과</th></tr>`+
     list.map(o=>{const rl=o.x.rolls; return `<tr data-m="${o.i}" style="cursor:pointer"><td class="l">${esc(MV[o.i][0])}</td><td>${chip(o.x.mt)}</td><td>${o.cat?'특수':'물리'}</td><td>${o.p?o.p+(o.h>1?'×'+o.h:''):'고정'}</td><td>${pc(rl[0])}~${pc(rl[rl.length-1])}%</td><td class="l">${koText(rl,now)}</td></tr>`}).join('')+'</table>'
     :'<div class="sub">이 포켓몬은 배우는 기술 데이터가 없어. 위에서 기술을 직접 골라줘.</div>';
