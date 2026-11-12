@@ -9,7 +9,7 @@ window.loadMeta=function(names){
 };
 const M=()=>window.metaUI;
 const st={q:'',t:-1,n:50,open:-1,src:/[?&]mt=team/.test(location.search)?'team':'off',tseason:'',tn:20,season:'Current',seasons:['Current','M7','M6','M5','M4','M3','M2','M1'],notice:'',oo:'',tx:new Set(),c2:5,c3:5,putMsg:'',loading:false,txInit:/[?&]mtx=1/.test(location.search)};
-// ---- 공식 랭크 데이터 (Pokémon Champions Battle Data API) ----
+// ---- 인게임 랭크 데이터 (Pokémon Champions Battle Data API) ----
 const CBD='https://championsbattledata.com', TTL=6*3600e3, TMO=8000;
 const nz=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 const memo={}, bd={};
@@ -25,6 +25,8 @@ const sfx=()=>st.season==='Current'?'':'&season='+encodeURIComponent(st.season),
 // "아드킹 (가라르)" -> {b:'아드킹',f:'가라르'}
 function shortName(n){const m=String(n).match(/^(.+?)\s*\((.+)\)\s*$/);return m?{b:m[1],f:m[2]}:{b:String(n),f:''}}
 const nmHTML=n=>{const s=shortName(n);return `<span class="mt-sn" title="${esc(n)}">${esc(s.b)}${s.f?`<small class="mt-fm">${esc(s.f)}</small>`:''}</span>`};
+const FORM_KO={'F':'암컷','M':'수컷','Low-Key':'로우키','Amped':'하이','Midnight':'한밤중','Dusk':'황혼','Four':'네 식구','Eternal':'영원의 꽃','Fancy':'환상','Heat':'히트','Wash':'워시','Mow':'커트','Fan':'스핀','Frost':'프로스트','Paldea-Combat':'팔데아 컴뱃','Paldea-Blaze':'팔데아 블레이즈','Paldea-Aqua':'팔데아 워터'};
+const formKo=f=>FORM_KO[f]||f.replace(/-/g,' ');
 const apiFmt=()=>M().fmt()==='vgc'?'Doubles':'Singles';
 function rankings(){
   const k=apiFmt()+'|'+st.season;
@@ -101,25 +103,28 @@ function odrawList(){
   box.innerHTML=(show.map(o=>{const open=st.open===o.slug;
     return `<div class="mt-row${open?' open':''}"><button type="button" class="mt-h mt-ho" data-orow="${esc(o.slug)}" aria-expanded="${open}">
 <span class="mt-rk">${esc(o.pos)}</span>${o.i>=0?noDi(spr(o.i,'s')):'<span class="mt-nospr"></span>'}
-<span class="mt-nm"><b>${nmHTML(o.name)}</b><span class="chips">${o.p?ptypes(o.p).map(chip).join(''):''}</span></span></button>${open?odetail(o):''}</div>`}).join('')||'<div class="sub">조건에 맞는 포켓몬이 없어.</div>')
+<span class="mt-nm"><b>${nmHTML(o.name)}${o.fm?`<small class="mt-fm">${esc(o.fm)}</small>`:''}</b><span class="chips">${o.p?ptypes(o.p).map(chip).join(''):''}</span></span></button>${open?odetail(o):''}</div>`}).join('')||'<div class="sub">조건에 맞는 포켓몬이 없어.</div>')
   +(all.length>show.length?`<button type="button" class="mt-more" id="mt-more">더 보기 (${show.length}/${all.length})</button>`:'');
 }
 function fallback(msg){st.src='sim';st.notice=msg;st.open=-1;draw()}
 function loadOfficial(){
-  const box=document.getElementById('mt-list'); if(box&&!oList)box.innerHTML='<div class="sub">공식 랭크 불러오는 중…</div>';
+  const box=document.getElementById('mt-list'); if(box&&!oList)box.innerHTML='<div class="sub">인게임 랭크 불러오는 중…</div>';
   const f=apiFmt(), s=st.season;
   rankings().then(d=>{
     if(st.src!=='off'||f!==apiFmt()||s!==st.season)return;
     if(!d||!Array.isArray(d.rankings))throw new Error('bad');
     if(d.seasons&&d.seasons.length&&d.seasons.join()!==st.seasons.join()){st.seasons=d.seasons;const sel=document.getElementById('mt-season');if(sel)sel.innerHTML=st.seasons.map(x=>`<option value="${esc(x)}"${x===st.season?' selected':''}>${esc(seasonLabel(x))}</option>`).join('')}
     st.oo=d.generatedAt||'';
+    const cnt={}; d.rankings.forEach(r=>{const i=monIdx(r.showdownId||r.name); if(i>=0)cnt[i]=(cnt[i]||0)+1});
     oList=d.rankings.map(r=>{const i=monIdx(r.showdownId||r.name), p=i>=0?PK[i]:null;
-      return {pos:r.position,slug:r.slug,i,p,name:p?p[0]:r.name,en:r.name+' '+(r.battleName||'')}});
+      const fm=i>=0&&cnt[i]>1&&r.name.includes('-')?formKo(r.name.slice(r.name.indexOf('-')+1)):'';
+      return {pos:r.position,slug:r.slug,i,p,name:p?p[0]:r.name,fm,en:r.name+' '+(r.battleName||'')}});
     const dt=document.getElementById('mt-date'); if(dt)dt.textContent=st.oo?st.oo.slice(0,10):'';
     odrawList();
   }).catch(()=>{if(st.src!=='off')return;
-    if(M().has())fallback('공식 랭크 데이터를 못 불러와서 시뮬레이터 데이터로 보여줄게.');
-    else{const b=document.getElementById('mt-list');if(b)b.innerHTML='<div class="sub">공식 데이터를 못 불러왔어. 나중에 다시 와줘.</div>'}});
+    const fail=()=>{const b=document.getElementById('mt-list');if(b)b.innerHTML='<div class="sub">인게임 데이터를 못 불러왔어. 나중에 다시 와줘.</div>'};
+    const go=()=>{if(st.src!=='off')return; if(M().has())fallback('인게임 랭크 데이터를 못 불러와서 시뮬레이터 데이터로 보여줄게.'); else fail()};
+    if(M().has())go(); else window.loadMeta(['bss','vgc']).then(go)});
 }
 function partyRec(){
   const m=M(), f=m.fmt(), mem=party.filter(i=>i>=0);
@@ -143,12 +148,21 @@ function teamEntry(){
   if(!ss.includes(st.tseason))st.tseason=ss[0];
   return {T,ss,rule,e:T.seasons.find(x=>x.season===st.tseason&&x.rule===rule)};
 }
+const megaMap={}; PK.forEach((p,i)=>{megaMap[p[0]]=i});
+function megaOf(i,item){
+  const m=/나이트([XYZ])?$/.exec(item||''); if(!m||PK[i][0].includes(' (메가')) return null;
+  const sx=m[1]||'', b=PK[i][0];
+  let j=megaMap[sx?b+' (메가 '+sx+')':b+' (메가)'];
+  if(j===undefined&&!sx){const k=PK.findIndex(p=>p[0].startsWith(b+' (메가'));if(k>=0)j=k}
+  return {j:j===undefined?i:j,label:'메가'+sx};
+}
 const tmSmall=i=>{const s=shortName(PK[i][0]);return `<small title="${esc(PK[i][0])}">${esc(s.b)}</small>${s.f?`<small class="tm-fm" title="${esc(PK[i][0])}">${esc(s.f)}</small>`:''}`};
 function coreHTML(a,n,k){
   const lim=st[k], more=a.length>lim?`<button type="button" class="mt-more tm-cmore" data-cmore="${k}">더 보기 (${lim}/${a.length})</button>`:(lim>5&&a.length>5?`<button type="button" class="mt-more tm-cmore" data-cmore="${k}">접기</button>`:'');
-  return `<div class="tm-cores">${a.slice(0,lim).map(([ids,c])=>`<div class="tm-core"><span class="tm-sp">${ids.map(i=>`<span class="tm-m">${spr(i,'s')}${tmSmall(i)}</span>`).join('')}</span><b>${Math.round(c/n*100)}%</b><span class="sub">${c}팀</span></div>`).join('')}</div>${more}`;
+  return `<div class="tm-cores">${a.slice(0,lim).map(([ids,c])=>`<div class="tm-core"><span class="tm-sp">${ids.map(i=>`<span class="tm-m">${spr(i,'s')}${tmSmall(i)}</span>`).join('')}</span><b>${Math.round(c/n*100)}%</b><span class="sub">${c}팀${n<SMALL?` · 표본이 적어 (${n}팀)`:''}</span></div>`).join('')}</div>${more}`;
 }
 const tb={};
+const SMALL=20;
 function tmLoad(i){
   const key=apiFmt()+'|'+st.season+'|'+i;
   if(tb[key])return tb[key];
@@ -165,10 +179,10 @@ function tmDetail(i,item){
   let h=`<div class="tm-x"><div class="tm-xh">${noDi(spr(i,'s'))}<b>${esc(PK[i][0])}</b><button type="button" class="tm-dex" data-dex="${i}">도감</button></div>
 <div class="tm-xi"><span class="sub">랭커 지닌 물건</span><b>${esc(item)}</b></div>`;
   if(e.s==='load')return h+'<div class="sub">대표 세팅 불러오는 중…</div></div>';
-  if(e.s==='err'||!e.d)return h+'<div class="sub">대표 세팅을 못 불러왔어</div></div>';
+  if(e.s==='err'||!e.d)return h+`<div class="sub">대표 세팅을 못 불러왔어</div><button type="button" class="mt-dexbtn" data-tmretry="${i}">다시 불러오기</button></div>`;
   const P=e.d, mv=P.mv.slice(0,4), na=top(P.na), sp=top(P.sp), ab=top(P.ab);
   if(!mv.length&&!na&&!sp&&!ab)return h+'<div class="sub">대표 세팅을 못 불러왔어</div></div>';
-  h+=`<h4>대표 세팅 (공식 배틀 데이터)</h4>${mv.length?orows(mv):''}`;
+  h+=`<h4>대표 세팅 (인게임 배틀 데이터)</h4>${mv.length?orows(mv):''}`;
   if(na)h+=`<div class="tm-kv"><span class="sub">성격</span><b>${esc(na.n)} <small class="mt-sub">${esc(na.s)}</small></b><small class="mt-sub">${na.v}%</small></div>`;
   if(sp)h+=`<div class="tm-kv"><span class="sub">스탯 배분</span><b>${esc(sp.n)}</b><small class="mt-sub">${sp.v}%</small></div>`;
   if(ab)h+=`<div class="tm-kv"><span class="sub">특성</span><b>${esc(ab.n)}</b><small class="mt-sub">${ab.v}%</small></div>`;
@@ -181,13 +195,13 @@ function teamsHTML(){
   if(!e)return sel+'<div class="sub">이 시즌·룰 데이터가 없어.</div>';
   const show=e.teams.slice(0,st.tn);
   if(st.txInit){st.txInit=false;if(show[0])show[0].mons.forEach((_,j)=>st.tx.add('0:'+j))}
-  const list=show.map((t,k)=>{
+  let mg; const list=show.map((t,k)=>{
     const keys=t.mons.map((_,j)=>k+':'+j), all=keys.every(x=>st.tx.has(x));
     return `<div class="tm-team"><div class="tm-hd"><b>${t.rank}위</b><span class="sub">${t.rating!=null?'레이팅 '+t.rating:''}</span><button type="button" class="mt-dexbtn tm-all" data-txall="${k}">${all?'팀 전체 접기':'팀 전체 펼치기'}</button><button type="button" class="mt-dexbtn tm-put" data-put="${k}">이 팀 파티에 넣기</button></div>
-<div class="tm-six">${t.mons.map(([i,it],j)=>`<button type="button" class="tm-m${st.tx.has(keys[j])?' on':''}" data-tx="${keys[j]}" aria-expanded="${st.tx.has(keys[j])}">${noDi(spr(i,'s'))}${tmSmall(i)}<small class="tm-it">${it>=0?esc(T.items[it]):'-'}</small></button>`).join('')}</div>
+<div class="tm-six">${t.mons.map(([i,it],j)=>`<button type="button" class="tm-m${st.tx.has(keys[j])?' on':''}" data-tx="${keys[j]}" aria-expanded="${st.tx.has(keys[j])}">${noDi(spr(i,'s'))}${tmSmall(i)}${(mg=megaOf(i,it>=0?T.items[it]:''))?`<small class="tm-it tm-mega">${mg.label}</small>`:`<small class="tm-it">${it>=0?esc(T.items[it]):'-'}</small>`}</button>`).join('')}</div>
 ${t.mons.map(([i,it],j)=>st.tx.has(keys[j])?tmDetail(i,it>=0?T.items[it]:'-'):'').join('')}</div>`}).join('');
   return `${sel}<p class="sub">${esc(st.tseason)} · 상위 ${e.n}팀 중 · 기준일 ${esc(e.updated)}</p>
-<p class="sub">공개된 팀만 있어 (순위가 건너뛰는 건 비공개 팀)</p>${st.putMsg?`<p class="note mt-warn" role="status">${st.putMsg}</p>`:''}
+<p class="sub">공개된 팀만 있어 (순위가 건너뛰는 건 비공개 팀)</p>${e.n<SMALL?`<p class="note mt-warn">표본이 적어 (${e.n}팀)</p>`:''}${st.putMsg?`<p class="note mt-warn" role="status">${st.putMsg}</p>`:''}
 <h3 class="tm-h">자주 쓰는 2마리 조합</h3>${coreHTML(e.cores2,e.n,'c2')}
 <h3 class="tm-h">자주 쓰는 3마리 조합</h3>${coreHTML(e.cores3,e.n,'c3')}
 <h3 class="tm-h">상위 랭커 팀</h3><div class="tm-list">${list}</div>
@@ -210,7 +224,7 @@ function drawList(){
 <span class="mt-pv sub">${top(e.items)}<br>${top(e.moves)}</span></button>${open?detail(o):''}</div>`}).join('')||'<div class="sub">조건에 맞는 포켓몬이 없어.</div>')
   +(all.length>show.length?`<button type="button" class="mt-more" id="mt-more">더 보기 (${show.length}/${all.length})</button>`:'');
 }
-function srcHTML(){return `<div class="mfmt mt-src" role="group" aria-label="데이터 출처">${[['off','공식 랭크 데이터'],['team','인기 파티'],['sim','시뮬레이터(Smogon)']].map(([k,t])=>`<button type="button" data-src="${k}" class="${st.src===k?'on':''}" aria-pressed="${st.src===k}">${t}</button>`).join('')}</div>`}
+function srcHTML(){return `<div class="mfmt mt-src" role="group" aria-label="데이터 출처">${[['off','인게임 랭크 데이터'],['team','인기 파티'],['sim','시뮬레이터(Smogon)']].map(([k,t])=>`<button type="button" data-src="${k}" class="${st.src===k?'on':''}" aria-pressed="${st.src===k}">${t}</button>`).join('')}</div>`}
 function filtersHTML(){return `<input type="search" id="mt-q" placeholder="이름으로 찾기" autocomplete="off" value="${esc(st.q)}">
 <div class="mt-types"><button type="button" data-ty="-1" class="${st.t<0?'on':''}">전체</button>${TN.map((n,t)=>`<button type="button" data-ty="${t}" class="${st.t===t?'on':''}" style="--tc:${TC[t]}">${n}</button>`).join('')}</div>
 <div id="mt-list"></div>`}
@@ -259,11 +273,12 @@ function bind(el){
     if(b=g('[data-txall]')){const x=teamEntry(), t=x&&x.e&&x.e.teams[+b.dataset.txall]; if(!t)return;
       const ks=t.mons.map((_,j)=>b.dataset.txall+':'+j), on=ks.every(q=>st.tx.has(q));
       ks.forEach(q=>on?st.tx.delete(q):st.tx.add(q)); document.getElementById('tm-body').innerHTML=teamsHTML();return}
+    if(b=g('[data-tmretry]')){delete tb[apiFmt()+'|'+st.season+'|'+b.dataset.tmretry];document.getElementById('tm-body').innerHTML=teamsHTML();return}
     if(b=g('[data-chmode]')){Promise.resolve(window.setMode&&setMode('ch')).then(()=>{if(tab==='meta')draw()});return}
     if(b=g('[data-cmore]')){const k=b.dataset.cmore;st[k]=st[k]>5?5:99;document.getElementById('tm-body').innerHTML=teamsHTML();return}
     if(b=g('#tm-more')){st.tn+=20;draw();return}
     if(b=g('[data-put]')){const x=teamEntry(), t=x&&x.e&&x.e.teams[+b.dataset.put]; if(!t)return;
-      const ids=[...new Set(t.mons.map(a=>a[0]))].slice(0,6);
+      const ids=[...new Set(t.mons.map(a=>{const mg=megaOf(a[0],a[1]>=0?x.T.items[a[1]]:'');return mg?mg.j:a[0]}))].slice(0,6);
       if(party.some(i=>i>=0)&&!partyDemo&&!confirm('지금 파티를 이 팀으로 바꿀까?'))return;
       for(let k=0;k<6;k++){party[k]=k<ids.length?ids[k]:-1; ptBox[k].set(party[k])}
       partyDemo=false; saveParty(); st.putMsg='파티에 넣었어! <a href="#party">파티 탭에서 보기</a>'; document.getElementById('tm-body').innerHTML=teamsHTML(); return}
