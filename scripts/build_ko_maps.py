@@ -17,6 +17,17 @@ EXTRA = {"Maushold-Four": "maushold-family-of-four", "Squawkabilly-Yellow": "squ
          "Toxtricity-Low-Key": "toxtricity-low-key", "Aegislash-Blade": "aegislash-blade",
          "Mimikyu-Busted": "mimikyu-busted", "Morpeko": "morpeko-full-belly"}
 
+# Korean item names are kept only for holdable battle items: PokeAPI categories below + anything flagged holdable
+HELD_CATS = {"medicine", "picky-healing", "effort-drop", "type-protection", "in-a-pinch", "other", "held-items", "effort-training",
+             "training", "choice", "type-enhancement", "bad-held-items", "plates", "jewels", "mega-stones", "memories",
+             "species-specific", "scarves"}
+
+def held_items():
+    cat = {r["id"]: r["identifier"] for r in bm.csv_rows("item_categories.csv")}
+    flag = {r["id"]: r["identifier"] for r in bm.csv_rows("item_flags.csv")}
+    hold = {r["item_id"] for r in bm.csv_rows("item_flag_map.csv") if flag[r["item_flag_id"]].startswith("holdable")}
+    return {bm.norm(r["identifier"]) for r in bm.csv_rows("items.csv") if cat[r["category_id"]] in HELD_CATS or r["id"] in hold}
+
 RANK = "https://championsbattledata.com/api/rankings?format=%s&limit=400%s"
 
 def roster_ids():
@@ -59,6 +70,9 @@ def main():
     mv = bm.names("moves.csv", "move_names.csv", "move_id")
     it = bm.names("items.csv", "item_names.csv", "item_id")
     ab = bm.names("abilities.csv", "ability_names.csv", "ability_id")
+    ab.update({"eelevate": "천정부지", "firemane": "불꽃의갈기", "auraguard": "파동의방호"})   # new in Champions (gamewith.ai ko)
+    held = held_items()
+    it = {k: v for k, v in it.items() if k in held}
     roster = build_roster(mon)
     out = {"mon": mon, "roster": roster, "move": mv, "item": it, "ability": ab, "nature": bm.NATURES}
     p = os.path.join(bm.ROOT, "meta", "ko.js")

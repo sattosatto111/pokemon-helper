@@ -462,6 +462,16 @@ def main():
     extra = []   # [ko,type,power,cat,0]
     extra_idx = {}
 
+    # seed extras from the committed gens/common.js so indices stay stable between runs
+    cj = os.path.join(ROOT, 'gens', 'common.js')
+    if os.path.exists(cj):
+        txt = open(cj, encoding='utf8').read()
+        for e in json.loads(txt[txt.index('mvExtra:') + 8:txt.rindex('}')]):
+            k = ko2sd.get(e[0]) or ko2sd.get(e[0].replace(' ', ''))
+            assert k and k in moves and k not in sd2mv and k not in extra_idx, e
+            extra.append(e)
+            extra_idx[k] = len(MV) + len(extra) - 1
+
     def move_index(k, create=True):
         if k in sd2mv:
             return sd2mv[k]
@@ -646,6 +656,71 @@ def main():
         R['moves'] = dict(sorted(R['moves'].items()))
     print('learnset moves with no index/ko name:', missing_moves)
 
+    # ---- Champions (gens/ch.js): champions mod of Showdown (all learnset codes are "9M")
+    CH = SD + 'mods/champions/'
+    ch_mv = load_ts('ch-moves.ts', CH + 'moves.ts')
+    ch_learn = load_ts('ch-learnsets.ts', CH + 'learnsets.ts')
+    ch_items = load_ts('ch-items.ts', CH + 'items.ts')
+    ko_js = open(os.path.join(ROOT, 'meta', 'ko.js'), encoding='utf8').read()
+    roster = json.loads(ko_js[ko_js.index('window.KO=') + 10:ko_js.index(';window.dispatchEvent')])['roster']
+    ch_ab = dict(ab_name2id)
+    ch_ab.update({'dragonize': 309, 'megasol': 310, 'eelevate': 312, 'firemane': 313, 'auraguard': 314})
+    ch_moves = {}
+    for k, e in ch_mv.items():
+        if not any(f in e for f in ('type', 'basePower', 'category')) or k not in moves:
+            continue
+        j = move_index(k)
+        if j is None:
+            continue
+        t = [TI.get(e.get('type', moves[k].get('type')), 0), int(e.get('basePower', moves[k].get('basePower')) or 0),
+             CAT.get(e.get('category', moves[k].get('category')), 2)]
+        cur = MV[j][1:4] if j < len(MV) else extra[j - len(MV)][1:4]
+        if t != cur:
+            ch_moves[j] = t
+    ch_moves = dict(sorted(ch_moves.items()))
+
+    def ch_chain(sp):
+        seen, stack = [], [sp]
+        while stack:
+            x = stack.pop()
+            if x in seen or x not in dex:
+                continue
+            seen.append(x)
+            if dex[x].get('prevo'):
+                stack.append(sid(dex[x]['prevo']))
+            own = ch_learn.get(x, {}).get('learnset')
+            b = base_of(x)
+            if b != x and (not own or is_mega(x)):
+                stack.append(b)
+        return seen
+
+    ch_l, ch_missing, ch_a = {}, {}, {}
+    for i in roster:
+        sp = ent[i]
+        ms = set()
+        for x in ch_chain(sp):
+            ms |= set((ch_learn.get(x, {}).get('learnset') or {}).keys())
+        idxs = set()
+        for mk in sorted(ms):
+            if mk not in moves or moves[mk].get('isNonstandard') in ('CAP', 'Custom'):
+                continue
+            j = move_index(mk)
+            if j is None:
+                ch_missing[mk] = ch_missing.get(mk, 0) + 1
+                continue
+            idxs.add(j)
+        ch_l[i] = sorted(idxs)
+        a = []
+        for slot in ('0', '1', 'H'):
+            n = (pval(9, sp, 'abilities') or {}).get(slot)
+            ai = ch_ab.get(sid(n)) if n else None
+            if ai is not None and ai not in a:
+                a.append(ai)
+        if a and sorted(a) != sorted(PK[i][9]):
+            ch_a[i] = a
+    ch_no = sorted(k for k, e in ch_items.items() if e.get('isNonstandard') == 'Past')
+    print('champions: moves', len(ch_moves), 'learn', len(ch_l), 'abil', len(ch_a), 'noPast items', len(ch_no), 'missing', ch_missing)
+
     # ---- write
     outdir = os.path.join(ROOT, 'gens')
     os.makedirs(outdir, exist_ok=True)
@@ -655,6 +730,10 @@ def main():
 
     with open(os.path.join(outdir, 'common.js'), 'w', encoding='utf8', newline='\n') as f:
         f.write('window.GD={avail:%s,mvExtra:%s};\n' % (js(avail), js(extra)))
+    def js_d(o):
+        return js({str(k): v for k, v in o.items()})
+    with open(os.path.join(outdir, 'ch.js'), 'w', encoding='utf8', newline='\n') as f:
+        f.write('GD.ch={moves:%s,learn:%s,items:{noPast:%s},abil:%s};\n' % (js_d(ch_moves), js_d(ch_l), js(ch_no), js_d(ch_a)))
     for g in range(1, 9):
         R = res[g]
         parts = []
@@ -689,6 +768,14 @@ def main():
         if nm == '따라가때리기':
             for i in find('마기라스'):
                 print('  마기라스', i, [(g, j in res[g]['learn'].get(i, [])) for g in range(2, 9)])
+
+    print('--- champions spot checks')
+    for ko in ('만나자마자', '베어가르기', '본러시', '집게덫'):
+        j = next(j for j, m in enumerate(MV) if m[0] == ko)
+        print(ko, j, MV[j][1:4], '->', ch_moves.get(j))
+    sk = next(j for j, m in enumerate(MV) if m[0] == '스케일샷')
+    for i in find('리자몽'):
+        print('리자몽', i, PK[i][0], 'learns 스케일샷:', sk in ch_l.get(i, []), 'count', len(ch_l.get(i, [])))
 
 
 if __name__ == '__main__':
