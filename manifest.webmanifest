@@ -1,0 +1,17 @@
+{
+  "name": "배틀 도감",
+  "short_name": "배틀 도감",
+  "description": "포켓몬 챔피언스 랭크배틀 상성·데미지·스피드 계산기 + 실전 메타·인기 파티",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e1117",
+  "theme_color": "#14224a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
